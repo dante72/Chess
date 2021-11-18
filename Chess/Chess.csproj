@@ -58,6 +58,7 @@
     <Compile Include="Board.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="CellColorConverter.cs" />
+    <Compile Include="ChessFigureConvector.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
     <Compile Include="ChessFigure.cs" />
     <Compile Include="ViewModel.cs" />
@@ -99,6 +100,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\BlackQueen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\BlackBishop.png" />
+    <Resource Include="icons\BlackKing.png" />
+    <Resource Include="icons\BlackKnight.png" />
+    <Resource Include="icons\BlackPawn.png" />
+    <Resource Include="icons\BlackRook.png" />
+    <Resource Include="icons\WhiteBishop.png" />
+    <Resource Include="icons\WhiteKing.png" />
+    <Resource Include="icons\WhiteKnight.png" />
+    <Resource Include="icons\WhitePawn.png" />
+    <Resource Include="icons\WhiteQueen.png" />
+    <Resource Include="icons\WhiteRook.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

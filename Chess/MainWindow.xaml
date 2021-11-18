@@ -3,12 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="800">
     <Window.Resources>
         <local:ViewModel x:Key="viewModel"/>
         <local:CellColorConverter x:Key="cellColorConverter" />
+        <local:ChessFigureConvector x:Key="chessFigureConvector" />
     </Window.Resources>
     <DockPanel>
         <DockPanel.DataContext>
@@ -23,7 +25,7 @@
                 <RowDefinition/>
                 <RowDefinition Height ="9*"/>
             </Grid.RowDefinitions>
-            <ListBox ItemsSource="{Binding Cells}"
+            <ListBox ItemsSource="{Binding СhessBoard}"
                      Grid.Row="1" Grid.Column="1"
                      SelectedItem="{Binding SelectedItem}">
                 <ListBox.ItemsPanel>
@@ -42,11 +44,14 @@
                                     <Border x:Name="brd" Background="{TemplateBinding Background}" 
                                           BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}">
+                                        <Viewbox Width="70" Height="70">
+                                            <Image Source="{Binding ChessFigure, Converter={StaticResource chessFigureConvector}}"/>
+                                        </Viewbox>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <DataTrigger Binding="{Binding Index, Converter={StaticResource cellColorConverter}}" Value="True">
-                                                <Setter Property="Background" Value="SandyBrown"></Setter>
-                                            </DataTrigger>
+                                            <Setter Property="Background" Value="SandyBrown"></Setter>
+                                        </DataTrigger>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter Property="Background" Value="SkyBlue"/>
                                             <Setter Property="BorderThickness" Value="2"/>
