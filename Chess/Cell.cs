@@ -21,14 +21,14 @@ namespace Chess
             get => isSelected;
         }
 
-        private bool isMouseOver;
-        public bool IsMouseOver
+        private bool isMarked;
+        public bool IsMarked
         {
             set {
-                isMouseOver = value;
+                isMarked = value;
                 OnPropertyChanged();
             }
-            get => isMouseOver;
+            get => isMarked;
         }
 
         public Cell(int index = 0, ChessFigure figure = ChessFigure.Empty)

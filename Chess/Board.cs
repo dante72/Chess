@@ -11,10 +11,10 @@ namespace Chess
     {
         private readonly Cell[,] cells;
 
-        public ChessFigure this[int row, int column]
+        public Cell this[int row, int column]
         {
-            get => cells[row, column].ChessFigure;
-            set => cells[row, column].ChessFigure = value;
+            get => cells[row, column];
+            set => cells[row, column] = value;
         }
 
         public Board()
