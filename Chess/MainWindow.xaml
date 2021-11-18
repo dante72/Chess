@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="800" Width="800">
     <Window.Resources>
         <local:ViewModel x:Key="viewModel"/>
         <local:CellColorConverter x:Key="cellColorConverter" />
@@ -19,7 +19,7 @@
                         <Border Background="{TemplateBinding Background}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 BorderBrush="{TemplateBinding BorderBrush}">
-                            <TextBlock Text="{Binding}"
+                            <TextBlock Text="{Binding Index}"
                                        TextAlignment="Center"
                                        VerticalAlignment="Center">
                             </TextBlock>
@@ -28,10 +28,13 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
+                <DataTrigger Binding="{Binding Index, Converter={StaticResource cellColorConverter}}" Value="True">
+                    <Setter Property="Background" Value="SandyBrown"></Setter>
+                </DataTrigger>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="Red"></Setter>
+                    <Setter Property="Background" Value="GhostWhite"></Setter>
                     <Setter Property="BorderThickness" Value="2"></Setter>
-                    <Setter Property="BorderBrush" Value="Black"></Setter>
+                    <Setter Property="BorderBrush" Value="DarkGray"></Setter>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -41,7 +44,16 @@
             <Binding Source="{StaticResource viewModel}"/>
         </DockPanel.DataContext>
         <Grid>
-            <ListBox ItemsSource="{Binding СhessBoard}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="9*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height ="9*"/>
+            </Grid.RowDefinitions>
+            <ListBox ItemsSource="{Binding СhessBoard}"
+                     Grid.Row="1" Grid.Column="1">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="8"

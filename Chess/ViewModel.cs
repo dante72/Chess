@@ -8,13 +8,17 @@ namespace Chess
 {
     public class ViewModel
     {
-        public List<int> СhessBoard { set; get; }
+        public Board СhessBoard { set; get; }
 
         public ViewModel()
         {
-            СhessBoard = new List<int>();
-            for (int i = 0; i < 64; i++)
-                СhessBoard.Add(i + 1);
+            SetupBoard();
+        }
+
+        private void SetupBoard()
+        {
+            СhessBoard = new Board();
+            СhessBoard[0, 0] = ChessFigure.BlackRook;
         }
     }
 }

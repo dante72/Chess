@@ -55,7 +55,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Board.cs" />
+    <Compile Include="Cell.cs" />
     <Compile Include="CellColorConverter.cs" />
+    <Compile Include="NotifyPropertyChanged.cs" />
+    <Compile Include="ChessFigure.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
