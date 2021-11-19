@@ -10,7 +10,17 @@ namespace Chess
     {
         public int X { get; }
         public int Y { get; }
-        public Figure Figure { set; get; }
+
+        public Figure figure;
+        public Figure Figure
+        {
+            set
+            {
+                figure = value;
+                OnPropertyChanged();
+            }
+            get => figure;
+        }
         public int Index { get => X * 8 + Y; }
 
         private bool isSelected;

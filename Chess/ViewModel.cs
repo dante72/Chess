@@ -8,7 +8,7 @@ using static Chess.Figure;
 
 namespace Chess
 {
-    public class ViewModel
+    public class ViewModel : NotifyPropertyChanged
     {
         public Board СhessBoard { set; get; } = new Board();
         public ObservableCollection<Cell> Cells { set; get; }
@@ -18,11 +18,21 @@ namespace Chess
         {
             set
             {
-                var list = selectedItem?.Figure.GetPossibleMoves();
-                list?.ToList().ForEach(a => a.IsMarked = false);
-                selectedItem = value;
-                list = value.Figure.GetPossibleMoves();
-                list.ToList().ForEach(a => a.IsMarked = true);
+                if (value?.IsMarked == true)
+                {
+                    var list = selectedItem?.Figure.GetPossibleMoves();
+                    list?.ToList().ForEach(a => a.IsMarked = false);
+                    value.Figure = selectedItem.Figure;
+                    selectedItem.Figure = null;
+                }
+                else
+                {
+                    var list = selectedItem?.Figure?.GetPossibleMoves();
+                    list?.ToList().ForEach(a => a.IsMarked = false);
+                    selectedItem = value;
+                    list = value.Figure.GetPossibleMoves();
+                    list.ToList().ForEach(a => a.IsMarked = true);
+                }
             }
             get => selectedItem;
         
