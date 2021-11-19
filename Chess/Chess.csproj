@@ -59,6 +59,9 @@
     <Compile Include="Cell.cs" />
     <Compile Include="CellColorConverter.cs" />
     <Compile Include="ChessFigureConvector.cs" />
+    <Compile Include="Figure.cs" />
+    <Compile Include="FigureColors.cs" />
+    <Compile Include="IFirstMove.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
     <Compile Include="ChessFigure.cs" />
     <Compile Include="ViewModel.cs" />

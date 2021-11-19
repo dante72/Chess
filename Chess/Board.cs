@@ -11,10 +11,13 @@ namespace Chess
     {
         private readonly Cell[,] cells;
 
-        public Cell this[int row, int column]
+        public Figure this[int row, int column]
         {
-            get => cells[row, column];
-            set => cells[row, column] = value;
+            get => cells[row, column].Figure;
+            set {
+                value.Position = cells[row, column];
+                cells[row, column].Figure = value;  
+            }
         }
 
         public Board()
@@ -22,7 +25,7 @@ namespace Chess
             cells = new Cell[8, 8];
             for (int i = 0; i < cells.GetLength(0); i++)
                 for (int j = 0; j < cells.GetLength(1); j++)
-                    cells[i, j] = new Cell(i * cells.GetLength(1) + j);
+                    cells[i, j] = new Cell(i, j);
         }
 
         public IEnumerator<Cell> GetEnumerator()

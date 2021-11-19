@@ -45,7 +45,7 @@
                                           BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}">
                                         <Viewbox Width="70" Height="70">
-                                            <Image Source="{Binding ChessFigure, Converter={StaticResource chessFigureConvector}}"/>
+                                            <Image Source="{Binding Figure, Converter={StaticResource chessFigureConvector}}"/>
                                         </Viewbox>
                                     </Border>
                                     <ControlTemplate.Triggers>

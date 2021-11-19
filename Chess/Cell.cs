@@ -8,8 +8,10 @@ namespace Chess
 {
     public class Cell : NotifyPropertyChanged
     {
-        public ChessFigure ChessFigure { set; get; }
-        public int Index { set; get; }
+        public int X { get; }
+        public int Y { get; }
+        public Figure Figure { set; get; }
+        public int Index { get => X * 8 + Y; }
 
         private bool isSelected;
         public bool IsSelected
@@ -31,10 +33,10 @@ namespace Chess
             get => isMarked;
         }
 
-        public Cell(int index = 0, ChessFigure figure = ChessFigure.Empty)
+        public Cell(int x, int y)
         {
-            Index = index;
-            ChessFigure = figure;
+            X = x;
+            Y = y;
         }
     }
 }
