@@ -12,6 +12,9 @@ namespace Chess
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if ((ChessFigure)value == ChessFigure.Empty)
+                return null;
+
             return $"icons/{(ChessFigure)value}.png";
         }
 
