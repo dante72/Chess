@@ -9,13 +9,15 @@ namespace Chess
 {
     public class Board : IEnumerable<Cell>
     {
-        private readonly Cell[,] cells;
+        public readonly Cell[,] cells;
 
         public Figure this[int row, int column]
         {
-            get => cells[row, column].Figure;
+            get => cells[row, column]?.Figure;
             set {
-                value.Position = cells[row, column];
+
+                    value.Board = this;
+                    //value.Position = cells[row, column];
                 cells[row, column].Figure = value;  
             }
         }

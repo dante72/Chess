@@ -52,6 +52,9 @@
                                         <DataTrigger Binding="{Binding Index, Converter={StaticResource cellColorConverter}}" Value="True">
                                             <Setter Property="Background" Value="SandyBrown"></Setter>
                                         </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsMarked}" Value="True">
+                                            <Setter Property="Background" Value="SkyBlue"></Setter>
+                                        </DataTrigger>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter Property="Background" Value="SkyBlue"/>
                                             <Setter Property="BorderThickness" Value="2"/>

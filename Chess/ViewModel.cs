@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Chess.Figure;
 
 namespace Chess
 {
@@ -17,7 +18,11 @@ namespace Chess
         {
             set
             {
+                var list = selectedItem?.Figure.GetPossibleMoves();
+                list?.ToList().ForEach(a => a.IsMarked = false);
                 selectedItem = value;
+                list = value.Figure.GetPossibleMoves();
+                list.ToList().ForEach(a => a.IsMarked = true);
             }
             get => selectedItem;
         
@@ -30,27 +35,27 @@ namespace Chess
 
         private void SetupСhessBoard()
         {
-            СhessBoard[0, 0] = Figure.BlackRook;
-            СhessBoard[0, 1] = Figure.BlackKnight;
-            СhessBoard[0, 2] = Figure.BlackBishop;
-            СhessBoard[0, 3] = Figure.BlackQueen;
-            СhessBoard[0, 4] = Figure.BlackKing;
-            СhessBoard[0, 5] = Figure.BlackBishop;
-            СhessBoard[0, 6] = Figure.BlackKnight;
-            СhessBoard[0, 7] = Figure.BlackRook;
+            СhessBoard[0, 0] = new Rook(FigureColors.Black);
+            СhessBoard[0, 1] = new Knight(FigureColors.Black);
+            СhessBoard[0, 2] = new Bishop(FigureColors.Black);
+            СhessBoard[0, 3] = new Queen(FigureColors.Black);
+            СhessBoard[0, 4] = new King(FigureColors.Black);
+            СhessBoard[0, 5] = new Bishop(FigureColors.Black);
+            СhessBoard[0, 6] = new Knight(FigureColors.Black);
+            СhessBoard[0, 7] = new Rook(FigureColors.Black);
             for (int i = 0; i < 8; i++)
             {
-                СhessBoard[1, i] = Figure.BlackPawn;
-                СhessBoard[6, i] = Figure.WhitePawn;
+                СhessBoard[1, i] = new Pawn(FigureColors.Black);
+                СhessBoard[6, i] = new Pawn(FigureColors.White);
             }
-            СhessBoard[7, 0] = Figure.WhiteRook;
-            СhessBoard[7, 1] = Figure.WhiteKnight;
-            СhessBoard[7, 2] = Figure.WhiteBishop;
-            СhessBoard[7, 3] = Figure.WhiteQueen;
-            СhessBoard[7, 4] = Figure.WhiteKing;
-            СhessBoard[7, 5] = Figure.WhiteBishop;
-            СhessBoard[7, 6] = Figure.WhiteKnight;
-            СhessBoard[7, 7] = Figure.WhiteRook;
+            СhessBoard[7, 0] = new Rook(FigureColors.White);
+            СhessBoard[7, 1] = new Knight(FigureColors.White);
+            СhessBoard[7, 2] = new Bishop(FigureColors.White);
+            СhessBoard[7, 3] = new Queen(FigureColors.White);
+            СhessBoard[7, 4] = new King(FigureColors.White);
+            СhessBoard[7, 5] = new Bishop(FigureColors.White);
+            СhessBoard[7, 6] = new Knight(FigureColors.White);
+            СhessBoard[7, 7] = new Rook(FigureColors.White);
         }
     }
 }
