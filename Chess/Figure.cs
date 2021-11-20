@@ -202,7 +202,19 @@ namespace Chess
             public Knight(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                throw new NotImplementedException();
+                Cell position = Board.First(f => f.Figure == this);
+                var list = new List<Cell>();
+
+                for (int i = -2; i <= 2; i++)
+                    for (int j = -2; j <= 2; j++)
+                    {
+                        if (position.Row + i >= 0 && position.Row + i < 8 && position.Column + j >= 0 && position.Column + j < 8)
+                            if (i != j && i != -j && i != 0 && j != 0)
+                                if (!(Board.cells[position.Row + i, position.Column + j].Figure?.Color == Color))
+                                    list.Add(Board.cells[position.Row + i, position.Column + j]);
+                    }
+
+                return list;
             }
         }
 
