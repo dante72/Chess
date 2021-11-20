@@ -25,7 +25,6 @@ namespace Chess
                 if (value?.IsMarked == true)
                 { 
                     selectedItem?.Figure?.GetPossibleMoves()
-                    .ToList()
                     .ForEach(a => a.IsMarked = false);
                     
                     value.Figure = selectedItem.Figure;
@@ -36,7 +35,7 @@ namespace Chess
                 {
                     selectedItem = value;
                     selectedItem?.Figure?.GetPossibleMoves()
-                    .ToList().ForEach(a => a.IsMarked = true);
+                    .ForEach(a => a.IsMarked = true);
 
                     selectedItem.IsSelected = true;
                 }

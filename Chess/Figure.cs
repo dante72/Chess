@@ -36,7 +36,7 @@ namespace Chess
         /// <summary>
         /// Возможные ходы
         /// </summary>
-        public abstract IEnumerable<Cell> GetPossibleMoves();
+        public abstract List<Cell> GetPossibleMoves();
 
         /// <summary>
         /// Король
@@ -46,7 +46,7 @@ namespace Chess
             public King(FigureColors color) : base(color) { }
 
 
-            public override IEnumerable<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves()
             {
                 Cell pos = Board.First(f => f.Figure.Equals(this));
                 var list = new List<Cell>();
@@ -66,7 +66,7 @@ namespace Chess
         public class Queen : Figure
         {
             public Queen(FigureColors color) : base(color) { }
-            public override IEnumerable<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves()
             {
                 throw new NotImplementedException();
             }
@@ -78,7 +78,7 @@ namespace Chess
         public class Rook : Figure
         {
             public Rook(FigureColors color) : base(color) { }
-            public override IEnumerable<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves()
             {
                 throw new NotImplementedException();
             }
@@ -90,7 +90,7 @@ namespace Chess
         public class Knight : Figure
         {
             public Knight(FigureColors color) : base(color) { }
-            public override IEnumerable<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves()
             {
                 throw new NotImplementedException();
             }
@@ -102,7 +102,7 @@ namespace Chess
         public class Bishop : Figure
         {
             public Bishop(FigureColors color) : base(color) { }
-            public override IEnumerable<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves()
             {
                 throw new NotImplementedException();
             }
@@ -114,7 +114,7 @@ namespace Chess
         public class Pawn : Figure
         {
             public Pawn(FigureColors color) : base(color) { }
-            public override IEnumerable<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves()
             {
                 Cell pos = Board.First(f => f.Figure == this);
                 var list = new List<Cell>();
