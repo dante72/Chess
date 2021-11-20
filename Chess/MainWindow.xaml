@@ -40,30 +40,44 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                    <Border x:Name="brd" Background="{TemplateBinding Background}" 
+                                    <Canvas>
+                                        <Border x:Name="back" Background="{TemplateBinding Background}" 
                                           BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}">
-                                        <Viewbox Width="70" Height="70">
-                                            <Image Source="{Binding Figure, Converter={StaticResource chessFigureConvector}}"/>
-                                        </Viewbox>
-                                    </Border>
+                                            <Viewbox Height="{TemplateBinding ActualHeight}" Width="{TemplateBinding ActualWidth}">
+                                                <Image Source="{Binding Figure, Converter={StaticResource chessFigureConvector}}"/>
+                                            </Viewbox>
+                                        </Border>
+                                        <Border x:Name="fore"
+                                                Background="Aqua"
+                                                Height="{TemplateBinding ActualHeight}"
+                                                Width="{TemplateBinding ActualWidth}"
+                                                Opacity="0">
+                                        </Border>
+
+                                    </Canvas>
                                     <ControlTemplate.Triggers>
                                         <DataTrigger Binding="{Binding Index, Converter={StaticResource cellColorConverter}}" Value="True">
                                             <Setter Property="Background" Value="SandyBrown"></Setter>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding IsMarked}" Value="True">
-                                            <Setter Property="Background" Value="SkyBlue"></Setter>
+                                            <Setter TargetName="fore" Property="Background" Value="#FF36E400"/>
+                                            <Setter TargetName="fore" Property="BorderThickness" Value="1"/>
+                                            <Setter TargetName="fore" Property="BorderBrush" Value="#FF409A03"/>
+                                            <Setter TargetName="fore" Property="Opacity" Value="0.7"/>
+                                            <Setter TargetName="back" Property="Opacity" Value="0.3"/>
                                         </DataTrigger>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter Property="Background" Value="SkyBlue"/>
-                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
                                             <Setter Property="BorderBrush" Value="DeepSkyBlue"/>
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="SkyBlue"/>
-                                            <Setter Property="BorderThickness" Value="2"/>
-                                            <Setter Property="BorderBrush" Value="DeepSkyBlue"/>
-                                            <Setter Property="Opacity" Value="0.7"/>
+                                            <Setter TargetName="fore" Property="Background" Value="SkyBlue"/>
+                                            <Setter TargetName="fore" Property="BorderThickness" Value="1"/>
+                                            <Setter TargetName="fore" Property="BorderBrush" Value="DeepSkyBlue"/>
+                                            <Setter TargetName="fore" Property="Opacity" Value="0.4"/>
+                                            <Setter TargetName="back" Property="Opacity" Value="0.7"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -71,12 +85,6 @@
                         </Setter>
                     </Style>
                 </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Button Background="{Binding ElementName=brd, Path=Background}">
-                        </Button>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
     </DockPanel>
