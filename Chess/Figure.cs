@@ -118,7 +118,7 @@ namespace Chess
                     return list;
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("Error Direction");
 
             }
         }
@@ -158,7 +158,19 @@ namespace Chess
             public Queen(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                throw new NotImplementedException();
+                Cell position = Board.First(f => f.Figure == this);
+                var list = new List<Cell>();
+
+                list.AddRange(GetCellsInDirection(position, Directions.Down));
+                list.AddRange(GetCellsInDirection(position, Directions.Up));
+                list.AddRange(GetCellsInDirection(position, Directions.Left));
+                list.AddRange(GetCellsInDirection(position, Directions.Right));
+                list.AddRange(GetCellsInDirection(position, Directions.LeftUp));
+                list.AddRange(GetCellsInDirection(position, Directions.RightDown));
+                list.AddRange(GetCellsInDirection(position, Directions.LeftDown));
+                list.AddRange(GetCellsInDirection(position, Directions.RightUp));
+
+                return list;
             }
         }
 
@@ -172,10 +184,12 @@ namespace Chess
             {
                 Cell position = Board.First(f => f.Figure == this);
                 var list = new List<Cell>();
+
                 list.AddRange(GetCellsInDirection(position, Directions.Down));
                 list.AddRange(GetCellsInDirection(position, Directions.Up));
                 list.AddRange(GetCellsInDirection(position, Directions.Left));
                 list.AddRange(GetCellsInDirection(position, Directions.Right));
+
                 return list;
             }
         }
@@ -202,10 +216,12 @@ namespace Chess
             {
                 Cell position = Board.First(f => f.Figure == this);
                 var list = new List<Cell>();
+
                 list.AddRange(GetCellsInDirection(position, Directions.LeftUp));
                 list.AddRange(GetCellsInDirection(position, Directions.RightDown));
                 list.AddRange(GetCellsInDirection(position, Directions.LeftDown));
                 list.AddRange(GetCellsInDirection(position, Directions.RightUp));
+
                 return list;
             }
         }
