@@ -61,13 +61,25 @@
                                             <Setter Property="Background" Value="SandyBrown"></Setter>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding IsMarked}" Value="True">
+                                                <Setter TargetName="fore" Property="Background" Value="Red"/>
+                                                <Setter TargetName="fore" Property="BorderThickness" Value="1"/>
+                                                <Setter TargetName="fore" Property="BorderBrush" Value="Red"/>
+                                                <Setter TargetName="fore" Property="Opacity" Value="0.7"/>
+                                                <Setter TargetName="back" Property="Opacity" Value="0.3"/>
+                                            </DataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsMarked}" Value="True" />
+                                                <Condition Binding="{Binding Figure}" Value="{x:Null}" />
+                                            </MultiDataTrigger.Conditions>
                                             <Setter TargetName="fore" Property="Background" Value="#FF36E400"/>
                                             <Setter TargetName="fore" Property="BorderThickness" Value="1"/>
                                             <Setter TargetName="fore" Property="BorderBrush" Value="#FF409A03"/>
                                             <Setter TargetName="fore" Property="Opacity" Value="0.7"/>
                                             <Setter TargetName="back" Property="Opacity" Value="0.3"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                        </MultiDataTrigger>
+
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                             <Setter Property="Background" Value="SkyBlue"/>
                                             <Setter Property="BorderThickness" Value="1"/>
                                             <Setter Property="BorderBrush" Value="DeepSkyBlue"/>

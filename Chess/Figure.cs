@@ -116,7 +116,7 @@ namespace Chess
                 for (int i = pos.X - 1; i <= pos.X + 1; i++)
                     for (int j = pos.Y - 1; j <= pos.Y + 1; j++)
                         if (i >= 0 && j >= 0 && i < 8 && j < 8)
-                            if (Board.cells[i, j].Figure == null)
+                            if (Board.cells[i, j].Figure == null || Board.cells[i, j].Figure.Color != Color)
                                 list.Add(Board.cells[i, j]);
                 return list;
             }
