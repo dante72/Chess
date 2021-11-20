@@ -33,14 +33,16 @@ namespace Chess
             switch(direction)
             {
                 case Directions.Up:
+                case Directions.Down:
+                    int dir = direction == Directions.Up ? -1 : 1;
                     var list = new List<Cell>();
                     for (int i = 1; i <= range; i++)
-                        if (current.Row - i >= 0)
-                            if (Board.cells[current.Row - i, current.Column].Figure == null || Board.cells[current.Row - i, current.Column].Figure.Color != Color)
+                        if (current.Row + i * dir >= 0)
+                            if (Board.cells[current.Row + i * dir, current.Column].Figure == null || Board.cells[current.Row + i * dir, current.Column].Figure.Color != Color)
                             {
-                                list.Add(Board.cells[current.Row - i, current.Column]);
+                                list.Add(Board.cells[current.Row + i * dir, current.Column]);
 
-                                if (Board.cells[current.Row - i, current.Column].Figure != null && Board.cells[current.Row - i, current.Column].Figure.Color != Color)
+                                if (Board.cells[current.Row + i * dir, current.Column].Figure != null && Board.cells[current.Row + i * dir, current.Column].Figure.Color != Color)
                                     break;
                             }
                     return list;
@@ -135,9 +137,10 @@ namespace Chess
             public override List<Cell> GetPossibleMoves()
             {
                 int range = FirstMove ? 2 : 1;
-                Cell pos = Board.First(f => f.Figure == this);
+                var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
+                Cell position = Board.First(f => f.Figure == this);
 
-                return GetCellsInDirection(pos, Directions.Up, range);
+                return GetCellsInDirection(position, direction, range);
             }
         }
     }
