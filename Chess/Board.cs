@@ -14,10 +14,9 @@ namespace Chess
         public Figure this[int row, int column]
         {
             get => cells[row, column]?.Figure;
-            set {
-
-                    value.Board = this;
-                    //value.Position = cells[row, column];
+            set
+            {
+                value.Board = this;
                 cells[row, column].Figure = value;  
             }
         }

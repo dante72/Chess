@@ -14,24 +14,31 @@ namespace Chess
         public ObservableCollection<Cell> Cells { set; get; }
 
         private Cell selectedItem;
+
         public Cell SelectedItem
         {
             set
             {
+                if (selectedItem != null)
+                    selectedItem.IsSelected = false;
+
                 if (value?.IsMarked == true)
-                {
-                    var list = selectedItem?.Figure.GetPossibleMoves();
-                    list?.ToList().ForEach(a => a.IsMarked = false);
+                { 
+                    selectedItem?.Figure?.GetPossibleMoves()
+                    .ToList()
+                    .ForEach(a => a.IsMarked = false);
+                    
                     value.Figure = selectedItem.Figure;
                     selectedItem.Figure = null;
+
                 }
                 else
                 {
-                    var list = selectedItem?.Figure?.GetPossibleMoves();
-                    list?.ToList().ForEach(a => a.IsMarked = false);
                     selectedItem = value;
-                    list = value.Figure.GetPossibleMoves();
-                    list.ToList().ForEach(a => a.IsMarked = true);
+                    selectedItem?.Figure?.GetPossibleMoves()
+                    .ToList().ForEach(a => a.IsMarked = true);
+
+                    selectedItem.IsSelected = true;
                 }
             }
             get => selectedItem;

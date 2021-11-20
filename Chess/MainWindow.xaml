@@ -26,7 +26,7 @@
             </Grid.RowDefinitions>
             <ListBox ItemsSource="{Binding СhessBoard}"
                      Grid.Row="1" Grid.Column="1"
-                     SelectedItem="{Binding SelectedItem}">
+                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="8"
@@ -67,11 +67,11 @@
                                             <Setter TargetName="fore" Property="Opacity" Value="0.7"/>
                                             <Setter TargetName="back" Property="Opacity" Value="0.3"/>
                                         </DataTrigger>
-                                        <Trigger Property="IsSelected" Value="True">
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                             <Setter Property="Background" Value="SkyBlue"/>
                                             <Setter Property="BorderThickness" Value="1"/>
                                             <Setter Property="BorderBrush" Value="DeepSkyBlue"/>
-                                        </Trigger>
+                                        </DataTrigger>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter TargetName="fore" Property="Background" Value="SkyBlue"/>
                                             <Setter TargetName="fore" Property="BorderThickness" Value="1"/>
