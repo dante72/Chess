@@ -8,20 +8,22 @@ namespace Chess
 {
     public class Cell : NotifyPropertyChanged
     {
-        public int X { get; }
-        public int Y { get; }
+        public int Row { get; }
+        public int Column { get; }
 
         public Figure figure;
         public Figure Figure
         {
             set
             {
+                if (figure != null)
+                    figure.FirstMove = false;
                 figure = value;
                 OnPropertyChanged();
             }
             get => figure;
         }
-        public int Index { get => X * 8 + Y; }
+        public int Index { get => Row * 8 + Column; }
 
         private bool isSelected;
         public bool IsSelected
@@ -43,10 +45,10 @@ namespace Chess
             get => isMarked;
         }
 
-        public Cell(int x, int y)
+        public Cell(int row, int column)
         {
-            X = x;
-            Y = y;
+            Row = row;
+            Column = column;
         }
     }
 }

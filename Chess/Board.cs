@@ -17,6 +17,7 @@ namespace Chess
             set
             {
                 value.Board = this;
+                //value.Position = cells[row, column];
                 cells[row, column].Figure = value;  
             }
         }

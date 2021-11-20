@@ -22,7 +22,7 @@ namespace Chess
                 if (selectedItem != null)
                     selectedItem.IsSelected = false;
                 
-                if (value.IsMarked == false && value.Figure == null)
+                if (value.IsMarked == false)
                     selectedItem?.Figure?.GetPossibleMoves()
                         .ForEach(a => a.IsMarked = false);
 
