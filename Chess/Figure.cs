@@ -11,15 +11,16 @@ namespace Chess
     /// </summary>
     public abstract class Figure : IFirstMove
     {
-        /// <summary>
-        /// Доска
-        /// </summary>
-        public Board Board { get; set; }
 
         /// <summary>
         /// Цвет фигуры
         /// </summary>
         public  FigureColors Color { get; private set; }
+
+        /// <summary>
+        /// Позиция фигуры
+        /// </summary>
+        public Cell Position { get; set; }
         public bool FirstMove { get; set; } = true;
 
         public Figure(FigureColors color) => Color = color;
@@ -42,14 +43,14 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Row + i * dir >= 0 && current.Row + i * dir < 8)
                         {
-                            if (Board.cells[current.Row + i * dir, current.Column].Figure == null)
+                            if (Position.Board[current.Row + i * dir, current.Column].Figure == null)
                             {
-                                list.Add(Board.cells[current.Row + i * dir, current.Column]);
+                                list.Add(Position.Board[current.Row + i * dir, current.Column]);
                             }
                             else
                             {
-                                if (Board.cells[current.Row + i * dir, current.Column].Figure.Color != Color)
-                                    list.Add(Board.cells[current.Row + i * dir, current.Column]);
+                                if (Position.Board[current.Row + i * dir, current.Column].Figure.Color != Color)
+                                    list.Add(Position.Board[current.Row + i * dir, current.Column]);
 
                                 break;
                             }
@@ -62,14 +63,14 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Column + i * dir >= 0 && current.Column + i * dir < 8)
                         {
-                            if (Board.cells[current.Row, current.Column + i * dir].Figure == null)
+                            if (Position.Board[current.Row, current.Column + i * dir].Figure == null)
                             {
-                                list.Add(Board.cells[current.Row, current.Column + i * dir]);
+                                list.Add(Position.Board[current.Row, current.Column + i * dir]);
                             }
                             else
                             {
-                                if (Board.cells[current.Row, current.Column + i * dir].Figure.Color != Color)
-                                    list.Add(Board.cells[current.Row, current.Column + i * dir]);
+                                if (Position.Board[current.Row, current.Column + i * dir].Figure.Color != Color)
+                                    list.Add(Position.Board[current.Row, current.Column + i * dir]);
 
                                 break;
                             }
@@ -82,14 +83,14 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Column + i * dir >= 0 && current.Column + i * dir < 8 && current.Row + i * dir >= 0 && current.Row + i * dir < 8)
                         {
-                            if (Board.cells[current.Row + i * dir, current.Column + i * dir].Figure == null)
+                            if (Position.Board[current.Row + i * dir, current.Column + i * dir].Figure == null)
                             {
-                                list.Add(Board.cells[current.Row + i * dir, current.Column + i * dir]);
+                                list.Add(Position.Board[current.Row + i * dir, current.Column + i * dir]);
                             }
                             else
                             {
-                                if (Board.cells[current.Row + i * dir, current.Column + i * dir].Figure.Color != Color)
-                                    list.Add(Board.cells[current.Row + i * dir, current.Column + i * dir]);
+                                if (Position.Board[current.Row + i * dir, current.Column + i * dir].Figure.Color != Color)
+                                    list.Add(Position.Board[current.Row + i * dir, current.Column + i * dir]);
 
                                 break;
                             }
@@ -103,14 +104,14 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Column + i * dir >= 0 && current.Column + i * dir < 8 && current.Row - i * dir >= 0 && current.Row - i * dir < 8)
                         {
-                            if (Board.cells[current.Row - i * dir, current.Column + i * dir].Figure == null)
+                            if (Position.Board[current.Row - i * dir, current.Column + i * dir].Figure == null)
                             {
-                                list.Add(Board.cells[current.Row - i * dir, current.Column + i * dir]);
+                                list.Add(Position.Board[current.Row - i * dir, current.Column + i * dir]);
                             }
                             else
                             {
-                                if (Board.cells[current.Row - i * dir, current.Column + i * dir].Figure.Color != Color)
-                                    list.Add(Board.cells[current.Row - i * dir, current.Column + i * dir]);
+                                if (Position.Board[current.Row - i * dir, current.Column + i * dir].Figure.Color != Color)
+                                    list.Add(Position.Board[current.Row - i * dir, current.Column + i * dir]);
 
                                 break;
                             }
@@ -138,13 +139,13 @@ namespace Chess
 
             public override List<Cell> GetPossibleMoves()
             {
-                Cell pos = Board.First(f => f.Figure == this);
+                Cell pos = Position.Board.Cells.First(f => f.Figure == this);
                 var list = new List<Cell>();
                 for (int i = pos.Row - 1; i <= pos.Row + 1; i++)
                     for (int j = pos.Column - 1; j <= pos.Column + 1; j++)
                         if (i >= 0 && j >= 0 && i < 8 && j < 8)
-                            if (Board.cells[i, j].Figure == null || Board.cells[i, j].Figure.Color != Color)
-                                list.Add(Board.cells[i, j]);
+                            if (Position.Board[i, j].Figure == null || Position.Board[i, j].Figure.Color != Color)
+                                list.Add(Position.Board[i, j]);
                 return list;
 
             }
@@ -158,7 +159,7 @@ namespace Chess
             public Queen(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                Cell position = Board.First(f => f.Figure == this);
+                Cell position = Position.Board.Cells.First(f => f.Figure == this);
                 var list = new List<Cell>();
 
                 list.AddRange(GetCellsInDirection(position, Directions.Down));
@@ -182,7 +183,7 @@ namespace Chess
             public Rook(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                Cell position = Board.First(f => f.Figure == this);
+                Cell position = Position.Board.Cells.First(f => f.Figure == this);
                 var list = new List<Cell>();
 
                 list.AddRange(GetCellsInDirection(position, Directions.Down));
@@ -202,7 +203,7 @@ namespace Chess
             public Knight(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                Cell position = Board.First(f => f.Figure == this);
+                Cell position = Position.Board.Cells.First(f => f.Figure == this);
                 var list = new List<Cell>();
 
                 for (int i = -2; i <= 2; i++)
@@ -210,8 +211,8 @@ namespace Chess
                     {
                         if (position.Row + i >= 0 && position.Row + i < 8 && position.Column + j >= 0 && position.Column + j < 8)
                             if (i != j && i != -j && i != 0 && j != 0)
-                                if (!(Board.cells[position.Row + i, position.Column + j].Figure?.Color == Color))
-                                    list.Add(Board.cells[position.Row + i, position.Column + j]);
+                                if (!(Position.Board[position.Row + i, position.Column + j].Figure?.Color == Color))
+                                    list.Add(Position.Board[position.Row + i, position.Column + j]);
                     }
 
                 return list;
@@ -226,7 +227,7 @@ namespace Chess
             public Bishop(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                Cell position = Board.First(f => f.Figure == this);
+                Cell position = Position.Board.Cells.First(f => f.Figure == this);
                 var list = new List<Cell>();
 
                 list.AddRange(GetCellsInDirection(position, Directions.LeftUp));
@@ -248,9 +249,9 @@ namespace Chess
             {
                 int range = FirstMove ? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
-                Cell position = Board.First(f => f.Figure == this);
+               // Cell position = Position.Board.Cells.First(f => f.Figure == this);
 
-                return GetCellsInDirection(position, direction, range);
+                return GetCellsInDirection(Position, direction, range);
             }
         }
     }

@@ -56,7 +56,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Board.cs" />
+    <Compile Include="BoardVM.cs" />
     <Compile Include="Cell.cs" />
+    <Compile Include="CellVM.cs" />
     <Compile Include="CellColorConverter.cs" />
     <Compile Include="ChessFigureConvector.cs" />
     <Compile Include="Directions.cs" />

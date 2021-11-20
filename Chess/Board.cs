@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,32 +6,25 @@ using System.Threading.Tasks;
 
 namespace Chess
 {
-    public class Board : IEnumerable<Cell>
+    public class Board
     {
-        public readonly Cell[,] cells;
+        public List<Cell> Cells { get; set; }
 
-        public Figure this[int row, int column]
+        public Cell this[int row, int column]
         {
-            get => cells[row, column]?.Figure;
+            get => Cells[row * 8 + column];
             set
             {
-                value.Board = this;
-                cells[row, column].Figure = value;  
+                Cells[row * 8 + column] = value;
             }
         }
 
         public Board()
         {
-            cells = new Cell[8, 8];
-            for (int i = 0; i < cells.GetLength(0); i++)
-                for (int j = 0; j < cells.GetLength(1); j++)
-                    cells[i, j] = new Cell(i, j);
+            Cells = new List<Cell>();
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                    Cells.Add(new Cell(i, j) { Board = this });
         }
-
-        public IEnumerator<Cell> GetEnumerator()
-            => cells.Cast<Cell>().GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator()
-            => cells.GetEnumerator();
     }
 }
