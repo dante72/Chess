@@ -139,10 +139,10 @@ namespace Chess
 
             public override List<Cell> GetPossibleMoves()
             {
-                Cell pos = Position.Board.Cells.First(f => f.Figure == this);
+
                 var list = new List<Cell>();
-                for (int i = pos.Row - 1; i <= pos.Row + 1; i++)
-                    for (int j = pos.Column - 1; j <= pos.Column + 1; j++)
+                for (int i = Position.Row - 1; i <= Position.Row + 1; i++)
+                    for (int j = Position.Column - 1; j <= Position.Column + 1; j++)
                         if (i >= 0 && j >= 0 && i < 8 && j < 8)
                             if (Position.Board[i, j].Figure == null || Position.Board[i, j].Figure.Color != Color)
                                 list.Add(Position.Board[i, j]);
@@ -159,17 +159,16 @@ namespace Chess
             public Queen(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                Cell position = Position.Board.Cells.First(f => f.Figure == this);
                 var list = new List<Cell>();
 
-                list.AddRange(GetCellsInDirection(position, Directions.Down));
-                list.AddRange(GetCellsInDirection(position, Directions.Up));
-                list.AddRange(GetCellsInDirection(position, Directions.Left));
-                list.AddRange(GetCellsInDirection(position, Directions.Right));
-                list.AddRange(GetCellsInDirection(position, Directions.LeftUp));
-                list.AddRange(GetCellsInDirection(position, Directions.RightDown));
-                list.AddRange(GetCellsInDirection(position, Directions.LeftDown));
-                list.AddRange(GetCellsInDirection(position, Directions.RightUp));
+                list.AddRange(GetCellsInDirection(Position, Directions.Down));
+                list.AddRange(GetCellsInDirection(Position, Directions.Up));
+                list.AddRange(GetCellsInDirection(Position, Directions.Left));
+                list.AddRange(GetCellsInDirection(Position, Directions.Right));
+                list.AddRange(GetCellsInDirection(Position, Directions.LeftUp));
+                list.AddRange(GetCellsInDirection(Position, Directions.RightDown));
+                list.AddRange(GetCellsInDirection(Position, Directions.LeftDown));
+                list.AddRange(GetCellsInDirection(Position, Directions.RightUp));
 
                 return list;
             }
@@ -183,13 +182,12 @@ namespace Chess
             public Rook(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                Cell position = Position.Board.Cells.First(f => f.Figure == this);
                 var list = new List<Cell>();
 
-                list.AddRange(GetCellsInDirection(position, Directions.Down));
-                list.AddRange(GetCellsInDirection(position, Directions.Up));
-                list.AddRange(GetCellsInDirection(position, Directions.Left));
-                list.AddRange(GetCellsInDirection(position, Directions.Right));
+                list.AddRange(GetCellsInDirection(Position, Directions.Down));
+                list.AddRange(GetCellsInDirection(Position, Directions.Up));
+                list.AddRange(GetCellsInDirection(Position, Directions.Left));
+                list.AddRange(GetCellsInDirection(Position, Directions.Right));
 
                 return list;
             }
@@ -203,16 +201,15 @@ namespace Chess
             public Knight(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                Cell position = Position.Board.Cells.First(f => f.Figure == this);
                 var list = new List<Cell>();
 
                 for (int i = -2; i <= 2; i++)
                     for (int j = -2; j <= 2; j++)
                     {
-                        if (position.Row + i >= 0 && position.Row + i < 8 && position.Column + j >= 0 && position.Column + j < 8)
+                        if (Position.Row + i >= 0 && Position.Row + i < 8 && Position.Column + j >= 0 && Position.Column + j < 8)
                             if (i != j && i != -j && i != 0 && j != 0)
-                                if (!(Position.Board[position.Row + i, position.Column + j].Figure?.Color == Color))
-                                    list.Add(Position.Board[position.Row + i, position.Column + j]);
+                                if (!(Position.Board[Position.Row + i, Position.Column + j].Figure?.Color == Color))
+                                    list.Add(Position.Board[Position.Row + i, Position.Column + j]);
                     }
 
                 return list;
@@ -227,13 +224,12 @@ namespace Chess
             public Bishop(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                Cell position = Position.Board.Cells.First(f => f.Figure == this);
                 var list = new List<Cell>();
 
-                list.AddRange(GetCellsInDirection(position, Directions.LeftUp));
-                list.AddRange(GetCellsInDirection(position, Directions.RightDown));
-                list.AddRange(GetCellsInDirection(position, Directions.LeftDown));
-                list.AddRange(GetCellsInDirection(position, Directions.RightUp));
+                list.AddRange(GetCellsInDirection(Position, Directions.LeftUp));
+                list.AddRange(GetCellsInDirection(Position, Directions.RightDown));
+                list.AddRange(GetCellsInDirection(Position, Directions.LeftDown));
+                list.AddRange(GetCellsInDirection(Position, Directions.RightUp));
 
                 return list;
             }
@@ -249,7 +245,6 @@ namespace Chess
             {
                 int range = FirstMove ? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
-               // Cell position = Position.Board.Cells.First(f => f.Figure == this);
 
                 return GetCellsInDirection(Position, direction, range);
             }
