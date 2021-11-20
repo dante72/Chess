@@ -14,7 +14,10 @@ namespace Chess
         public ObservableCollection<Cell> Cells { set; get; }
 
         private Cell selectedItem;
-
+        
+        /// <summary>
+        /// Выбранная клетка на доске (вся локика доски)
+        /// </summary>
         public Cell SelectedItem
         {
             set

@@ -28,7 +28,10 @@ namespace Chess
             return $"{Color}{GetType().Name}";
         }
 
-        protected List<Cell> GetCellsInDirection(Cell current, Directions direction, int range = -1)
+        /// <summary>
+        /// Получить ячейки в данном направлении (рефакторинг) 
+        /// </summary>
+        protected List<Cell> GetCellsInDirection(Cell current, Directions direction, int range = 8)
         {
             switch(direction)
             {
@@ -37,14 +40,81 @@ namespace Chess
                     int dir = direction == Directions.Up ? -1 : 1;
                     var list = new List<Cell>();
                     for (int i = 1; i <= range; i++)
-                        if (current.Row + i * dir >= 0)
-                            if (Board.cells[current.Row + i * dir, current.Column].Figure == null || Board.cells[current.Row + i * dir, current.Column].Figure.Color != Color)
+                        if (current.Row + i * dir >= 0 && current.Row + i * dir < 8)
+                        {
+                            if (Board.cells[current.Row + i * dir, current.Column].Figure == null)
                             {
                                 list.Add(Board.cells[current.Row + i * dir, current.Column]);
-
-                                if (Board.cells[current.Row + i * dir, current.Column].Figure != null && Board.cells[current.Row + i * dir, current.Column].Figure.Color != Color)
-                                    break;
                             }
+                            else
+                            {
+                                if (Board.cells[current.Row + i * dir, current.Column].Figure.Color != Color)
+                                    list.Add(Board.cells[current.Row + i * dir, current.Column]);
+
+                                break;
+                            }
+                        }
+                    return list;
+                case Directions.Left:
+                case Directions.Right:
+                    dir = direction == Directions.Left ? -1 : 1;
+                    list = new List<Cell>();
+                    for (int i = 1; i <= range; i++)
+                        if (current.Column + i * dir >= 0 && current.Column + i * dir < 8)
+                        {
+                            if (Board.cells[current.Row, current.Column + i * dir].Figure == null)
+                            {
+                                list.Add(Board.cells[current.Row, current.Column + i * dir]);
+                            }
+                            else
+                            {
+                                if (Board.cells[current.Row, current.Column + i * dir].Figure.Color != Color)
+                                    list.Add(Board.cells[current.Row, current.Column + i * dir]);
+
+                                break;
+                            }
+                        }
+                    return list;
+                case Directions.LeftUp:
+                case Directions.RightDown:
+                    dir = direction == Directions.LeftUp ? -1 : 1;
+                    list = new List<Cell>();
+                    for (int i = 1; i <= range; i++)
+                        if (current.Column + i * dir >= 0 && current.Column + i * dir < 8 && current.Row + i * dir >= 0 && current.Row + i * dir < 8)
+                        {
+                            if (Board.cells[current.Row + i * dir, current.Column + i * dir].Figure == null)
+                            {
+                                list.Add(Board.cells[current.Row + i * dir, current.Column + i * dir]);
+                            }
+                            else
+                            {
+                                if (Board.cells[current.Row + i * dir, current.Column + i * dir].Figure.Color != Color)
+                                    list.Add(Board.cells[current.Row + i * dir, current.Column + i * dir]);
+
+                                break;
+                            }
+                        }
+                    return list;
+
+                case Directions.LeftDown:
+                case Directions.RightUp:
+                    dir = direction == Directions.LeftDown ? -1 : 1;
+                    list = new List<Cell>();
+                    for (int i = 1; i <= range; i++)
+                        if (current.Column + i * dir >= 0 && current.Column + i * dir < 8 && current.Row - i * dir >= 0 && current.Row - i * dir < 8)
+                        {
+                            if (Board.cells[current.Row - i * dir, current.Column + i * dir].Figure == null)
+                            {
+                                list.Add(Board.cells[current.Row - i * dir, current.Column + i * dir]);
+                            }
+                            else
+                            {
+                                if (Board.cells[current.Row - i * dir, current.Column + i * dir].Figure.Color != Color)
+                                    list.Add(Board.cells[current.Row - i * dir, current.Column + i * dir]);
+
+                                break;
+                            }
+                        }
                     return list;
 
                 default:
@@ -100,7 +170,13 @@ namespace Chess
             public Rook(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                throw new NotImplementedException();
+                Cell position = Board.First(f => f.Figure == this);
+                var list = new List<Cell>();
+                list.AddRange(GetCellsInDirection(position, Directions.Down));
+                list.AddRange(GetCellsInDirection(position, Directions.Up));
+                list.AddRange(GetCellsInDirection(position, Directions.Left));
+                list.AddRange(GetCellsInDirection(position, Directions.Right));
+                return list;
             }
         }
 
@@ -124,7 +200,13 @@ namespace Chess
             public Bishop(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves()
             {
-                throw new NotImplementedException();
+                Cell position = Board.First(f => f.Figure == this);
+                var list = new List<Cell>();
+                list.AddRange(GetCellsInDirection(position, Directions.LeftUp));
+                list.AddRange(GetCellsInDirection(position, Directions.RightDown));
+                list.AddRange(GetCellsInDirection(position, Directions.LeftDown));
+                list.AddRange(GetCellsInDirection(position, Directions.RightUp));
+                return list;
             }
         }
 
