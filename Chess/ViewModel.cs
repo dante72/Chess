@@ -21,12 +21,15 @@ namespace Chess
             {
                 if (selectedItem != null)
                     selectedItem.IsSelected = false;
+                
+                if (value.IsMarked == false && value.Figure == null)
+                    selectedItem?.Figure?.GetPossibleMoves()
+                        .ForEach(a => a.IsMarked = false);
 
                 if (value?.IsMarked == true)
                 { 
                     selectedItem?.Figure?.GetPossibleMoves()
-                    .ForEach(a => a.IsMarked = false);
-                    
+                        .ForEach(a => a.IsMarked = false);
                     value.Figure = selectedItem.Figure;
                     selectedItem.Figure = null;
 
