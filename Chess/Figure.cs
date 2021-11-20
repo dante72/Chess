@@ -15,15 +15,10 @@ namespace Chess
         /// Доска
         /// </summary>
         public Board Board { get; set; }
-        /// <summary>
-        /// Позиция на доске
-        /// </summary>
-        
-        public Cell Position { get; set; }
+
         /// <summary>
         /// Цвет фигуры
         /// </summary>
-        
         public  FigureColors Color { get; private set; }
         public bool FirstMove { get; set; } = false;
 
@@ -52,7 +47,7 @@ namespace Chess
                 var list = new List<Cell>();
                 for (int i = pos.X - 1; i <= pos.X + 1; i++)
                     for (int j = pos.Y - 1; j <= pos.Y + 1; j++)
-                        if (i >= 0 && j >= 0 && i <= 8 && j <= 8 && pos != Board[i, j].Position)
+                        if (i >= 0 && j >= 0 && i <= 8 && j <= 8 && pos.X != i && pos.Y != j)
                             if (Board[i, j] == null)
                                 list.Add(Board.cells[i, j]);
                 return list;
