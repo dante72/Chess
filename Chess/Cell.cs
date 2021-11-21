@@ -11,10 +11,6 @@ namespace Chess
         public int Row { get; }
         public int Column { get; }
 
-        public Board Board { get; set; }
-
-        public Figure Figure { set; get; }
-
         public Cell(int row, int column)
         {
             Row = row;
