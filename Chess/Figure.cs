@@ -49,17 +49,9 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Row + i * dir >= 0 && current.Row + i * dir < 8)
                         {
-                            if (board[current.Row + i * dir, current.Column].Figure == null)
-                            {
-                                list.Add(board[current.Row + i * dir, current.Column]);
-                            }
-                            else
-                            {
-                                if (board[current.Row + i * dir, current.Column].Figure.Color != Color)
-                                    list.Add(board[current.Row + i * dir, current.Column]);
-
+                            list.Add(board[current.Row + i * dir, current.Column]);
+                            if (board[current.Row + i * dir, current.Column].Figure != null)
                                 break;
-                            }
                         }
                     return list;
                 case Directions.Left:
@@ -69,17 +61,9 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Column + i * dir >= 0 && current.Column + i * dir < 8)
                         {
-                            if (board[current.Row, current.Column + i * dir].Figure == null)
-                            {
-                                list.Add(board[current.Row, current.Column + i * dir]);
-                            }
-                            else
-                            {
-                                if (board[current.Row, current.Column + i * dir].Figure.Color != Color)
-                                    list.Add(board[current.Row, current.Column + i * dir]);
-
+                            list.Add(board[current.Row, current.Column + i * dir]);
+                            if (board[current.Row, current.Column + i * dir].Figure != null)
                                 break;
-                            }
                         }
                     return list;
                 case Directions.LeftUp:
@@ -89,17 +73,9 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Column + i * dir >= 0 && current.Column + i * dir < 8 && current.Row + i * dir >= 0 && current.Row + i * dir < 8)
                         {
-                            if (board[current.Row + i * dir, current.Column + i * dir].Figure == null)
-                            {
-                                list.Add(board[current.Row + i * dir, current.Column + i * dir]);
-                            }
-                            else
-                            {
-                                if (board[current.Row + i * dir, current.Column + i * dir].Figure.Color != Color)
-                                    list.Add(board[current.Row + i * dir, current.Column + i * dir]);
-
+                            list.Add(board[current.Row + i * dir, current.Column + i * dir]);
+                            if (board[current.Row + i * dir, current.Column + i * dir].Figure != null)
                                 break;
-                            }
                         }
                     return list;
 
@@ -110,17 +86,9 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Column + i * dir >= 0 && current.Column + i * dir < 8 && current.Row - i * dir >= 0 && current.Row - i * dir < 8)
                         {
-                            if (board[current.Row - i * dir, current.Column + i * dir].Figure == null)
-                            {
-                                list.Add(board[current.Row - i * dir, current.Column + i * dir]);
-                            }
-                            else
-                            {
-                                if (board[current.Row - i * dir, current.Column + i * dir].Figure.Color != Color)
-                                    list.Add(board[current.Row - i * dir, current.Column + i * dir]);
-
+                            list.Add(board[current.Row - i * dir, current.Column + i * dir]);
+                            if (board[current.Row - i * dir, current.Column + i * dir].Figure != null)
                                 break;
-                            }
                         }
                     return list;
 
@@ -149,9 +117,14 @@ namespace Chess
                 var list = new List<Cell>();
                 for (int i = Position.Row - 1; i <= Position.Row + 1; i++)
                     for (int j = Position.Column - 1; j <= Position.Column + 1; j++)
-                        if (i >= 0 && j >= 0 && i < 8 && j < 8)
-                            if (board[i, j].Figure == null || board[i, j].Figure.Color != Color)
-                                list.Add(board[i, j]);
+                        if (i >= 0 && j >= 0 && i < 8 && j < 8 && !(i == Position.Row && j == Position.Column))
+                            list.Add(board[i, j]);
+
+                var figures = board.Cells.Where(i => i.Figure != null && i.Figure.Color != Color).Where(i => i.Figure.GetType().Name != "King")
+                    .Select(i => i.Figure.GetPossibleMoves());
+
+                list = list.Where(i => !figures.Any(j => j.Contains(i))).ToList();
+
                 return list;
 
             }
@@ -214,8 +187,7 @@ namespace Chess
                     {
                         if (Position.Row + i >= 0 && Position.Row + i < 8 && Position.Column + j >= 0 && Position.Column + j < 8)
                             if (i != j && i != -j && i != 0 && j != 0)
-                                if (!(board[Position.Row + i, Position.Column + j].Figure?.Color == Color))
-                                    list.Add(board[Position.Row + i, Position.Column + j]);
+                                list.Add(board[Position.Row + i, Position.Column + j]);
                     }
 
                 return list;
