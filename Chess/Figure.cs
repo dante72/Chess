@@ -251,8 +251,21 @@ namespace Chess
             {
                 int range = FirstMove ? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
+                List<Cell> attackFields = new List<Cell>();
+                if (direction == Directions.Up)
+                {
+                    attackFields.AddRange(GetCellsInDirection(Position, Directions.LeftUp, 1));
+                    attackFields.AddRange(GetCellsInDirection(Position, Directions.RightUp, 1));
+                }
+                else
+                {
+                    attackFields.AddRange(GetCellsInDirection(Position, Directions.LeftDown, 1));
+                    attackFields.AddRange(GetCellsInDirection(Position, Directions.RightDown, 1));
+                }
 
-                return GetCellsInDirection(Position, direction, range);
+                attackFields = attackFields.Where(i => i.Figure != null && i.Figure.Color != Color).ToList();
+                attackFields.AddRange(GetCellsInDirection(Position, direction, range).Where(i => i.Figure == null));
+                return attackFields;
             }
         }
     }
