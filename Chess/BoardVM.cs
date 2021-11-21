@@ -9,14 +9,14 @@ namespace Chess
 {
     public class BoardVM : IEnumerable<CellVM>
     {
-        public readonly CellVM[,] cells;
+        private readonly CellVM[,] cells;
 
         private readonly Board board;
 
         public CellVM this[int row, int column]
         {
             get => cells[row, column];
-            set
+            private set
             {
                 cells[row, column] = value;  
             }

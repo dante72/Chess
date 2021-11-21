@@ -10,7 +10,7 @@ namespace Chess
 {
     public class CellVM : NotifyPropertyChanged
     {
-        public Cell Value { set; get; }
+        private Cell Value { set; get; }
         public Figure Figure
         {
             set
@@ -18,8 +18,7 @@ namespace Chess
                 if (Value.Figure != null)
                     Value.Figure.FirstMove = false;
                 Value.Figure = value;
-                if (value != null)
-                Value.Figure.Position = Value;
+
                 OnPropertyChanged();
             }
             get => Value.Figure;
@@ -29,8 +28,10 @@ namespace Chess
         private bool isSelected;
         public bool IsSelected
         {
-            set {
+            set
+            {
                 isSelected = value;
+
                 OnPropertyChanged();
             }
             get => isSelected;
@@ -39,8 +40,10 @@ namespace Chess
         private bool isMarked;
         public bool IsMarked
         {
-            set {
+            set
+            {
                 isMarked = value;
+
                 OnPropertyChanged();
             }
             get => isMarked;

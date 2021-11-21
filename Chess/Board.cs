@@ -9,12 +9,12 @@ namespace Chess
 {
     public class Board
     {
-        public List<Cell> Cells { get; set; }
+        public List<Cell> Cells { get; private set; }
 
         public Cell this[int row, int column]
         {
             get => Cells[row * 8 + column];
-            set
+            private set
             {
                 Cells[row * 8 + column] = value;
             }
