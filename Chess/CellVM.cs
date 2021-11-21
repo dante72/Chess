@@ -8,15 +8,9 @@ using System.Threading.Tasks;
 
 namespace Chess
 {
-    public class CellVM : INotifyPropertyChanged
+    public class CellVM : NotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
         public Cell Value { set; get; }
-
-        public Figure figure;
         public Figure Figure
         {
             set

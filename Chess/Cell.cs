@@ -11,10 +11,17 @@ namespace Chess
         public int Row { get; }
         public int Column { get; }
 
-        public Board Board { get; set; }
-
-        public Figure Figure { set; get; }
-
+        private Figure figure;
+        public Figure Figure {
+            get => figure;
+            set
+            {
+                figure = value;
+                if (figure != null)
+                    figure.Position = this;
+            }
+        
+        }
         public Cell(int row, int column)
         {
             Row = row;
