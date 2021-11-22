@@ -106,7 +106,7 @@ namespace Chess
         /// <summary>
         /// Возможные ходы только с фигурами противника
         /// </summary>
-        public List<Cell> GetPossibleMovesWithEnemyOnly()
+        public virtual List<Cell> GetPossibleMovesWithEnemyOnly()
         {
             return GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
         }
@@ -225,12 +225,24 @@ namespace Chess
         /// </summary>
         public class Pawn : Figure
         {
+            public override List<Cell> GetPossibleMovesWithEnemyOnly()
+            {   
+                int range = FirstMove ? 2 : 1;
+                var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
+                var fields = GetPossibleMoves()
+                    .Where(i => i.Figure != null && i.Figure?.Color != Color)
+                    .ToList();
+                fields.AddRange(GetCellsInDirection(Position, direction, range).Where(i => i.Figure == null));
+
+                return fields;
+            }
             public Pawn(FigureColors color, Board board) : base(color, board) { }
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
-                int range = FirstMove ? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
+
                 List<Cell> attackFields = new List<Cell>();
+
                 if (direction == Directions.Up)
                 {
                     attackFields.AddRange(GetCellsInDirection(Position, Directions.LeftUp, 1));
@@ -242,8 +254,8 @@ namespace Chess
                     attackFields.AddRange(GetCellsInDirection(Position, Directions.RightDown, 1));
                 }
 
-                attackFields = attackFields.Where(i => i.Figure != null).ToList();
-                attackFields.AddRange(GetCellsInDirection(Position, direction, range).Where(i => i.Figure == null));
+                //attackFields = attackFields.Where(i => i.Figure != null).ToList();
+                //attackFields.AddRange(GetCellsInDirection(Position, direction, range).Where(i => i.Figure == null));
                 return attackFields;
             }
         }
