@@ -26,13 +26,18 @@ namespace Chess
                     selectedItem.IsSelected = false;
                 
                 if (value.IsMarked == false)
-                    selectedItem?.Figure?.GetPossibleMoves().Where(i => i.Figure?.Color != selectedItem.Figure.Color).Select(i => СhessBoard[i.Row, i.Column]).ToList()
+                    selectedItem?.Figure?.GetPossibleMovesWithEnemyOnly()
+                        .Select(i => СhessBoard[i.Row, i.Column])
+                        .ToList()
                         .ForEach(a => a.IsMarked = false);
 
                 if (value?.IsMarked == true)
                 { 
-                    selectedItem?.Figure?.GetPossibleMoves().Where(i => i.Figure?.Color != selectedItem.Figure.Color).Select(i => СhessBoard[i.Row, i.Column]).ToList()
+                    selectedItem?.Figure?.GetPossibleMovesWithEnemyOnly()
+                        .Select(i => СhessBoard[i.Row, i.Column])
+                        .ToList()
                         .ForEach(a => a.IsMarked = false);
+
                     value.Figure = selectedItem.Figure;
                     selectedItem.Figure = null;
 
@@ -40,8 +45,10 @@ namespace Chess
                 else
                 {
                     selectedItem = value;
-                    selectedItem?.Figure?.GetPossibleMoves().Where(i => i.Figure?.Color != selectedItem.Figure.Color).Select(i => СhessBoard[i.Row, i.Column]).ToList()
-                    .ForEach(a => a.IsMarked = true);
+                    selectedItem?.Figure?.GetPossibleMovesWithEnemyOnly()
+                        .Select(i => СhessBoard[i.Row, i.Column])
+                        .ToList()
+                        .ForEach(a => a.IsMarked = true);
 
                     selectedItem.IsSelected = true;
                 }

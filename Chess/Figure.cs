@@ -99,9 +99,17 @@ namespace Chess
         }
 
         /// <summary>
-        /// Возможные ходы
+        /// Возможные ходы до первого препядствия (другой фигуры)
         /// </summary>
         public abstract List<Cell> GetPossibleMoves();
+
+        /// <summary>
+        /// Возможные ходы только с фигурами противника
+        /// </summary>
+        public List<Cell> GetPossibleMovesWithEnemyOnly()
+        {
+            return GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
+        }
 
         /// <summary>
         /// Король
