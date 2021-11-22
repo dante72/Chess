@@ -101,7 +101,7 @@ namespace Chess
         /// <summary>
         /// Возможные ходы до первого препядствия (другой фигуры)
         /// </summary>
-        public abstract List<Cell> GetPossibleMoves();
+        public abstract List<Cell> GetPossibleMoves(bool recursionOfKings = false);
 
         /// <summary>
         /// Возможные ходы только с фигурами противника
@@ -117,9 +117,7 @@ namespace Chess
         public class King : Figure
         {
             public King(FigureColors color, Board board) : base(color, board) { }
-
-
-            public override List<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
 
                 var list = new List<Cell>();
@@ -127,11 +125,12 @@ namespace Chess
                     for (int j = Position.Column - 1; j <= Position.Column + 1; j++)
                         if (i >= 0 && j >= 0 && i < 8 && j < 8 && !(i == Position.Row && j == Position.Column))
                             list.Add(board[i, j]);
-
-                var figures = board.Cells.Where(i => i.Figure != null && i.Figure.Color != Color).Where(i => i.Figure.GetType().Name != "King")
-                    .Select(i => i.Figure.GetPossibleMoves());
-
-                list = list.Where(i => !figures.Any(j => j.Contains(i))).ToList();
+                if (!recursionOfKings)
+                {
+                    var figures = board.Cells.Where(i => i.Figure != null && i.Figure.Color != Color)
+                        .Select(i => i.Figure.GetPossibleMoves(true));
+                    list = list.Where(i => !figures.Any(j => j.Contains(i))).ToList();
+                }
 
                 return list;
 
@@ -144,7 +143,7 @@ namespace Chess
         public class Queen : Figure
         {
             public Queen(FigureColors color, Board board) : base(color, board) { }
-            public override List<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
 
@@ -167,7 +166,7 @@ namespace Chess
         public class Rook : Figure
         {
             public Rook(FigureColors color, Board board) : base(color, board) { }
-            public override List<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
 
@@ -186,7 +185,7 @@ namespace Chess
         public class Knight : Figure
         {
             public Knight(FigureColors color, Board board) : base(color, board) { }
-            public override List<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
 
@@ -208,7 +207,7 @@ namespace Chess
         public class Bishop : Figure
         {
             public Bishop(FigureColors color, Board board) : base(color, board) { }
-            public override List<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
 
@@ -227,7 +226,7 @@ namespace Chess
         public class Pawn : Figure
         {
             public Pawn(FigureColors color, Board board) : base(color, board) { }
-            public override List<Cell> GetPossibleMoves()
+            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 int range = FirstMove ? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
