@@ -242,7 +242,7 @@ namespace Chess
                     attackFields.AddRange(GetCellsInDirection(Position, Directions.RightDown, 1));
                 }
 
-                attackFields = attackFields.Where(i => i.Figure != null && i.Figure.Color != Color).ToList();
+                attackFields = attackFields.Where(i => i.Figure != null).ToList();
                 attackFields.AddRange(GetCellsInDirection(Position, direction, range).Where(i => i.Figure == null));
                 return attackFields;
             }
