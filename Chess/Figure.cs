@@ -22,12 +22,11 @@ namespace Chess
         /// </summary>
         public Cell Position { get; set; }
 
-        private Board board;
+        private Board Board { get => Position?.Board; }
         public bool FirstMove { get; set; } = true;
 
-        public Figure(FigureColors color, Board board)
+        public Figure(FigureColors color)
         {
-            this.board = board;
             Color = color;
         }
         public override string ToString()
@@ -49,8 +48,8 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Row + i * dir >= 0 && current.Row + i * dir < 8)
                         {
-                            list.Add(board[current.Row + i * dir, current.Column]);
-                            if (board[current.Row + i * dir, current.Column].Figure != null)
+                            list.Add(Board[current.Row + i * dir, current.Column]);
+                            if (Board[current.Row + i * dir, current.Column].Figure != null)
                                 break;
                         }
                     return list;
@@ -61,8 +60,8 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Column + i * dir >= 0 && current.Column + i * dir < 8)
                         {
-                            list.Add(board[current.Row, current.Column + i * dir]);
-                            if (board[current.Row, current.Column + i * dir].Figure != null)
+                            list.Add(Board[current.Row, current.Column + i * dir]);
+                            if (Board[current.Row, current.Column + i * dir].Figure != null)
                                 break;
                         }
                     return list;
@@ -73,8 +72,8 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Column + i * dir >= 0 && current.Column + i * dir < 8 && current.Row + i * dir >= 0 && current.Row + i * dir < 8)
                         {
-                            list.Add(board[current.Row + i * dir, current.Column + i * dir]);
-                            if (board[current.Row + i * dir, current.Column + i * dir].Figure != null)
+                            list.Add(Board[current.Row + i * dir, current.Column + i * dir]);
+                            if (Board[current.Row + i * dir, current.Column + i * dir].Figure != null)
                                 break;
                         }
                     return list;
@@ -86,8 +85,8 @@ namespace Chess
                     for (int i = 1; i <= range; i++)
                         if (current.Column + i * dir >= 0 && current.Column + i * dir < 8 && current.Row - i * dir >= 0 && current.Row - i * dir < 8)
                         {
-                            list.Add(board[current.Row - i * dir, current.Column + i * dir]);
-                            if (board[current.Row - i * dir, current.Column + i * dir].Figure != null)
+                            list.Add(Board[current.Row - i * dir, current.Column + i * dir]);
+                            if (Board[current.Row - i * dir, current.Column + i * dir].Figure != null)
                                 break;
                         }
                     return list;
@@ -111,12 +110,17 @@ namespace Chess
             return GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
         }
 
+        public virtual List<Cell> GetPossibleMovesWithCheckOfKing()
+        {
+            return GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
+        }
+
         /// <summary>
         /// Король
         /// </summary>
         public class King : Figure
         {
-            public King(FigureColors color, Board board) : base(color, board) { }
+            public King(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
 
@@ -124,10 +128,10 @@ namespace Chess
                 for (int i = Position.Row - 1; i <= Position.Row + 1; i++)
                     for (int j = Position.Column - 1; j <= Position.Column + 1; j++)
                         if (i >= 0 && j >= 0 && i < 8 && j < 8 && !(i == Position.Row && j == Position.Column))
-                            list.Add(board[i, j]);
+                            list.Add(Board[i, j]);
                 if (!recursionOfKings)
                 {
-                    var figures = board.Cells.Where(i => i.Figure != null && i.Figure.Color != Color)
+                    var figures = Board.Cells.Where(i => i.Figure != null && i.Figure.Color != Color)
                         .Select(i => i.Figure.GetPossibleMoves(true));
                     list = list.Where(i => !figures.Any(j => j.Contains(i))).ToList();
                 }
@@ -142,7 +146,7 @@ namespace Chess
         /// </summary> 
         public class Queen : Figure
         {
-            public Queen(FigureColors color, Board board) : base(color, board) { }
+            public Queen(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
@@ -165,7 +169,7 @@ namespace Chess
         /// </summary>
         public class Rook : Figure
         {
-            public Rook(FigureColors color, Board board) : base(color, board) { }
+            public Rook(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
@@ -184,7 +188,7 @@ namespace Chess
         /// </summary>
         public class Knight : Figure
         {
-            public Knight(FigureColors color, Board board) : base(color, board) { }
+            public Knight(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
@@ -194,7 +198,7 @@ namespace Chess
                     {
                         if (Position.Row + i >= 0 && Position.Row + i < 8 && Position.Column + j >= 0 && Position.Column + j < 8)
                             if (i != j && i != -j && i != 0 && j != 0)
-                                list.Add(board[Position.Row + i, Position.Column + j]);
+                                list.Add(Board[Position.Row + i, Position.Column + j]);
                     }
 
                 return list;
@@ -206,7 +210,7 @@ namespace Chess
         /// </summary>
         public class Bishop : Figure
         {
-            public Bishop(FigureColors color, Board board) : base(color, board) { }
+            public Bishop(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
@@ -236,7 +240,7 @@ namespace Chess
 
                 return fields;
             }
-            public Pawn(FigureColors color, Board board) : base(color, board) { }
+            public Pawn(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
@@ -254,8 +258,6 @@ namespace Chess
                     attackFields.AddRange(GetCellsInDirection(Position, Directions.RightDown, 1));
                 }
 
-                //attackFields = attackFields.Where(i => i.Figure != null).ToList();
-                //attackFields.AddRange(GetCellsInDirection(Position, direction, range).Where(i => i.Figure == null));
                 return attackFields;
             }
         }

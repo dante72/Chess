@@ -11,6 +11,8 @@ namespace Chess
         public int Row { get; }
         public int Column { get; }
 
+        public Board Board { get; }
+
         private Figure figure;
         public Figure Figure {
             get => figure;
@@ -22,10 +24,11 @@ namespace Chess
             }
         
         }
-        public Cell(int row, int column)
+        public Cell(int row, int column, Board board = null)
         {
             Row = row;
             Column = column;
+            Board = board;
         }
     }
 }
