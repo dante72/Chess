@@ -107,8 +107,11 @@ namespace Chess
         /// </summary>
         public virtual List<Cell> GetPossibleMovesWithEnemyOnly()
         {
-            if (Сheckmate(this)) return new List<Cell>();
-            return GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
+            var moves = GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
+            if (Сheckmate(this, Position))
+                moves = moves.Where(i => !Сheckmate(this, i)).ToList();
+
+            return moves;
         }
 
         public virtual List<Cell> GetPossibleMovesWithCheckOfKing()
@@ -118,9 +121,9 @@ namespace Chess
 
         public abstract Figure Clone();
 
-        bool Сheckmate(Figure figure)
+        bool Сheckmate(Figure figure, Cell pos)
         {
-            var board = new Board(Board, figure.Position, figure.Position);
+            var board = new Board(Board, figure.Position, pos);
             return board.KingСheck(figure.Color);
         }
 
@@ -252,13 +255,15 @@ namespace Chess
             public override Figure Clone() => new Pawn(Color);
             public override List<Cell> GetPossibleMovesWithEnemyOnly()
             {
-                if (Сheckmate(this)) return new List<Cell>();
                 int range = FirstMove ? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
                 var fields = GetPossibleMoves()
                     .Where(i => i.Figure != null && i.Figure?.Color != Color)
                     .ToList();
                 fields.AddRange(GetCellsInDirection(Position, direction, range).Where(i => i.Figure == null));
+
+                if (Сheckmate(this, Position))
+                    fields = fields.Where(i => !Сheckmate(this, i)).ToList();
 
                 return fields;
             }
