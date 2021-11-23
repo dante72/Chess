@@ -115,15 +115,17 @@ namespace Chess
             return GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
         }
 
+        public abstract Figure Clone();
+
         /// <summary>
         /// Король
         /// </summary>
         public class King : Figure
         {
             public King(FigureColors color) : base(color) { }
+            public override Figure Clone() => new King(Color);
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
-
                 var list = new List<Cell>();
                 for (int i = Position.Row - 1; i <= Position.Row + 1; i++)
                     for (int j = Position.Column - 1; j <= Position.Column + 1; j++)
@@ -147,6 +149,7 @@ namespace Chess
         public class Queen : Figure
         {
             public Queen(FigureColors color) : base(color) { }
+            public override Figure Clone() => new Queen(Color);
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
@@ -170,6 +173,7 @@ namespace Chess
         public class Rook : Figure
         {
             public Rook(FigureColors color) : base(color) { }
+            public override Figure Clone() => new Rook(Color);
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
@@ -189,6 +193,7 @@ namespace Chess
         public class Knight : Figure
         {
             public Knight(FigureColors color) : base(color) { }
+            public override Figure Clone() => new Knight(Color);
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
@@ -211,6 +216,7 @@ namespace Chess
         public class Bishop : Figure
         {
             public Bishop(FigureColors color) : base(color) { }
+            public override Figure Clone() => new Bishop(Color);
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
@@ -229,6 +235,8 @@ namespace Chess
         /// </summary>
         public class Pawn : Figure
         {
+            public Pawn(FigureColors color) : base(color) { }
+            public override Figure Clone() => new Pawn(Color);
             public override List<Cell> GetPossibleMovesWithEnemyOnly()
             {   
                 int range = FirstMove ? 2 : 1;
@@ -240,7 +248,6 @@ namespace Chess
 
                 return fields;
             }
-            public Pawn(FigureColors color) : base(color) { }
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;

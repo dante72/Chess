@@ -27,6 +27,19 @@ namespace Chess
                     Cells.Add(new Cell(i, j, this));
             SetupСhessBoard();
         }
+
+        public Board(Board copy)
+        {
+            Cells = new List<Cell>();
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                {
+                    var cell = new Cell(i, j, this);
+                    var figure = copy[i, j].Figure?.Clone();
+                    if (figure != null) cell.Figure = figure;
+                    Cells.Add(cell);
+                }
+        }
         private void SetupСhessBoard()
         {   
             this[0, 0].Figure = new Rook(FigureColors.Black);
@@ -51,6 +64,5 @@ namespace Chess
             this[7, 6].Figure = new Knight(FigureColors.White);
             this[7, 7].Figure = new Rook(FigureColors.White);
         }
-
     }
 }
