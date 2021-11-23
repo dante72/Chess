@@ -107,6 +107,7 @@ namespace Chess
         /// </summary>
         public virtual List<Cell> GetPossibleMovesWithEnemyOnly()
         {
+            if (Сheckmate(this)) return new List<Cell>();
             return GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
         }
 
@@ -116,6 +117,12 @@ namespace Chess
         }
 
         public abstract Figure Clone();
+
+        bool Сheckmate(Figure figure)
+        {
+            var board = new Board(Board, figure.Position, figure.Position);
+            return board.KingСheck(figure.Color);
+        }
 
         /// <summary>
         /// Король
@@ -141,6 +148,12 @@ namespace Chess
                 return list;
 
             }
+
+            public override List<Cell> GetPossibleMovesWithEnemyOnly()
+            {
+                return GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
+            }
+
         }
 
         /// <summary>
@@ -238,7 +251,8 @@ namespace Chess
             public Pawn(FigureColors color) : base(color) { }
             public override Figure Clone() => new Pawn(Color);
             public override List<Cell> GetPossibleMovesWithEnemyOnly()
-            {   
+            {
+                if (Сheckmate(this)) return new List<Cell>();
                 int range = FirstMove ? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
                 var fields = GetPossibleMoves()

@@ -28,7 +28,7 @@ namespace Chess
             SetupСhessBoard();
         }
 
-        public Board(Board copy)
+        public Board(Board copy, Cell from, Cell to)
         {
             Cells = new List<Cell>();
             for (int i = 0; i < 8; i++)
@@ -39,6 +39,18 @@ namespace Chess
                     if (figure != null) cell.Figure = figure;
                     Cells.Add(cell);
                 }
+
+            this[to.Row, to.Column].Figure = this[from.Row, from.Column].Figure;
+            this[from.Row, from.Column].Figure = null;
+        }
+
+       public bool KingСheck(FigureColors color)
+        {
+            var king = Cells.First(i => i?.Figure?.GetType().Name == "King" && i.Figure.Color == color);
+            return Cells
+                .Where(i => i.Figure != null && i.Figure.Color != color && i.Figure.GetType() != typeof(King))
+                .Select(i => i.Figure.GetPossibleMoves())
+                .Any(i => i.Contains(king));
         }
         private void SetupСhessBoard()
         {   
