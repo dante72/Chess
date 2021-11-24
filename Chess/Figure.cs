@@ -177,9 +177,8 @@ namespace Chess
 
                 if (!recursionOfKings)
                 {
-                    var figures = Board.Cells.Where(i => i.Figure != null && i.Figure.Color != Color)
-                        .Select(i => i.Figure.GetPossibleMoves(true));
-                    list = list.Where(i => !figures.Any(j => j.Contains(i))).ToList();
+                    if (Board.KingСheck(Color))
+                        list = list.Where(i => !Сheckmate(this, i)).ToList();
                 }
 
                 return list;
@@ -197,9 +196,6 @@ namespace Chess
                     if (moves.Contains(Board[Position.Row, Position.Column + 2]) && !moves.Contains(Board[Position.Row, Position.Column + 1]))
                         moves.Remove(Board[Position.Row, Position.Column + 2]);
                 }
-
-                if (Board.KingСheck(Color))
-                    moves = moves.Where(i => !Сheckmate(this, i)).ToList();
 
                 return moves;
             }
