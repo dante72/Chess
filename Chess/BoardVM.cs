@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Chess
 {
+    /// <summary>
+    /// Доска для ViewModel
+    /// </summary>
     public class BoardVM : IEnumerable<CellVM>
     {
         private readonly CellVM[,] cells;

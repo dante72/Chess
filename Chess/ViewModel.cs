@@ -22,16 +22,19 @@ namespace Chess
         {
             set
             {
+                //снять выбор с предыдущей фигуры
                 if (selectedItem != null)
                     selectedItem.IsSelected = false;
-                
+
+                //если выбрана не отмеченная ячейка, сбросить все отмеченные
                 if (value.IsMarked == false)
                     selectedItem?.Value.Figure?.GetPossibleMovesWithEnemyOnly()
                         .Select(i => СhessBoard[i.Row, i.Column])
                         .ToList()
                         .ForEach(a => a.IsMarked = false);
 
-                if (value?.IsMarked == true)
+                //если выбрана отмеченная ячейка, сбросить возможные ходы
+                if (value.IsMarked == true)
                 { 
                     selectedItem?.Value.Figure?.GetPossibleMovesWithEnemyOnly()
                         .Select(i => СhessBoard[i.Row, i.Column])
@@ -39,17 +42,21 @@ namespace Chess
                         .ForEach(a => a.IsMarked = false);
 
                     value.Value.Figure = selectedItem.Value.Figure;
+
+                    //сбросить выделение
                     selectedItem.Value.Figure = null;
 
                 }
                 else
                 {
-                    selectedItem = value;
-                    selectedItem?.Value.Figure?.GetPossibleMovesWithEnemyOnly()
+                    // если не выбрана отмеченная ячейка с фигурой, отметить возможные ходы
+                     selectedItem = value;
+                    selectedItem.Value.Figure?.GetPossibleMovesWithEnemyOnly()
                         .Select(i => СhessBoard[i.Row, i.Column])
                         .ToList()
                         .ForEach(a => a.IsMarked = true);
 
+                    //отметить ячейку
                     selectedItem.IsSelected = true;
                 }
             }

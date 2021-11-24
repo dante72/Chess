@@ -19,6 +19,9 @@ namespace Chess
             }
         }
 
+        /// <summary>
+        /// Создать доску с начальной расстановкой фигур
+        /// </summary>
         public Board()
         {
             Cells = new List<Cell>();
@@ -28,6 +31,9 @@ namespace Chess
             SetupСhessBoard();
         }
 
+        /// <summary>
+        /// Создать копию доски с перемещением одной фигуры (from, to равны = фигура убрана)
+        /// </summary>
         public Board(Board copy, Cell from, Cell to)
         {
             Cells = new List<Cell>();
@@ -44,9 +50,12 @@ namespace Chess
             this[from.Row, from.Column].Figure = null;
         }
 
-       public bool KingСheck(FigureColors color)
+        /// <summary>
+        /// Проверка на ШАХ
+        /// </summary>
+        public bool KingСheck(FigureColors color)
         {
-            var king = Cells.First(i => i?.Figure?.GetType().Name == "King" && i.Figure.Color == color);
+            var king = Cells.First(i => i.Figure?.GetType() == typeof(King) && i.Figure.Color == color);
             return Cells
                 .Where(i => i.Figure != null && i.Figure.Color != color && i.Figure.GetType() != typeof(King))
                 .Select(i => i.Figure.GetPossibleMoves())
