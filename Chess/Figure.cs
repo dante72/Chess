@@ -100,10 +100,10 @@ namespace Chess
         /// <summary>
         /// Возможные ходы до первого препядствия (другой фигуры)
         /// </summary>
-        public abstract List<Cell> GetPossibleMoves(bool recursionOfKings = false);
+        public abstract List<Cell> GetPossibleMoves();
 
         /// <summary>
-        /// Возможные ходы только с фигурами противника
+        /// Возможные ходы с заходом на клетки противника
         /// </summary>
         public virtual List<Cell> GetPossibleMovesWithEnemyOnly()
         {
@@ -113,12 +113,6 @@ namespace Chess
 
             return moves;
         }
-
-        public virtual List<Cell> GetPossibleMovesWithCheckOfKing()
-        {
-            return GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
-        }
-
         public abstract Figure Clone();
 
         protected bool Сheckmate(Figure figure, Cell pos)
@@ -143,7 +137,7 @@ namespace Chess
                 if (Position.Column - cell.Column == 2)
                 {
                     var cells = GetCellsInDirection(Position, Directions.Right);
-                    var rook =  cells.First(i => i?.Figure?.GetType() == typeof(Rook)).Figure;
+                    var rook =  cells.First(i => i.Figure?.GetType() == typeof(Rook)).Figure;
                     rook.Position.Figure = null;
                     rook.Position = null;
                     Board[Position.Row, Position.Column - 1].Figure = rook;
@@ -153,13 +147,13 @@ namespace Chess
                 if (Position.Column - cell.Column == -2)
                 {
                     var cells = GetCellsInDirection(Position, Directions.Left);
-                    var rook = cells.First(i => i?.Figure?.GetType() == typeof(Rook)).Figure;
+                    var rook = cells.First(i => i.Figure?.GetType() == typeof(Rook)).Figure;
                     rook.Position.Figure = null;
                     rook.Position = null;
                     Board[Position.Row, Position.Column + 1].Figure = rook;
                 }
             }
-            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
+            public override List<Cell> GetPossibleMoves()
             {
                 var list = new List<Cell>();
                 for (int i = Position.Row - 1; i <= Position.Row + 1; i++)
@@ -169,20 +163,13 @@ namespace Chess
 
                 if (FirstMove && !Board.KingСheck(Color))
                 {
-                    if (GetCellsInDirection(Position, Directions.Left).All(i => i.Figure == null || i?.Figure.FirstMove == true && i?.Figure.GetType() == typeof(Rook)))
+                    if (GetCellsInDirection(Position, Directions.Left).All(i => i.Figure == null || i.Figure.FirstMove == true && i.Figure.GetType() == typeof(Rook)))
                         list.Add(Board[Position.Row, Position.Column - 2]);
-                    if (GetCellsInDirection(Position, Directions.Right).All(i => i.Figure == null || i?.Figure.FirstMove == true && i?.Figure.GetType() == typeof(Rook)))
+                    if (GetCellsInDirection(Position, Directions.Right).All(i => i.Figure == null || i.Figure.FirstMove == true && i.Figure.GetType() == typeof(Rook)))
                         list.Add(Board[Position.Row, Position.Column + 2]);
                 }
 
-                if (!recursionOfKings)
-                {
-                    if (Board.KingСheck(Color))
-                        list = list.Where(i => !Сheckmate(this, i)).ToList();
-                }
-
-                return list;
-
+                return list.Where(i => !Сheckmate(this, i)).ToList();
             }
 
             public override List<Cell> GetPossibleMovesWithEnemyOnly()
@@ -208,7 +195,7 @@ namespace Chess
         {
             public Queen(FigureColors color) : base(color) { }
             public override Figure Clone() => new Queen(Color);
-            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
+            public override List<Cell> GetPossibleMoves()
             {
                 var list = new List<Cell>();
 
@@ -232,7 +219,7 @@ namespace Chess
         {
             public Rook(FigureColors color) : base(color) { }
             public override Figure Clone() => new Rook(Color);
-            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
+            public override List<Cell> GetPossibleMoves()
             {
                 var list = new List<Cell>();
 
@@ -252,7 +239,7 @@ namespace Chess
         {
             public Knight(FigureColors color) : base(color) { }
             public override Figure Clone() => new Knight(Color);
-            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
+            public override List<Cell> GetPossibleMoves()
             {
                 var list = new List<Cell>();
 
@@ -275,7 +262,7 @@ namespace Chess
         {
             public Bishop(FigureColors color) : base(color) { }
             public override Figure Clone() => new Bishop(Color);
-            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
+            public override List<Cell> GetPossibleMoves()
             {
                 var list = new List<Cell>();
 
@@ -309,7 +296,7 @@ namespace Chess
 
                 return fields;
             }
-            public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
+            public override List<Cell> GetPossibleMoves()
             {
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
 
