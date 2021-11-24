@@ -26,26 +26,26 @@ namespace Chess
                     selectedItem.IsSelected = false;
                 
                 if (value.IsMarked == false)
-                    selectedItem?.Figure?.GetPossibleMovesWithEnemyOnly()
+                    selectedItem?.Value.Figure?.GetPossibleMovesWithEnemyOnly()
                         .Select(i => СhessBoard[i.Row, i.Column])
                         .ToList()
                         .ForEach(a => a.IsMarked = false);
 
                 if (value?.IsMarked == true)
                 { 
-                    selectedItem?.Figure?.GetPossibleMovesWithEnemyOnly()
+                    selectedItem?.Value.Figure?.GetPossibleMovesWithEnemyOnly()
                         .Select(i => СhessBoard[i.Row, i.Column])
                         .ToList()
                         .ForEach(a => a.IsMarked = false);
 
-                    value.Figure = selectedItem.Figure;
-                    selectedItem.Figure = null;
+                    value.Value.Figure = selectedItem.Value.Figure;
+                    selectedItem.Value.Figure = null;
 
                 }
                 else
                 {
                     selectedItem = value;
-                    selectedItem?.Figure?.GetPossibleMovesWithEnemyOnly()
+                    selectedItem?.Value.Figure?.GetPossibleMovesWithEnemyOnly()
                         .Select(i => СhessBoard[i.Row, i.Column])
                         .ToList()
                         .ForEach(a => a.IsMarked = true);

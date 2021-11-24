@@ -10,16 +10,12 @@ namespace Chess
 {
     public class CellVM : NotifyPropertyChanged
     {
-        private Cell Value { set; get; }
+        public Cell Value { set; get; }
         public Figure Figure
         {
             set
             {
-                if (Value.Figure != null)
-                    Value.Figure.FirstMove = false;
                 Value.Figure = value;
-
-                OnPropertyChanged();
             }
             get => Value.Figure;
         }

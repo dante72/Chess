@@ -45,7 +45,7 @@
                                           BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}">
                                             <Viewbox Height="{TemplateBinding ActualHeight}" Width="{TemplateBinding ActualWidth}">
-                                                <Image Source="{Binding Figure, Converter={StaticResource chessFigureConvector}}"/>
+                                                <Image Source="{Binding Value.Figure, Converter={StaticResource chessFigureConvector}}"/>
                                             </Viewbox>
                                         </Border>
                                         <Border x:Name="fore"
@@ -70,7 +70,7 @@
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding IsMarked}" Value="True" />
-                                                <Condition Binding="{Binding Figure}" Value="{x:Null}" />
+                                                <Condition Binding="{Binding Value.Figure}" Value="{x:Null}" />
                                             </MultiDataTrigger.Conditions>
                                             <Setter TargetName="fore" Property="Background" Value="#FF36E400"/>
                                             <Setter TargetName="fore" Property="BorderThickness" Value="1"/>

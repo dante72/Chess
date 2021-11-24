@@ -134,6 +134,31 @@ namespace Chess
         {
             public King(FigureColors color) : base(color) { }
             public override Figure Clone() => new King(Color);
+
+            /// <summary>
+            /// Рокировка
+            /// </summary>
+            public void Сastling(Cell cell)
+            {
+                if (Position.Column - cell.Column == 2)
+                {
+                    var cells = GetCellsInDirection(Position, Directions.Right);
+                    var rook =  cells.First(i => i?.Figure?.GetType() == typeof(Rook)).Figure;
+                    rook.Position.Figure = null;
+                    rook.Position = null;
+                    Board[Position.Row, Position.Column - 1].Figure = rook;
+
+                }
+                else
+                if (Position.Column - cell.Column == -2)
+                {
+                    var cells = GetCellsInDirection(Position, Directions.Left);
+                    var rook = cells.First(i => i?.Figure?.GetType() == typeof(Rook)).Figure;
+                    rook.Position.Figure = null;
+                    rook.Position = null;
+                    Board[Position.Row, Position.Column + 1].Figure = rook;
+                }
+            }
             public override List<Cell> GetPossibleMoves(bool recursionOfKings = false)
             {
                 var list = new List<Cell>();
@@ -141,6 +166,15 @@ namespace Chess
                     for (int j = Position.Column - 1; j <= Position.Column + 1; j++)
                         if (i >= 0 && j >= 0 && i < 8 && j < 8 && !(i == Position.Row && j == Position.Column))
                             list.Add(Board[i, j]);
+
+                if (FirstMove && !Board.KingСheck(Color))
+                {
+                    if (GetCellsInDirection(Position, Directions.Left).All(i => i.Figure == null || i?.Figure.FirstMove == true && i?.Figure.GetType() == typeof(Rook)))
+                        list.Add(Board[Position.Row, Position.Column - 2]);
+                    if (GetCellsInDirection(Position, Directions.Right).All(i => i.Figure == null || i?.Figure.FirstMove == true && i?.Figure.GetType() == typeof(Rook)))
+                        list.Add(Board[Position.Row, Position.Column + 2]);
+                }
+
                 if (!recursionOfKings)
                 {
                     var figures = Board.Cells.Where(i => i.Figure != null && i.Figure.Color != Color)
@@ -154,9 +188,21 @@ namespace Chess
 
             public override List<Cell> GetPossibleMovesWithEnemyOnly()
             {
-                return GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
-            }
+                var moves = GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
 
+                if (FirstMove)
+                {
+                    if (moves.Contains(Board[Position.Row, Position.Column - 2]) && !moves.Contains(Board[Position.Row, Position.Column - 1]))
+                        moves.Remove(Board[Position.Row, Position.Column - 2]);
+                    if (moves.Contains(Board[Position.Row, Position.Column + 2]) && !moves.Contains(Board[Position.Row, Position.Column + 1]))
+                        moves.Remove(Board[Position.Row, Position.Column + 2]);
+                }
+
+                //if (Сheckmate(this, Position))
+                  //  moves = moves.Where(i => !Сheckmate(this, i)).ToList();
+
+                return moves;
+            }
         }
 
         /// <summary>
