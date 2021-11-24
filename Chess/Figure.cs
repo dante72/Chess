@@ -121,7 +121,7 @@ namespace Chess
 
         public abstract Figure Clone();
 
-        bool Сheckmate(Figure figure, Cell pos)
+        protected bool Сheckmate(Figure figure, Cell pos)
         {
             var board = new Board(Board, figure.Position, pos);
             return board.KingСheck(figure.Color);
@@ -198,8 +198,8 @@ namespace Chess
                         moves.Remove(Board[Position.Row, Position.Column + 2]);
                 }
 
-                //if (Сheckmate(this, Position))
-                  //  moves = moves.Where(i => !Сheckmate(this, i)).ToList();
+                if (Board.KingСheck(Color))
+                    moves = moves.Where(i => !Сheckmate(this, i)).ToList();
 
                 return moves;
             }
