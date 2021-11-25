@@ -19,10 +19,12 @@ namespace Chess
             get => figure;
             set
             { 
-                if (figure != null && figure.FirstMove && figure.GetType() == typeof(King) && Math.Abs(figure.Position.Column - Column) == 2)
+               //рокировка
+                if (figure is King king && king.IsFirstMove)
                     (figure as King).Сastling(this);
+
                 if (figure != null)
-                    figure.FirstMove = false;
+                    figure.IsFirstMove = false;
                 figure = value;
 
                 if (figure != null)
