@@ -132,12 +132,13 @@ namespace Chess
             /// <summary>
             /// Рокировка
             /// </summary>
+            /// <param name="cell">Выбранная ячейка для хода</param>
             public void Сastling(Cell cell)
             {
                 if (Position.Column - cell.Column == 2)
                 {
                     var cells = GetCellsInDirection(Position, Directions.Right);
-                    var rook =  cells.First(i => i.Figure?.GetType() == typeof(Rook)).Figure;
+                    var rook =  cells.First(i => i.Figure is Rook).Figure;
                     rook.Position.Figure = null;
                     rook.Position = null;
                     Board[Position.Row, Position.Column - 1].Figure = rook;
@@ -147,7 +148,7 @@ namespace Chess
                 if (Position.Column - cell.Column == -2)
                 {
                     var cells = GetCellsInDirection(Position, Directions.Left);
-                    var rook = cells.First(i => i.Figure?.GetType() == typeof(Rook)).Figure;
+                    var rook = cells.First(i => i.Figure is Rook).Figure;
                     rook.Position.Figure = null;
                     rook.Position = null;
                     Board[Position.Row, Position.Column + 1].Figure = rook;
@@ -165,9 +166,9 @@ namespace Chess
                 {
                     var left = GetCellsInDirection(Position, Directions.Left);
                     var right = GetCellsInDirection(Position, Directions.Right);
-                    if (left.All(i => i.Figure == null || i.Figure.IsFirstMove == true && i.Figure.GetType() == typeof(Rook)) && left.Last().Figure != null)
+                    if (left.All(i => i.Figure == null || i.Figure.IsFirstMove && i.Figure is Rook) && left.Last().Figure != null)
                         list.Add(Board[Position.Row, Position.Column - 2]);
-                    if (right.All(i => i.Figure == null || i.Figure.IsFirstMove == true && i.Figure.GetType() == typeof(Rook)) && right.Last().Figure != null)
+                    if (right.All(i => i.Figure == null || i.Figure.IsFirstMove && i.Figure is Rook) && right.Last().Figure != null)
                         list.Add(Board[Position.Row, Position.Column + 2]);
                 }
 

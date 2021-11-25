@@ -55,7 +55,7 @@ namespace Chess
         /// </summary>
         public bool KingСheck(FigureColors color)
         {
-            var king = Cells.First(i => i.Figure?.GetType() == typeof(King) && i.Figure.Color == color);
+            var king = Cells.First(i => i.Figure is King k && k.Color == color);
             return Cells
                 .Where(i => i.Figure != null && i.Figure.Color != color && i.Figure.GetType() != typeof(King))
                 .Select(i => i.Figure.GetPossibleMoves())
