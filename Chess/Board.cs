@@ -9,6 +9,7 @@ namespace Chess
 {
     public class Board
     {
+        public int Count { set; get; } = 0;
         public List<Cell> Cells { get; private set; }
         public Cell this[int row, int column]
         {

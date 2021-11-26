@@ -11,6 +11,6 @@ namespace Chess
     /// </summary>
     public interface IFirstMove
     {
-        bool IsFirstMove { get; set; }
+        int IsFirstMove { get; set; }
     }
 }

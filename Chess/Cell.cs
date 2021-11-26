@@ -28,6 +28,17 @@ namespace Chess
                 OnPropertyChanged();
             }
         }
+
+        public Cell this[int i, int j]
+        {
+            get
+            {
+                if (Row + i >= 0 && Row + i < 8 && Column + j >= 0 && Column + j < 8)
+                    return Board[Row + i, Column + j];
+                else
+                    return null;
+            }
+        }
         public Cell(int row, int column, Board board = null)
         {
             Row = row;

@@ -11,7 +11,6 @@ namespace Chess
     /// </summary>
     public abstract class Figure : IFirstMove
     {
-
         /// <summary>
         /// Цвет фигуры
         /// </summary>
@@ -23,7 +22,7 @@ namespace Chess
         public Cell Position { get; set; }
 
         private Board Board { get => Position?.Board; }
-        public bool IsFirstMove { get; set; } = true;
+        public int IsFirstMove { get; set; } = 0;
 
         public Figure(FigureColors color)
         {
@@ -38,7 +37,9 @@ namespace Chess
         {
             Position.Figure = null;
             to.Figure = this;
-            IsFirstMove = false;
+            IsFirstMove++;
+
+            Board.Count++;
         }
 
         /// <summary>
@@ -138,7 +139,7 @@ namespace Chess
 
             public override void MoveTo(Cell to)
             {
-                if (IsFirstMove)
+                if (IsFirstMove == 0)
                     Сastling(to);
 
                 base.MoveTo(to);
@@ -147,7 +148,7 @@ namespace Chess
             /// Рокировка
             /// </summary>
             /// <param name="cell">Выбранная ячейка для хода</param>
-            public void Сastling(Cell cell)
+            private void Сastling(Cell cell)
             {
                 if (Position.Column - cell.Column == -2)
                 {
@@ -172,13 +173,13 @@ namespace Chess
                         if (i >= 0 && j >= 0 && i < 8 && j < 8 && !(i == Position.Row && j == Position.Column))
                             list.Add(Board[i, j]);
 
-                if (IsFirstMove && !Board.KingСheck(Color))
+                if (IsFirstMove == 0 && !Board.KingСheck(Color))
                 {
                     var left = GetCellsInDirection(Position, Directions.Left);
                     var right = GetCellsInDirection(Position, Directions.Right);
-                    if (left.All(i => i.Figure == null || i.Figure.IsFirstMove && i.Figure is Rook) && left.Last().Figure != null)
+                    if (left.All(i => i.Figure == null || i.Figure.IsFirstMove == 0 && i.Figure is Rook) && left.Last().Figure != null)
                         list.Add(Board[Position.Row, Position.Column - 2]);
-                    if (right.All(i => i.Figure == null || i.Figure.IsFirstMove && i.Figure is Rook) && right.Last().Figure != null)
+                    if (right.All(i => i.Figure == null || i.Figure.IsFirstMove == 0 && i.Figure is Rook) && right.Last().Figure != null)
                         list.Add(Board[Position.Row, Position.Column + 2]);
                 }
 
@@ -189,7 +190,7 @@ namespace Chess
             {
                 var moves = GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
 
-                if (IsFirstMove)
+                if (IsFirstMove == 0)
                 {
                     if (moves.Contains(Board[Position.Row, Position.Column - 2]) && !moves.Contains(Board[Position.Row, Position.Column - 1]))
                         moves.Remove(Board[Position.Row, Position.Column - 2]);
@@ -293,14 +294,41 @@ namespace Chess
         /// </summary>
         public class Pawn : Figure
         {
+            private int count = -2;
+
+            private Pawn pawn;
             public Pawn(FigureColors color) : base(color) { }
             public override Figure Clone() => new Pawn(Color);
+
+            public override void MoveTo(Cell to)
+            {   
+                
+                if (pawn != null && to.Figure == null && to.Column - Position.Column != 0)
+                {
+                    pawn.Position.Figure = null;
+                }
+                base.MoveTo(to);
+
+                if (IsFirstMove == 1)
+                {
+                    if (Position[0, 1]?.Figure is Pawn p1 && p1.Color != Color)
+                    {
+                        p1.count = Board.Count;
+                        p1.pawn = this;
+                    }
+                    if (Position[0, -1]?.Figure is Pawn p2 && p2.Color != Color)
+                    {
+                        p2.count = Board.Count;
+                        p2.pawn = this;
+                    }
+                }               
+            }
             public override List<Cell> GetPossibleMovesWithEnemyOnly()
             {
-                int range = IsFirstMove ? 2 : 1;
+                int range = IsFirstMove == 0 ? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
                 var fields = GetPossibleMoves()
-                    .Where(i => i.Figure != null && i.Figure?.Color != Color)
+                    .Where(i => i.Figure != null && i.Figure?.Color != Color || count == Board.Count && (Board[i.Row + 1, i.Column].Figure is Pawn p1  && p1 == pawn || Board[i.Row - 1, i.Column].Figure is Pawn p2 && p2 == pawn))
                     .ToList();
                 fields.AddRange(GetCellsInDirection(Position, direction, range).Where(i => i.Figure == null));
 

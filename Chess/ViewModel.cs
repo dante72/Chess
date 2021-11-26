@@ -40,7 +40,7 @@ namespace Chess
                         .Select(i => СhessBoard[i.Row, i.Column])
                         .ToList()
                         .ForEach(a => a.IsMarked = false);
-
+                    if (value != selectedItem)
                     selectedItem.Value.Figure?.MoveTo(value.Value);
                 }
                 else
