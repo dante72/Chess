@@ -113,9 +113,17 @@ namespace Chess
         /// <summary>
         /// Возможные ходы с заходом на клетки противника
         /// </summary>
+        /// 
+        public List<Cell> GetPossibleMoves2()
+        {
+            if (Board.Count % 2 == 0 && Color == FigureColors.Black)
+                return new List<Cell>();
+            return GetPossibleMoves();
+        }
         public virtual List<Cell> GetPossibleMovesWithEnemyOnly()
         {
-            var moves = GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
+
+            var moves = GetPossibleMoves2().Where(i => i.Figure?.Color != Color).ToList();
             if (Сheckmate(this, Position))
                 moves = moves.Where(i => !Сheckmate(this, i)).ToList();
 
@@ -154,7 +162,10 @@ namespace Chess
                 {
                     var cells = GetCellsInDirection(Position, Directions.Right);
                     var rook =  cells.First(i => i.Figure is Rook).Figure;
-                    rook.MoveTo(Board[Position.Row, Position.Column + 1]);
+
+                    rook.Position.Figure = null;
+                    Board[Position.Row, Position.Column + 1].Figure = rook;
+                    
 
                 }
                 else
@@ -162,7 +173,9 @@ namespace Chess
                 {
                     var cells = GetCellsInDirection(Position, Directions.Left);
                     var rook = cells.First(i => i.Figure is Rook).Figure;
-                    rook.MoveTo(Board[Position.Row, Position.Column - 1]);
+
+                    rook.Position.Figure = null;
+                    Board[Position.Row, Position.Column - 1].Figure = rook;
                 }
             }
             public override List<Cell> GetPossibleMoves()
@@ -188,7 +201,7 @@ namespace Chess
 
             public override List<Cell> GetPossibleMovesWithEnemyOnly()
             {
-                var moves = GetPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
+                var moves = GetPossibleMoves2().Where(i => i.Figure?.Color != Color).ToList();
 
                 if (IsFirstMove == 0)
                 {
@@ -327,13 +340,16 @@ namespace Chess
             {
                 int range = IsFirstMove == 0 ? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
-                var fields = GetPossibleMoves()
+                var fields = GetPossibleMoves2()
                     .Where(i => i.Figure != null && i.Figure?.Color != Color || count == Board.Count && (Board[i.Row + 1, i.Column].Figure is Pawn p1  && p1 == pawn || Board[i.Row - 1, i.Column].Figure is Pawn p2 && p2 == pawn))
                     .ToList();
                 fields.AddRange(GetCellsInDirection(Position, direction, range).Where(i => i.Figure == null));
 
                 if (Сheckmate(this, Position))
                     fields = fields.Where(i => !Сheckmate(this, i)).ToList();
+
+                if (Board.Count % 2 == 0 && Color == FigureColors.Black)
+                    return new List<Cell>();
 
                 return fields;
             }
