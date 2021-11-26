@@ -21,9 +21,9 @@ namespace Chess
             { 
 
                 figure = value;
+
                 if (figure != null)
                    figure.Position = this;
-
 
                 OnPropertyChanged();
             }

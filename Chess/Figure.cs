@@ -153,9 +153,7 @@ namespace Chess
                 {
                     var cells = GetCellsInDirection(Position, Directions.Right);
                     var rook =  cells.First(i => i.Figure is Rook).Figure;
-                    rook.Position.Figure = null;
-                    rook.Position = null;
-                    Board[Position.Row, Position.Column + 1].Figure = rook;
+                    rook.MoveTo(Board[Position.Row, Position.Column + 1]);
 
                 }
                 else
@@ -163,9 +161,7 @@ namespace Chess
                 {
                     var cells = GetCellsInDirection(Position, Directions.Left);
                     var rook = cells.First(i => i.Figure is Rook).Figure;
-                    rook.Position.Figure = null;
-                    rook.Position = null;
-                    Board[Position.Row, Position.Column - 1].Figure = rook;
+                    rook.MoveTo(Board[Position.Row, Position.Column - 1]);
                 }
             }
             public override List<Cell> GetPossibleMoves()

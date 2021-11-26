@@ -28,6 +28,7 @@ namespace Chess
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                     Cells.Add(new Cell(i, j, this));
+
             SetupСhessBoard();
         }
 
