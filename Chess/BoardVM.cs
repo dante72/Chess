@@ -14,7 +14,7 @@ namespace Chess
     {
         private readonly CellVM[,] cells;
 
-        private readonly Board board;
+        public readonly Board board;
 
         public CellVM this[int row, int column]
         {

@@ -19,16 +19,10 @@ namespace Chess
             get => figure;
             set
             { 
-               //рокировка
-                if (figure is King king && king.IsFirstMove)
-                    (figure as King).Сastling(this);
 
-                if (figure != null)
-                    figure.IsFirstMove = false;
                 figure = value;
-
                 if (figure != null)
-                    figure.Position = this;
+                   figure.Position = this;
 
 
                 OnPropertyChanged();

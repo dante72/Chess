@@ -34,6 +34,13 @@ namespace Chess
             return $"{Color}{GetType().Name}";
         }
 
+        public virtual void MoveTo(Cell to)
+        {
+            Position.Figure = null;
+            to.Figure = this;
+            IsFirstMove = false;
+        }
+
         /// <summary>
         /// Получить ячейки в данном направлении (рефакторинг) 
         /// </summary>
@@ -129,29 +136,36 @@ namespace Chess
             public King(FigureColors color) : base(color) { }
             public override Figure Clone() => new King(Color);
 
+            public override void MoveTo(Cell to)
+            {
+                if (IsFirstMove)
+                    Сastling(to);
+
+                base.MoveTo(to);
+            }
             /// <summary>
             /// Рокировка
             /// </summary>
             /// <param name="cell">Выбранная ячейка для хода</param>
             public void Сastling(Cell cell)
             {
-                if (Position.Column - cell.Column == 2)
+                if (Position.Column - cell.Column == -2)
                 {
                     var cells = GetCellsInDirection(Position, Directions.Right);
                     var rook =  cells.First(i => i.Figure is Rook).Figure;
                     rook.Position.Figure = null;
                     rook.Position = null;
-                    Board[Position.Row, Position.Column - 1].Figure = rook;
+                    Board[Position.Row, Position.Column + 1].Figure = rook;
 
                 }
                 else
-                if (Position.Column - cell.Column == -2)
+                if (Position.Column - cell.Column == 2)
                 {
                     var cells = GetCellsInDirection(Position, Directions.Left);
                     var rook = cells.First(i => i.Figure is Rook).Figure;
                     rook.Position.Figure = null;
                     rook.Position = null;
-                    Board[Position.Row, Position.Column + 1].Figure = rook;
+                    Board[Position.Row, Position.Column - 1].Figure = rook;
                 }
             }
             public override List<Cell> GetPossibleMoves()

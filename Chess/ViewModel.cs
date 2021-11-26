@@ -41,11 +41,7 @@ namespace Chess
                         .ToList()
                         .ForEach(a => a.IsMarked = false);
 
-                    value.Value.Figure = selectedItem.Value.Figure;
-
-                    //сбросить выделение
-                    selectedItem.Value.Figure = null;
-
+                    selectedItem.Value.Figure?.MoveTo(value.Value);
                 }
                 else
                 {
