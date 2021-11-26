@@ -45,21 +45,8 @@ namespace Chess
                     if (figure != null) cell.Figure = figure;
                     Cells.Add(cell);
                 }
+
             this[from.Row, from.Column].Figure.MoveTo(this[to.Row, to.Column]);
-        }
-
-        public void Move(Cell from, Cell to)
-        {
-            if (this[from.Row, from.Column].Figure is King king && king.IsFirstMove)
-                (this[from.Row, from.Column].Figure as King).Сastling(this[to.Row, to.Column]);
-            this[to.Row, to.Column].Figure = this[from.Row, from.Column].Figure;
-            this[from.Row, from.Column].Figure = null;
-
-            //рокировка
-
-
-            if (this[to.Row, to.Column].Figure != null)
-                this[to.Row, to.Column].Figure.IsFirstMove = false;
         }
 
         /// <summary>
