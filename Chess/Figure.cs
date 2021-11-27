@@ -116,7 +116,9 @@ namespace Chess
         /// 
         public List<Cell> GetPossibleMoves2()
         {
-            if (Board.Count % 2 == 0 && Color == FigureColors.Black)
+            if (Color == FigureColors.Black && Board.Count % 2 == 0)
+                return new List<Cell>();
+            if (Color == FigureColors.White && Board.Count % 2 != 0)
                 return new List<Cell>();
             return GetPossibleMoves();
         }
@@ -348,7 +350,9 @@ namespace Chess
                 if (Сheckmate(this, Position))
                     fields = fields.Where(i => !Сheckmate(this, i)).ToList();
 
-                if (Board.Count % 2 == 0 && Color == FigureColors.Black)
+                if (Color == FigureColors.Black && Board.Count % 2 == 0)
+                    return new List<Cell>();
+                if (Color == FigureColors.White && Board.Count % 2 != 0)
                     return new List<Cell>();
 
                 return fields;

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using static Chess.Figure;
 
 namespace Chess
@@ -40,8 +41,15 @@ namespace Chess
                         .Select(i => СhessBoard[i.Row, i.Column])
                         .ToList()
                         .ForEach(a => a.IsMarked = false);
-                    if (value != selectedItem)
-                    selectedItem.Value.Figure?.MoveTo(value.Value);
+                    
+                    selectedItem.Value.Figure?.MoveTo(value.Value); 
+                    
+                    if ((value.Value.Row == 0 || value.Value.Row == 7) && value.Figure is Pawn)
+                    {
+                        MessageBox.Show("Пешка в конце!");
+                        value.Value.Figure = new Queen(value.Value.Figure.Color);
+                    }
+
                 }
                 else
                 {
@@ -54,7 +62,9 @@ namespace Chess
 
                     //отметить ячейку
                     selectedItem.IsSelected = true;
+
                 }
+
             }
             get => selectedItem;
         
