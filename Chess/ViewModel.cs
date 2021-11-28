@@ -44,10 +44,11 @@ namespace Chess
                     
                     selectedItem.Value.Figure?.MoveTo(value.Value); 
                     
-                    if ((value.Value.Row == 0 || value.Value.Row == 7) && value.Figure is Pawn)
+                    if ((value.Value.Row == 0 || value.Value.Row == 7) && value.Figure is Pawn pawn)
                     {
-                        MessageBox.Show("Пешка в конце!");
-                        value.Value.Figure = new Queen(value.Value.Figure.Color);
+                        var dialog = new PawnTransform(pawn.Color);
+                        dialog.ShowDialog();
+                        value.Value.Figure = dialog.DataContext as Figure;
                     }
 
                 }
