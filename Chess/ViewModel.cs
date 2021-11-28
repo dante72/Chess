@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using static Chess.Figure;
 
 namespace Chess
 {
@@ -13,6 +7,30 @@ namespace Chess
     {
         public BoardVM СhessBoard { set; get; } = new BoardVM();
         public ObservableCollection<CellVM> Cells { set; get; }
+
+        private Figure selectedFigure;
+
+        public Figure SelectedFigure
+        {
+            set
+            {
+                selectedFigure = value;
+
+                selectedFigure?.GetCorrectPossibleMoves()
+                    .Select(i => СhessBoard[i.Row, i.Column])
+                    .ToList()
+                    .ForEach(a => a.IsMarked = true);
+            }
+            get 
+            {
+                selectedFigure?.GetCorrectPossibleMoves()
+                    .Select(i => СhessBoard[i.Row, i.Column])
+                    .ToList()
+                    .ForEach(a => a.IsMarked = false);
+
+                return selectedFigure;
+            }
+        }
 
         private CellVM selectedItem;
         
@@ -23,56 +41,27 @@ namespace Chess
         {
             set
             {
-                //снять выбор с предыдущей фигуры
                 if (selectedItem != null)
                     selectedItem.IsSelected = false;
 
-                //если выбрана не отмеченная ячейка, сбросить все отмеченные
-                if (value.IsMarked == false)
-                    selectedItem?.Value.Figure?.GetCorrectPossibleMoves()
-                        .Select(i => СhessBoard[i.Row, i.Column])
-                        .ToList()
-                        .ForEach(a => a.IsMarked = false);
+                selectedItem = value;
 
-                //если выбрана отмеченная ячейка, сбросить возможные ходы
-                if (value.IsMarked == true)
-                { 
-                    selectedItem?.Value.Figure?.GetCorrectPossibleMoves()
-                        .Select(i => СhessBoard[i.Row, i.Column])
-                        .ToList()
-                        .ForEach(a => a.IsMarked = false);
-                    
-                    selectedItem.Value.Figure?.MoveTo(value.Value); 
-                    
-                    if ((value.Value.Row == 0 || value.Value.Row == 7) && value.Figure is Pawn pawn)
-                    {
-                        var dialog = new PawnTransform(pawn.Color);
-                        dialog.ShowDialog();
-                        value.Value.Figure = dialog.DataContext as Figure;
-                    }
-
-                }
+                if (selectedItem.IsMarked)
+                    SelectedFigure.MoveTo(selectedItem.Value);
                 else
-                {
-                    // если не выбрана отмеченная ячейка с фигурой, отметить возможные ходы
-                     selectedItem = value;
-                    selectedItem.Value.Figure?.GetCorrectPossibleMoves()
-                        .Select(i => СhessBoard[i.Row, i.Column])
-                        .ToList()
-                        .ForEach(a => a.IsMarked = true);
+                if (selectedItem?.Figure != null)
+                    SelectedFigure = selectedItem.Figure;
+                else
+                    SelectedFigure = null;
 
-                    //отметить ячейку
-                    selectedItem.IsSelected = true;
-
-                }
+                selectedItem.IsSelected = true;
 
             }
-            get => selectedItem;
+            get
+            {
+                return selectedItem;
+            }
         
-        }
-
-        public ViewModel()
-        {
         }
     }
 }

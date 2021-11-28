@@ -3,13 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using static Chess.Figure;
 
 namespace Chess
 {
     public class Board
     {
-        public int Count { set; get; } = 0;
+        private int count = 0;
+        public int Count {
+            set
+            {
+                if (count % 2 == 0)
+                {
+                    //MessageBox.Show("OO");
+                }
+                count = value;
+            }
+            get => count; }
         public List<Cell> Cells { get; private set; }
         public Cell this[int row, int column]
         {
