@@ -23,12 +23,8 @@ namespace Chess
             }
             get 
             {
-                selectedFigure?.GetCorrectPossibleMoves()
-                    .Select(i => СhessBoard[i.Row, i.Column])
-                    .ToList()
-                    .ForEach(a => a.IsMarked = false);
 
-                return selectedFigure;
+                    return selectedFigure;
             }
         }
 
@@ -41,6 +37,7 @@ namespace Chess
         {
             set
             {
+
                 if (selectedItem != null)
                     selectedItem.IsSelected = false;
 
@@ -48,20 +45,26 @@ namespace Chess
 
                 if (selectedItem.IsMarked)
                     SelectedFigure.MoveTo(selectedItem.Value);
-                else
-                if (selectedItem?.Figure != null)
-                    SelectedFigure = selectedItem.Figure;
-                else
-                    SelectedFigure = null;
+                
+                ClearMarks();
+                SelectedFigure = selectedItem?.Figure;
+                   
 
                 selectedItem.IsSelected = true;
-
+                
             }
             get
             {
                 return selectedItem;
             }
         
+        }
+
+        private void ClearMarks()
+        {
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                    СhessBoard[i, j].IsMarked = false;
         }
     }
 }
