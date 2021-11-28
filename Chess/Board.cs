@@ -59,7 +59,7 @@ namespace Chess
             var king = Cells.First(i => i.Figure is King k && k.Color == color);
             return Cells
                 .Where(i => i.Figure != null && i.Figure.Color != color && i.Figure.GetType() != typeof(King))
-                .Select(i => i.Figure.GetPossibleMoves())
+                .Select(i => i.Figure.GetAllPossibleMoves())
                 .Any(i => i.Contains(king));
         }
         private void SetupСhessBoard()

@@ -29,7 +29,7 @@ namespace Chess
 
                 //если выбрана не отмеченная ячейка, сбросить все отмеченные
                 if (value.IsMarked == false)
-                    selectedItem?.Value.Figure?.GetPossibleMovesWithEnemyOnly()
+                    selectedItem?.Value.Figure?.GetCorrectPossibleMoves()
                         .Select(i => СhessBoard[i.Row, i.Column])
                         .ToList()
                         .ForEach(a => a.IsMarked = false);
@@ -37,7 +37,7 @@ namespace Chess
                 //если выбрана отмеченная ячейка, сбросить возможные ходы
                 if (value.IsMarked == true)
                 { 
-                    selectedItem?.Value.Figure?.GetPossibleMovesWithEnemyOnly()
+                    selectedItem?.Value.Figure?.GetCorrectPossibleMoves()
                         .Select(i => СhessBoard[i.Row, i.Column])
                         .ToList()
                         .ForEach(a => a.IsMarked = false);
@@ -55,7 +55,7 @@ namespace Chess
                 {
                     // если не выбрана отмеченная ячейка с фигурой, отметить возможные ходы
                      selectedItem = value;
-                    selectedItem.Value.Figure?.GetPossibleMovesWithEnemyOnly()
+                    selectedItem.Value.Figure?.GetCorrectPossibleMoves()
                         .Select(i => СhessBoard[i.Row, i.Column])
                         .ToList()
                         .ForEach(a => a.IsMarked = true);
