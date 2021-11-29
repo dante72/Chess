@@ -23,8 +23,7 @@ namespace Chess
             }
             get 
             {
-
-                    return selectedFigure;
+                return selectedFigure;
             }
         }
 
@@ -37,14 +36,16 @@ namespace Chess
         {
             set
             {
-
                 if (selectedItem != null)
                     selectedItem.IsSelected = false;
 
                 selectedItem = value;
 
                 if (selectedItem.IsMarked)
+                {
                     SelectedFigure.MoveTo(selectedItem.Value);
+                    AI.GetNextMove(СhessBoard.board);
+                }
                 
                 ClearMarks();
                 SelectedFigure = selectedItem?.Figure;

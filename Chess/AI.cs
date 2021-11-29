@@ -8,9 +8,10 @@ namespace Chess
 {
     public static class AI
     {
-        public static Cell GetNextMove(Board board)
+        public static void GetNextMove(Board board)
         {
-            return board.Cells.First(i => i.Figure != null && i.Figure.Color == FigureColors.Black && i.Figure.GetCorrectPossibleMoves().Count > 0);
+            var figure = board.Cells.First(i => i.Figure != null && i.Figure.Color == FigureColors.Black && i.Figure.GetCorrectPossibleMoves().Count > 0).Figure;
+            figure.MoveTo(figure.GetCorrectPossibleMoves().First());
         }
     }
 }

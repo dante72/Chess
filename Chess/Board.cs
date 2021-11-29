@@ -14,10 +14,6 @@ namespace Chess
         public int Count {
             set
             {
-                if (count % 2 == 0)
-                {
-                    //MessageBox.Show("OO");
-                }
                 count = value;
             }
             get => count; }
