@@ -6,12 +6,47 @@ using System.Threading.Tasks;
 
 namespace Chess
 {
+    public class IASimple
+    {
+        public Figure Figure { get; set; }
+        public Cell Cell { get; set; }
+
+        public float Score { get; set; }
+    }
     public static class AI
     {
-        public static void GetNextMove(Board board)
+        public static FigureColors Colors = FigureColors.Black;
+        public static IASimple GetNextMove(Board board)
         {
-            var figure = board.Cells.First(i => i.Figure != null && i.Figure.Color == FigureColors.Black && i.Figure.GetCorrectPossibleMoves().Count > 0).Figure;
-            figure.MoveTo(figure.GetCorrectPossibleMoves().First());
+            var figurs = board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
+
+            var listAI = new List<IASimple>();
+            foreach (var figure in figurs)
+            {
+                var movies = figure.GetCorrectPossibleMoves();
+
+                foreach (var move in movies)
+                {
+                    var item = new IASimple { Figure = figure, Cell = move };
+
+                    if (move.Figure != null)
+                        item.Score += move.Figure.Weight;
+
+                    listAI.Add(item);
+                }
+                    
+            }
+
+            foreach (var it in listAI)
+            {
+                var newBoard = new Board(board, it.Figure.Position, it.Cell);
+                newBoard.Index = board.Index + 1;
+                if (newBoard.Index < 4)
+                    it.Score = GetNextMove(newBoard).Score;
+            }
+            float max = listAI.Max(i => i.Score);
+                
+            return listAI.First(j => j.Score == max);
         }
     }
 }

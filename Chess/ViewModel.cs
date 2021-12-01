@@ -44,7 +44,10 @@ namespace Chess
                 if (selectedItem.IsMarked)
                 {
                     SelectedFigure.MoveTo(selectedItem.Value);
-                    AI.GetNextMove(СhessBoard.board);
+                    var some = AI.GetNextMove(СhessBoard.board);
+
+                    some.Figure.MoveTo(some.Cell);
+                    selectedItem.IsSelected = false;
                 }
                 
                 ClearMarks();

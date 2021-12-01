@@ -11,6 +11,9 @@ namespace Chess
     /// </summary>
     public abstract class Figure : IFirstMove
     {
+        public float points;
+        public Cell winner;
+        public virtual int Weight { get; set; } = 0;
         /// <summary>
         /// Цвет фигуры
         /// </summary>
@@ -141,6 +144,7 @@ namespace Chess
         /// </summary>
         public class King : Figure
         {
+            public override int Weight { get; set; } = 10;
             public King(FigureColors color) : base(color) { }
             public override Figure Clone() => new King(Color);
 
@@ -221,6 +225,7 @@ namespace Chess
         /// </summary> 
         public class Queen : Figure
         {
+            public override int Weight { get; set; } = 8;
             public Queen(FigureColors color) : base(color) { }
             public override Figure Clone() => new Queen(Color);
             public override List<Cell> GetAllPossibleMoves()
@@ -245,6 +250,7 @@ namespace Chess
         /// </summary>
         public class Rook : Figure
         {
+            public override int Weight { get; set; } = 6;
             public Rook(FigureColors color) : base(color) { }
             public override Figure Clone() => new Rook(Color);
             public override List<Cell> GetAllPossibleMoves()
@@ -265,6 +271,7 @@ namespace Chess
         /// </summary>
         public class Knight : Figure
         {
+            public override int Weight { get; set; } = 3;
             public Knight(FigureColors color) : base(color) { }
             public override Figure Clone() => new Knight(Color);
             public override List<Cell> GetAllPossibleMoves()
@@ -288,6 +295,7 @@ namespace Chess
         /// </summary>
         public class Bishop : Figure
         {
+            public override int Weight { get; set; } = 3;
             public Bishop(FigureColors color) : base(color) { }
             public override Figure Clone() => new Bishop(Color);
             public override List<Cell> GetAllPossibleMoves()
@@ -308,6 +316,8 @@ namespace Chess
         /// </summary>
         public class Pawn : Figure
         {
+            public override int Weight { get; set; } = 1;
+
             private int count = -2;
 
             private Pawn pawn;

@@ -10,6 +10,7 @@ namespace Chess
 {
     public class Board
     {
+        public int Index { set; get; } = 1;
         private int count = 0;
         public int Count {
             set
