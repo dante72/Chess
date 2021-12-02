@@ -25,11 +25,12 @@ namespace Chess
         public Cell Position { get; set; }
 
         private Board Board { get => Position?.Board; }
-        public int IsFirstMove { get; set; } = 0;
+        public int IsFirstMove { get; set; }
 
-        public Figure(FigureColors color)
+        public Figure(FigureColors color, int firstMove = 0)
         {
             Color = color;
+            IsFirstMove = firstMove;
         }
         public override string ToString()
         {
@@ -145,8 +146,8 @@ namespace Chess
         public class King : Figure
         {
             public override int Weight { get; set; } = 10;
-            public King(FigureColors color) : base(color) { }
-            public override Figure Clone() => new King(Color);
+            public King(FigureColors color, int firstMove = 0) : base(color, firstMove) { }
+            public override Figure Clone() => new King(Color, IsFirstMove);
 
             public override void MoveTo(Cell to)
             {
@@ -193,8 +194,10 @@ namespace Chess
                 {
                     var left = GetCellsInDirection(Position, Directions.Left);
                     var right = GetCellsInDirection(Position, Directions.Right);
+                    if (left.Count != 0)
                     if (left.All(i => i.Figure == null || i.Figure.IsFirstMove == 0 && i.Figure is Rook) && left.Last().Figure != null)
                         list.Add(Board[Position.Row, Position.Column - 2]);
+                    if (right.Count != 0)
                     if (right.All(i => i.Figure == null || i.Figure.IsFirstMove == 0 && i.Figure is Rook) && right.Last().Figure != null)
                         list.Add(Board[Position.Row, Position.Column + 2]);
                 }
@@ -251,8 +254,8 @@ namespace Chess
         public class Rook : Figure
         {
             public override int Weight { get; set; } = 6;
-            public Rook(FigureColors color) : base(color) { }
-            public override Figure Clone() => new Rook(Color);
+            public Rook(FigureColors color, int firstMove = 0) : base(color, firstMove) { }
+        public override Figure Clone() => new Rook(Color, IsFirstMove);
             public override List<Cell> GetAllPossibleMoves()
             {
                 var list = new List<Cell>();
@@ -321,8 +324,8 @@ namespace Chess
             private int count = -2;
 
             private Pawn pawn;
-            public Pawn(FigureColors color) : base(color) { }
-            public override Figure Clone() => new Pawn(Color);
+            public Pawn(FigureColors color, int firstMove = 0) : base(color, firstMove) { }
+            public override Figure Clone() => new Pawn(Color, IsFirstMove);
             public override void MoveTo(Cell to)
             {   
                 

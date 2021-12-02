@@ -19,7 +19,6 @@ namespace Chess
             get => figure;
             set
             { 
-
                 figure = value;
 
                 if (figure != null)
