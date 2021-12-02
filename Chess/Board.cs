@@ -85,7 +85,7 @@ namespace Chess
                 .Select(i => i.Figure.GetAllPossibleMoves())
                 .Any(i => i.Contains(king));
         }
-        /*private void SetupСhessBoard()
+        private void SetupСhessBoard()
         {   
             this[0, 0].Figure = new Rook(FigureColors.Black);
             this[0, 1].Figure = new Knight(FigureColors.Black);
@@ -108,9 +108,9 @@ namespace Chess
             this[7, 5].Figure = new Bishop(FigureColors.White);
             this[7, 6].Figure = new Knight(FigureColors.White);
             this[7, 7].Figure = new Rook(FigureColors.White);
-        }*/
+        }
 
-        private void SetupСhessBoard()
+        private void SetupСhessBoard2()
         {
             //this[0, 0].Figure = new Rook(FigureColors.Black);
             this[5, 2].Figure = new Bishop(FigureColors.Black);
