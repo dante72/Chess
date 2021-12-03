@@ -27,7 +27,7 @@ namespace Chess
             var currentState = new List<IASimple>();
             foreach (var figure in figurs)
             {
-                var movies = figure.GetPossibleMoves();
+                var movies = figure.GetCorrectPossibleMoves();
 
                 foreach (var move in movies)
                 {
@@ -73,7 +73,7 @@ namespace Chess
             var currentState = new List<IASimple>();
             foreach (var figure in figurs)
             {
-                var movies = figure.GetPossibleMoves();
+                var movies = figure.GetCorrectPossibleMoves();
 
                 foreach (var move in movies)
                 {
