@@ -17,7 +17,7 @@ namespace Chess
             {
                 selectedFigure = value;
 
-                selectedFigure?.GetCorrectPossibleMoves()
+                selectedFigure?.GetPossibleMoves()
                     .Select(i => СhessBoard[i.Row, i.Column])
                     .ToList()
                     .ForEach(a => a.IsMarked = true);
@@ -45,9 +45,9 @@ namespace Chess
                 if (selectedItem.IsMarked)
                 {
                     SelectedFigure.MoveTo(selectedItem.Value);
-                    var some = AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource());
+                    //var some = AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource());
 
-                    some.Result.Figure.MoveTo(some.Result.Cell);
+                    //some.Result.Figure.MoveTo(some.Result.Cell);
                     selectedItem.IsSelected = false;
                 }
                 

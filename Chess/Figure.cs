@@ -17,7 +17,7 @@ namespace Chess
         /// <summary>
         /// Цвет фигуры
         /// </summary>
-        public  FigureColors Color { get; private set; }
+        public FigureColors Color { get; private set; }
 
         /// <summary>
         /// Позиция фигуры
@@ -51,7 +51,7 @@ namespace Chess
         /// </summary>
         protected List<Cell> GetCellsInDirection(Cell current, Directions direction, int range = 8)
         {
-            switch(direction)
+            switch (direction)
             {
                 case Directions.Up:
                 case Directions.Down:
@@ -118,13 +118,20 @@ namespace Chess
         /// </summary>
         public abstract List<Cell> GetAllPossibleMoves();
 
-        /// <summary>
+
+        public  List<Cell> GetPossibleMoves()
+        {
+            if (IsMove()) return new List<Cell>();
+
+            return GetCorrectPossibleMoves();
+        }
+        /// <summary>F
         /// Возможные ходы с заходом на клетки противника
         /// </summary>
         /// 
         public virtual List<Cell> GetCorrectPossibleMoves()
         {
-            if (IsMove()) return new List<Cell>();
+            
 
             var moves = GetAllPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
             if (Сheckmate(this, Position))
@@ -182,13 +189,21 @@ namespace Chess
                     Board[Position.Row, Position.Column - 1].Figure = rook;
                 }
             }
-            public override List<Cell> GetAllPossibleMoves()
-            {
+
+            private List<Cell> KingMoves()
+            { 
                 var list = new List<Cell>();
                 for (int i = Position.Row - 1; i <= Position.Row + 1; i++)
                     for (int j = Position.Column - 1; j <= Position.Column + 1; j++)
                         if (i >= 0 && j >= 0 && i < 8 && j < 8 && !(i == Position.Row && j == Position.Column))
                             list.Add(Board[i, j]);
+
+                return list;
+
+            }
+            public override List<Cell> GetAllPossibleMoves()
+            {
+                var list = KingMoves();
 
                 if (IsFirstMove == 0 && !Board.KingСheck(Color))
                 {
@@ -201,15 +216,18 @@ namespace Chess
                     if (right.All(i => i.Figure == null || i.Figure.IsFirstMove == 0 && i.Figure is Rook) && right.Last().Figure != null)
                         list.Add(Board[Position.Row, Position.Column + 2]);
                 }
+                
+
 
                 return list.Where(i => !Сheckmate(this, i)).ToList();
             }
 
             public override List<Cell> GetCorrectPossibleMoves()
             {
-                if (IsMove()) return new List<Cell>();
-
                 var moves = GetAllPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
+                var enemyKing = Board.Cells.First(i => i.Figure is King && i.Figure.Color != Color).Figure;
+
+                moves = moves.Where(i => !(enemyKing is King k && k.KingMoves().Any(j => i == j))).ToList();
 
                 if (IsFirstMove == 0)
                 {
@@ -351,8 +369,6 @@ namespace Chess
             }
             public override List<Cell> GetCorrectPossibleMoves()
             {
-                if (IsMove()) return new List<Cell>();
-
                 int range = IsFirstMove == 0 ? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
                 var fields = GetAllPossibleMoves()
