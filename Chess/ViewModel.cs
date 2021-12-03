@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 
 namespace Chess
 {
@@ -44,9 +45,9 @@ namespace Chess
                 if (selectedItem.IsMarked)
                 {
                     SelectedFigure.MoveTo(selectedItem.Value);
-                    var some = AI.GetNextMove(СhessBoard.board);
+                    var some = AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource());
 
-                    some.Figure.MoveTo(some.Cell);
+                    some.Result.Figure.MoveTo(some.Result.Cell);
                     selectedItem.IsSelected = false;
                 }
                 

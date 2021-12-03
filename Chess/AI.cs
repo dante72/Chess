@@ -52,7 +52,7 @@ namespace Chess
                 }
                 //CancellationToken token = cancel.Token;
                 //it.Score += GetNextMove2(newBoard, it).Result;
-                tasks.Add(Task.Run(() => GetNextMove2(newBoard, it, currentState, new CancellationTokenSource())));
+                tasks.Add(Task.Run(() => GetNextMove2(newBoard, new CancellationTokenSource(), it, currentState)));
             }
             Task.WaitAll(tasks.ToArray());
             //tasks.ForEach(i => i)
@@ -62,7 +62,7 @@ namespace Chess
         }
 
 
-        static async Task<float> GetNextMove2(Board board, IASimple item, List<IASimple> listCancel, CancellationTokenSource cancel)
+        public static async Task<IASimple> GetNextMove2(Board board, CancellationTokenSource cancel, IASimple item = null, List<IASimple> listCancel = null)
         {
 
             CancellationToken token = cancel.Token;
@@ -84,11 +84,12 @@ namespace Chess
 
             }
 
-
+            if (listCancel == null)
+                listCancel = currentState;
 
             foreach (var it in currentState)
             {
-                if (board.Index < 5)
+                if (board.Index < 4)
                 {
                     var newBoard = new Board(board, it.Figure.Position, it.Cell);
                     newBoard.Index = board.Index + 1;
@@ -97,7 +98,7 @@ namespace Chess
                         if (it.Figure.Color == FigureColors.Black)
                             it.Score += (float)it.Cell.Figure.Weight / board.Index;
                         else
-                            it.Score -= (float)it.Cell.Figure.Weight;
+                            it.Score -= (float)it.Cell.Figure.Weight / board.Index;
                     }
                     /*var fig = newBoard.Cells.Where(i => i.Figure != null && i.Figure.Color == it.Figure.Color).Select(i => i.Figure).ToList();
                     var figEnemy = newBoard.Cells.Where(i => i.Figure != null && i.Figure.Color != it.Figure.Color).Select(i => i.Figure).ToList();
@@ -107,28 +108,32 @@ namespace Chess
                     if (figEnemy.Any(i => i.GetCorrectPossibleMoves().Any(j => j.Row == it.Cell.Row && j.Column == it.Cell.Column)))
                         it.Score /= newBoard.Index;*/
 
+                    if (listCancel == currentState)
+                        item = it;
+
                     lock (listCancel)
                     {
-                        item.Score = it.Score;
+                        item.Score += it.Score;
 
-                        if (listCancel.Max(i => i.Score) - it.Score > 0.7f)
-                            cancel.Cancel();
+                        //if (listCancel.Max(i => i.Score) - it.Score > 0.7f)
+                            //return it;
                     }
                     try {
                         token.ThrowIfCancellationRequested();
                     }
                     catch { 
-                        return item.Score;
+                        return item;
                     }
-                    
-                    it.Score += await GetNextMove2(newBoard, item, listCancel, cancel);
+                   var res =  await GetNextMove2(newBoard, cancel, item, listCancel);
+
+                    it.Score += res.Score;
                 }
             }
+
             float max = currentState.Max(i => i.Score);
 
-            return max;
+            return currentState.FirstOrDefault(i => i.Score == max);
         }
-
 
     }
 }
