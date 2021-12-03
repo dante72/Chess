@@ -80,10 +80,11 @@ namespace Chess
         public bool KingСheck(FigureColors color)
         {
             var king = Cells.First(i => i.Figure is King k && k.Color == color);
+            King enemyKing = (King)Cells.FirstOrDefault(i => i.Figure is King k && k.Color != color)?.Figure;
             return Cells
                 .Where(i => i.Figure != null && i.Figure.Color != color && i.Figure.GetType() != typeof(King))
                 .Select(i => i.Figure.GetAllPossibleMoves())
-                .Any(i => i.Contains(king));
+                .Any(i => i.Contains(king)) || enemyKing != null && enemyKing.KingPossibleMoves().Contains(king);
         }
         private void SetupСhessBoard()
         {   

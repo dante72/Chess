@@ -182,6 +182,17 @@ namespace Chess
                     Board[Position.Row, Position.Column - 1].Figure = rook;
                 }
             }
+
+            public List<Cell> KingPossibleMoves()
+            {
+                var list = new List<Cell>();
+                for (int i = Position.Row - 1; i <= Position.Row + 1; i++)
+                    for (int j = Position.Column - 1; j <= Position.Column + 1; j++)
+                        if (i >= 0 && j >= 0 && i < 8 && j < 8 && !(i == Position.Row && j == Position.Column))
+                            list.Add(Board[i, j]);
+                
+                return list;
+            }
             public override List<Cell> GetAllPossibleMoves()
             {
                 var list = new List<Cell>();
