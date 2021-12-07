@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 
@@ -6,6 +7,8 @@ namespace Chess
 {
     public class ViewModel : NotifyPropertyChanged
     {
+        public List<string> Letters { set; get; } = new List<string>() { "a", "b", "c", "d", "e", "f", "g", "h"};
+        public List<string> Digits { set; get; } = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8" };
         public BoardVM СhessBoard { set; get; } = new BoardVM();
         public ObservableCollection<CellVM> Cells { set; get; }
 
@@ -47,7 +50,7 @@ namespace Chess
                     SelectedFigure.MoveTo(selectedItem.Value);
                     var some = AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource());
 
-                    some.Result.Figure.MoveTo(some.Result.Cell);
+                    some.Figure.MoveTo(some.Cell);
                     selectedItem.IsSelected = false;
                 }
                 
@@ -71,5 +74,10 @@ namespace Chess
                 for (int j = 0; j < 8; j++)
                     СhessBoard[i, j].IsMarked = false;
         }
+        public ViewModel()
+        {
+        }
     }
+
+
 }

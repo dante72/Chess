@@ -145,7 +145,7 @@ namespace Chess
         /// </summary>
         public class King : Figure
         {
-            public override int Weight { get; set; } = 10;
+            public override int Weight { get; set; } = 900;
             public King(FigureColors color, int firstMove = 0) : base(color, firstMove) { }
             public override Figure Clone() => new King(Color, IsFirstMove);
 

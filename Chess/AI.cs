@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using static Chess.Figure;
 
 namespace Chess
 {
@@ -62,8 +64,10 @@ namespace Chess
         }
 
 
-        public static async Task<IASimple> GetNextMove2(Board board, CancellationTokenSource cancel, IASimple item = null, List<IASimple> listCancel = null)
+        public static IASimple GetNextMove2(Board board, CancellationTokenSource cancel, IASimple item = null, List<IASimple> listCancel = null)
         {
+            if (board.Index > 3 && item.Score <= 0)
+                return item;
 
             CancellationToken token = cancel.Token;
             
@@ -89,26 +93,27 @@ namespace Chess
 
             foreach (var it in currentState)
             {
-                if (board.Index < 4)
+                if (board.Index < 5)
                 {
                     var newBoard = new Board(board, it.Figure.Position, it.Cell);
                     newBoard.Index = board.Index + 1;
                     if (it.Cell.Figure != null)
                     {
-                        if (it.Figure.Color == FigureColors.Black)
-                            it.Score += (float)it.Cell.Figure.Weight / board.Index;
-                        else
-                            it.Score -= (float)it.Cell.Figure.Weight / board.Index;
+                        it.Score = (it.Figure.Color == FigureColors.Black ? -1 : 1) * (float)it.Cell.Figure.Weight / board.Index;
                     }
-                    /*var fig = newBoard.Cells.Where(i => i.Figure != null && i.Figure.Color == it.Figure.Color).Select(i => i.Figure).ToList();
-                    var figEnemy = newBoard.Cells.Where(i => i.Figure != null && i.Figure.Color != it.Figure.Color).Select(i => i.Figure).ToList();
-                    
-                    if (fig.Any(i => i.GetAllPossibleMoves().Any(j => j.Row == it.Cell.Row && j.Column == it.Cell.Column)))
-                        it.Score *= newBoard.Index;
-                    if (figEnemy.Any(i => i.GetCorrectPossibleMoves().Any(j => j.Row == it.Cell.Row && j.Column == it.Cell.Column)))
-                        it.Score /= newBoard.Index;*/
+                    //var fig = newBoard.Cells.Where(i => i.Figure != null && i.Figure.Color == it.Figure.Color).Select(i => i.Figure).ToList();
+                    //var figEnemy = newBoard.Cells.Where(i => i.Figure != null && i.Figure.Color != it.Figure.Color).Select(i => i.Figure).ToList();
 
-                    if (listCancel == currentState)
+                    //if (fig.Any(i => i.GetAllPossibleMoves().Any(j => j.Row == it.Cell.Row && j.Column == it.Cell.Column)))
+                    //it.Score *= newBoard.Index;
+                    //if (figEnemy.Any(i => i.GetCorrectPossibleMoves().Any(j => j.Row == it.Cell.Row && j.Column == it.Cell.Column)))
+                    //it.Score /= newBoard.Index;
+                    /*var fi = board.Cells.Where(i => i.Figure != null).Select(i => i.Figure).ToList();
+                    if (fi.Any(i => i.GetAllPossibleMoves().Contains(it.Cell)))
+                    {
+                        it.Score *= 2f;
+                    }*/
+                    if (board.Index == 1)
                         item = it;
 
                     lock (listCancel)
@@ -124,14 +129,22 @@ namespace Chess
                     catch { 
                         return item;
                     }
-                   var res =  await GetNextMove2(newBoard, cancel, item, listCancel);
+                   var res =  GetNextMove2(newBoard, cancel, item, listCancel);
 
                     it.Score += res.Score;
                 }
             }
-
-            float max = currentState.Max(i => i.Score);
-
+            float m = currentState.Max(i => i.Score);
+            float max = board.Index % 2 == 0 ? m : currentState.Min(i => i.Score);
+            if (board.Index == 1)
+            {
+                string str = "";
+                foreach (var it in currentState)
+                {
+                    str += $"{it.Figure}\t{it.Cell.Row}\t{it.Cell.Column}\t{it.Score}\n";
+                }
+                MessageBox.Show(str);
+            }
             return currentState.FirstOrDefault(i => i.Score == max);
         }
 

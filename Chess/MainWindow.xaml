@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="800">
+        Title="MainWindow" Height="800" Width="800" ResizeMode="NoResize">
     <Window.Resources>
         <local:ViewModel x:Key="viewModel"/>
         <local:CellColorConverter x:Key="cellColorConverter" />
@@ -18,12 +18,54 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="9*"/>
+                <ColumnDefinition Width="19*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition/>
-                <RowDefinition Height ="9*"/>
+                <RowDefinition Height ="19*"/>
             </Grid.RowDefinitions>
+            <ListBox ItemsSource="{Binding Letters}"
+                     Grid.Row="0" Grid.Column="1"
+                     IsEnabled="false">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="8"
+                                     Rows="1"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   HorizontalAlignment="Stretch"
+                                   TextAlignment="Center"
+                                   Width="70"
+                                   FontSize="20"
+                                   >
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ListBox ItemsSource="{Binding Digits}"
+                     Grid.Row="1" Grid.Column="0"
+                     IsEnabled="false">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="1"
+                                     Rows="8"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   HorizontalAlignment="Stretch"
+                                   TextAlignment="Center"
+                                   Height="70"
+                                   FontSize="20"
+                                   >
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
             <ListBox ItemsSource="{Binding СhessBoard}"
                      Grid.Row="1" Grid.Column="1"
                      SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
