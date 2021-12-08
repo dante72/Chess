@@ -20,6 +20,7 @@ namespace Chess
     {
         //private static CancellationTokenSource cancel;
         public static FigureColors Colors = FigureColors.Black;
+        static public Dictionary<Board, IASimple> dictionary = new Dictionary<Board, IASimple>();
         public static IASimple GetNextMove(Board board)
         {
             var tasks = new List<Task>();
@@ -42,8 +43,7 @@ namespace Chess
 
             foreach (var it in currentState)
             {
-                var newBoard = new Board(board, it.Figure.Position, it.Cell);
-                newBoard.Index = board.Index + 1;
+                var newBoard = new Board(board, it.Figure.Position, it.Cell, board.Index + 1);
 
                 if (it.Cell.Figure != null)
                 {
@@ -93,13 +93,13 @@ namespace Chess
 
             foreach (var it in currentState)
             {
-                if (board.Index < 5)
+                if (board.Index < 3)
                 {
-                    var newBoard = new Board(board, it.Figure.Position, it.Cell);
-                    newBoard.Index = board.Index + 1;
+                    var newBoard = new Board(board, it.Figure.Position, it.Cell, board.Index + 1);
+
                     if (it.Cell.Figure != null)
                     {
-                        it.Score = (it.Figure.Color == FigureColors.Black ? -1 : 1) * (float)it.Cell.Figure.Weight / board.Index;
+                        it.Score = (it.Figure.Color == FigureColors.Black ? -1.0f : 1.0f) * (float)it.Cell.Figure.Weight / (board.Index % 2 != 0 ? board.Index : board.Index + 1);
                     }
                     //var fig = newBoard.Cells.Where(i => i.Figure != null && i.Figure.Color == it.Figure.Color).Select(i => i.Figure).ToList();
                     //var figEnemy = newBoard.Cells.Where(i => i.Figure != null && i.Figure.Color != it.Figure.Color).Select(i => i.Figure).ToList();
@@ -113,7 +113,7 @@ namespace Chess
                     {
                         it.Score *= 2f;
                     }*/
-                    if (board.Index == 1)
+                    if (item == null)
                         item = it;
 
                     lock (listCancel)
@@ -136,7 +136,7 @@ namespace Chess
             }
             float m = currentState.Max(i => i.Score);
             float max = board.Index % 2 == 0 ? m : currentState.Min(i => i.Score);
-            if (board.Index == 1)
+            /*if (board.Index == 1)
             {
                 string str = "";
                 foreach (var it in currentState)
@@ -144,8 +144,48 @@ namespace Chess
                     str += $"{it.Figure}\t{it.Cell.Row}\t{it.Cell.Column}\t{it.Score}\n";
                 }
                 MessageBox.Show(str);
-            }
+            }*/
             return currentState.FirstOrDefault(i => i.Score == max);
+        }
+
+        public static List<Board> GetBoards(Board board)
+        {
+            //SelectedFigure.MoveTo(selectedItem.Value);
+            //some.Figure.MoveTo(some.Cell);
+            var figurs = board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
+            List<Board> boards = new List<Board>();
+            foreach (var figure in figurs)
+            {
+                var moves = figure.GetAllPossibleMoves();
+                if (moves.Count > 0)
+                foreach (Cell move in moves)
+                {
+                        boards.Add(new Board(board, figure.Position, move, board.Index));
+                }
+            }
+
+            return boards;
+        }
+
+        public async static void CalculateStart2(Board board)
+        {
+            var boards = GetBoards(board);
+            foreach (Board b in boards)
+                dictionary.Add(b, await Task.Run(() => GetNextMove2(b, new CancellationTokenSource())));
+                    
+        }
+
+        public static IASimple GetCell(Board board)
+        {
+            var answers = dictionary.Select(i => i.Value).ToList();
+            //var b = dictionary.First(i => i.Key == board);   
+            return dictionary.First(i => i.Key == board).Value;
+        }
+
+        public static void Restart(Board board)
+        {
+            dictionary.Clear();
+            CalculateStart2(board);
         }
 
     }

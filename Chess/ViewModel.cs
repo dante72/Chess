@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace Chess
 {
@@ -9,7 +11,7 @@ namespace Chess
     {
         public List<string> Letters { set; get; } = new List<string>() { "a", "b", "c", "d", "e", "f", "g", "h"};
         public List<string> Digits { set; get; } = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8" };
-        public BoardVM СhessBoard { set; get; } = new BoardVM();
+        public BoardVM СhessBoard { set; get; }
         public ObservableCollection<CellVM> Cells { set; get; }
 
         private Figure selectedFigure;
@@ -48,9 +50,18 @@ namespace Chess
                 if (selectedItem.IsMarked)
                 {
                     SelectedFigure.MoveTo(selectedItem.Value);
-                    var some = AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource());
+                    //var som = Task.Run(() => AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource()));
+                   // var some = AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource());
+                   // var some = som.Result;
 
-                    some.Figure.MoveTo(some.Cell);
+                    if (СhessBoard.board == СhessBoard.board)
+                        MessageBox.Show("true");
+                    else
+                        MessageBox.Show("false");
+                    var some = СhessBoard.board.Cells.First(i => i == AI.GetCell(СhessBoard.board).Cell);
+
+                    some.Figure.MoveTo(some);
+                    AI.Restart(СhessBoard.board);
                     selectedItem.IsSelected = false;
                 }
                 
@@ -76,6 +87,8 @@ namespace Chess
         }
         public ViewModel()
         {
+            СhessBoard = new BoardVM();
+            AI.CalculateStart2(СhessBoard.board);
         }
     }
 

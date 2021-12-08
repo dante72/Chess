@@ -10,7 +10,7 @@ namespace Chess
 {
     public class Board
     {
-        public int Index { set; get; } = 1;
+        public int Index { set; get; }
         private int count = 0;
         public int Count {
             set
@@ -37,19 +37,21 @@ namespace Chess
         /// </summary>
         public Board()
         {
+            Index = 1;
             Cells = new List<Cell>();
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                     Cells.Add(new Cell(i, j, this));
 
-            SetupСhessBoard5();
+            SetupСhessBoard();
         }
 
         /// <summary>
         /// Создать копию доски с перемещением одной фигуры (from, to равны = фигура убрана)
         /// </summary>
-        public Board(Board copy, Cell from, Cell to)
+        public Board(Board copy, Cell from, Cell to, int index = 1)
         {
+            Index = index;
             Cells = new List<Cell>();
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
@@ -69,7 +71,7 @@ namespace Chess
         public bool KingСheck(FigureColors color)
         {
 
-                var king = Cells.First(i => i.Figure is King k && k.Color == color);
+                var king = Cells.FirstOrDefault(i => i.Figure is King k && k.Color == color);
                 King enemyKing = (King)Cells.FirstOrDefault(i => i.Figure is King k && k.Color != color)?.Figure;
                 return Cells
                     .Where(i => i.Figure != null && i.Figure.Color != color && i.Figure.GetType() != typeof(King))
@@ -77,6 +79,22 @@ namespace Chess
                     .Any(i => i.Contains(king)) || enemyKing != null && enemyKing.KingPossibleMoves().Contains(king);
 
         }
+
+        public static bool operator ==(Board b1, Board b2)
+        {
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                    if (!(b1[i, j].Figure?.ToString() == b2[i, j].Figure?.ToString()))
+                        return false;
+            return true;
+
+        }
+        
+        public static bool operator !=(Board b1, Board b2)
+        {
+            return !(b1 == b2);
+        }
+
         private void SetupСhessBoard()
         {   
             this[0, 0].Figure = new Rook(FigureColors.Black);

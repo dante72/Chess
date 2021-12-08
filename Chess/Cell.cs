@@ -44,5 +44,15 @@ namespace Chess
             Column = column;
             Board = board;
         }
+
+        public static bool operator ==(Cell b1, Cell b2)
+        {
+            return b1.Column == b2.Column && b1.Row == b2.Row;
+        }
+
+        public static bool operator !=(Cell b1, Cell b2)
+        {
+            return !(b1 == b2);
+        }
     }
 }
