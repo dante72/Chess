@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows;
 using static Chess.Figure;
 
@@ -15,6 +16,55 @@ namespace Chess
         public Cell Cell { get; set; }
 
         public float Score = 0;
+    }
+
+    public class IASimple2
+    {
+        public Board Board { get; set; }
+        public float Score = 0;
+    }
+
+    public  static class AI2
+    {
+        public static TreeNode Head;
+
+         public static void CreateTreePossibleMovies(Board board, ref TreeNode head)
+        {
+            if (head == null)
+            {
+                head = new TreeNode();
+                head.Data = new IASimple2() { Board = board };
+
+            }
+            var figurs = board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
+
+            foreach (var figure in figurs)
+            {
+                var movies = figure.GetCorrectPossibleMoves();
+
+                foreach (var move in movies)
+                {
+
+                    var newBoard = new Board(board, figure.Position, move, board.Index + 1);
+                    var node = new TreeNode()
+                    {
+                        Data = new IASimple2()
+                        {
+                            Board = board,
+                            Score = move.Figure != null ? (move.Figure.Color == FigureColors.Black ? -1 : 1) * move.Figure.Weight : 0
+                        } 
+                    };
+
+                    head.Add(node);
+
+                    if (newBoard.Index < 3)
+                        CreateTreePossibleMovies(newBoard, ref node);
+                }
+
+            }
+
+        }
+
     }
     public  static class AI
     {
@@ -37,7 +87,10 @@ namespace Chess
                     var item = new IASimple { Figure = figure, Cell = move};
 
                     currentState.Add(item);
+                    
                 }
+
+
 
             }
 

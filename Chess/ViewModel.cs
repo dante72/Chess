@@ -50,18 +50,19 @@ namespace Chess
                 if (selectedItem.IsMarked)
                 {
                     SelectedFigure.MoveTo(selectedItem.Value);
+                    AI2.CreateTreePossibleMovies(СhessBoard.board, ref AI2.Head);
                     //var som = Task.Run(() => AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource()));
-                   // var some = AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource());
-                   // var some = som.Result;
+                    // var some = AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource());
+                    // var some = som.Result;
 
-                    if (СhessBoard.board == СhessBoard.board)
-                        MessageBox.Show("true");
-                    else
-                        MessageBox.Show("false");
-                    var some = СhessBoard.board.Cells.First(i => i == AI.GetCell(СhessBoard.board).Cell);
+                    //if (СhessBoard.board == СhessBoard.board)
+                    //     MessageBox.Show("true");
+                    //  else
+                    //    MessageBox.Show("false");
+                    // var some = СhessBoard.board.Cells.First(i => i == AI.GetCell(СhessBoard.board).Cell);
 
-                    some.Figure.MoveTo(some);
-                    AI.Restart(СhessBoard.board);
+                    //some.Figure.MoveTo(some);
+                    //AI.Restart(СhessBoard.board);
                     selectedItem.IsSelected = false;
                 }
                 
