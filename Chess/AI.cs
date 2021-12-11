@@ -54,14 +54,14 @@ namespace Chess
                         {
                             Figure = figure,
                             Cell = move,
-                            Board = board,
+                            Board = newBoard,
                             Score = move.Figure != null ? (move.Figure.Color == FigureColors.Black ? -1 : 1) * move.Figure.Weight : 0
                         } 
                     };
 
                     head.Add(node);
 
-                    if (newBoard.Index < 5)
+                    if (newBoard.Index < 7)
                         CreateTreePossibleMovies(newBoard, ref node);
                 }
             }

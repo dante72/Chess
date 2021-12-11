@@ -43,7 +43,7 @@ namespace Chess
                 for (int j = 0; j < 8; j++)
                     Cells.Add(new Cell(i, j, this));
 
-            SetupСhessBoard4();
+            SetupСhessBoard7();
         }
 
         /// <summary>
@@ -180,6 +180,29 @@ namespace Chess
             this[5, 3].Figure = new Queen(FigureColors.White);
             this[1, 4].Figure = new King(FigureColors.White, 1);
             this[4, 3].Figure = new Pawn(FigureColors.White);
+            //this[7, 5].Figure = new Bishop(FigureColors.White);
+            // this[7, 6].Figure = new Knight(FigureColors.White);
+            //this[1, 1].Figure = new Rook(FigureColors.White);
+        }
+
+        private void SetupСhessBoard7()
+        {
+            //this[2, 1].Figure = new Pawn(FigureColors.Black);
+            //this[0, 0].Figure = new Rook(FigureColors.Black);
+            //this[5, 2].Figure = new Queen(FigureColors.Black);
+            //this[0, 2].Figure = new Bishop(FigureColors.Black);
+            //this[0, 3].Figure = new Queen(FigureColors.Black);
+            this[0, 7].Figure = new King(FigureColors.Black, 1);
+            //this[0, 5].Figure = new Bishop(FigureColors.Black);
+            //this[1, 1].Figure = new Knight(FigureColors.Black);
+            //this[0, 7].Figure = new Rook(FigureColors.Black);
+
+            // this[7, 0].Figure = new Rook(FigureColors.White);
+            //this[0, 1].Figure = new Knight(FigureColors.White);
+            // this[7, 2].Figure = new Bishop(FigureColors.White);
+            //this[5, 3].Figure = new Queen(FigureColors.White);
+            this[0, 0].Figure = new King(FigureColors.White, 1);
+            //this[4, 3].Figure = new Pawn(FigureColors.White);
             //this[7, 5].Figure = new Bishop(FigureColors.White);
             // this[7, 6].Figure = new Knight(FigureColors.White);
             //this[1, 1].Figure = new Rook(FigureColors.White);

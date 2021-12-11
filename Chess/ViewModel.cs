@@ -11,7 +11,7 @@ namespace Chess
     {
         public List<string> Letters { set; get; } = new List<string>() { "a", "b", "c", "d", "e", "f", "g", "h"};
         public List<string> Digits { set; get; } = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8" };
-        public BoardVM СhessBoard { set; get; }
+        public BoardVM ChessBoard { set; get; }
         public ObservableCollection<CellVM> Cells { set; get; }
 
         private Figure selectedFigure;
@@ -23,7 +23,7 @@ namespace Chess
                 selectedFigure = value;
 
                 selectedFigure?.GetCorrectPossibleMoves()
-                    .Select(i => СhessBoard[i.Row, i.Column])
+                    .Select(i => ChessBoard[i.Row, i.Column])
                     .ToList()
                     .ForEach(a => a.IsMarked = true);
             }
@@ -51,10 +51,13 @@ namespace Chess
                 {
                     
                     SelectedFigure.MoveTo(selectedItem.Value);
-                    AI2.CreateTreePossibleMovies(СhessBoard.board, ref AI2.Head);
+                    //AI2.CreateTreePossibleMovies(СhessBoard.board, ref AI2.Head);
+                    AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
                     var move = AI2.GetResult(AI2.Head, 4);
-                    move.Figure.MoveTo(move.Cell);
-                    AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == СhessBoard.board);
+                    ChessBoard.board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.board[move.Cell.Row, move.Cell.Column]);
+
+                    //move.Figure.MoveTo(move.Cell);
+                    AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
                     //var nodes = .SelectMany(i => i.ChildNodes);
                    
                     //var som = Task.Run(() => AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource()));
@@ -90,13 +93,13 @@ namespace Chess
         {
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
-                    СhessBoard[i, j].IsMarked = false;
+                    ChessBoard[i, j].IsMarked = false;
         }
         public ViewModel()
         {
-            СhessBoard = new BoardVM();
-            //AI.CalculateStart2(СhessBoard.board);
-            
+            ChessBoard = new BoardVM();
+            AI2.CreateTreePossibleMovies(ChessBoard.board, ref AI2.Head);
+
         }
     }
 
