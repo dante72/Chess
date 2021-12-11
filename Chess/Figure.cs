@@ -348,12 +348,12 @@ namespace Chess
                 {
                     if (Position[0, 1]?.Figure is Pawn p1 && p1.Color != Color)
                     {
-                        p1.count = Board.Count;
+                        p1.count = Board.Index;
                         p1.pawn = this;
                     }
                     if (Position[0, -1]?.Figure is Pawn p2 && p2.Color != Color)
                     {
-                        p2.count = Board.Count;
+                        p2.count = Board.Index;
                         p2.pawn = this;
                     }
                 }               
@@ -365,7 +365,7 @@ namespace Chess
                 int range = IsFirstMove == 0 ? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
                 var fields = GetAllPossibleMoves()
-                    .Where(i => i.Figure != null && i.Figure?.Color != Color || count == Board.Count && (Board[i.Row + 1, i.Column].Figure is Pawn p1  && p1 == pawn || Board[i.Row - 1, i.Column].Figure is Pawn p2 && p2 == pawn))
+                    .Where(i => i.Figure != null && i.Figure?.Color != Color || count == Board.Index && (Board[i.Row + 1, i.Column].Figure is Pawn p1  && p1 == pawn || Board[i.Row - 1, i.Column].Figure is Pawn p2 && p2 == pawn))
                     .ToList();
                 fields.AddRange(GetCellsInDirection(Position, direction, range).Where(i => i.Figure == null));
 

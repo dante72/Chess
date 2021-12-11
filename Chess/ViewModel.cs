@@ -54,9 +54,9 @@ namespace Chess
                     //AI2.PrintNode(AI2.Head);
                     AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
                     //AI2.PrintNode(AI2.Head);
-                    //var move = AI2.GetResult(AI2.Head, 3);
-                    //ChessBoard.board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.board[move.Cell.Row, move.Cell.Column]);
-                    //AI2.Head = AI2.Head.ChildNodes.First();
+                    var move = AI2.GetResult(AI2.Head, 3);
+                    ChessBoard.board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.board[move.Cell.Row, move.Cell.Column]);
+                    AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
 
                     //тут не меняет
                     // AI2.Head = AI2.Head.ChildNodes.First(i => i.ChildNodes.Any(j => j.Data.Board == ChessBoard.board));

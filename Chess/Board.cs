@@ -11,13 +11,6 @@ namespace Chess
     public class Board
     {
         public int Index { set; get; }
-        private int count = 0;
-        public int Count {
-            set
-            {
-                count = value;
-            }
-            get => count; }
         public List<Cell> Cells { get; private set; }
         public Cell this[int row, int column]
         {
