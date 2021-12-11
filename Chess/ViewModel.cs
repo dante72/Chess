@@ -54,11 +54,10 @@ namespace Chess
                     //AI2.PrintNode(AI2.Head);
                     AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
                     //AI2.PrintNode(AI2.Head);
-                    var move = AI2.GetResult(AI2.Head, 3);
+                    var move = AI2.GetResult(AI2.Head, 4);
                     ChessBoard.board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.board[move.Cell.Row, move.Cell.Column]);
                     AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
-                    lock(AI2.Head)
-                        Task.Run(() => AI2.CorrectTreePossibleMovies(AI2.Head, 5));
+                    AI2.CorrectTreePossibleMovies(AI2.Head, 4);
 
                     //тут не меняет
                     // AI2.Head = AI2.Head.ChildNodes.First(i => i.ChildNodes.Any(j => j.Data.Board == ChessBoard.board));
@@ -104,7 +103,7 @@ namespace Chess
             ChessBoard = new BoardVM();
             AI2.Head = new TreeNode();
             AI2.Head.Data = new IASimple2 { Board = new Board(ChessBoard.board) };
-            Task.Run(() => AI2.CreateTreePossibleMovies(AI2.Head, 5));
+            AI2.CreateTreePossibleMovies(AI2.Head, 4);
 
         }
     }
