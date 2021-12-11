@@ -51,6 +51,8 @@ namespace Chess
                 {
                     SelectedFigure.MoveTo(selectedItem.Value);
                     AI2.CreateTreePossibleMovies(СhessBoard.board, ref AI2.Head);
+                    var newHead = AI2.Head.ChildNodes.First(i => i.Data.Board == СhessBoard.board);
+                    var move = AI2.GetResult(AI2.Head, 4);
                     //var som = Task.Run(() => AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource()));
                     // var some = AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource());
                     // var some = som.Result;
@@ -61,7 +63,7 @@ namespace Chess
                     //    MessageBox.Show("false");
                     // var some = СhessBoard.board.Cells.First(i => i == AI.GetCell(СhessBoard.board).Cell);
 
-                    //some.Figure.MoveTo(some);
+                    move.Figure.MoveTo(move.Cell);
                     //AI.Restart(СhessBoard.board);
                     selectedItem.IsSelected = false;
                 }
@@ -89,7 +91,7 @@ namespace Chess
         public ViewModel()
         {
             СhessBoard = new BoardVM();
-            AI.CalculateStart2(СhessBoard.board);
+            //AI.CalculateStart2(СhessBoard.board);
         }
     }
 

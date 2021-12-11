@@ -22,6 +22,6 @@ namespace Chess
             childNodes.Add(item);
         }
 
-        public object Data { get; set; } 
+        public IASimple2 Data { get; set; } 
     }
 }

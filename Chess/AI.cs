@@ -20,6 +20,8 @@ namespace Chess
 
     public class IASimple2
     {
+        public Figure Figure { get; set; }
+        public Cell Cell { get; set; }
         public Board Board { get; set; }
         public float Score = 0;
     }
@@ -34,7 +36,6 @@ namespace Chess
             {
                 head = new TreeNode();
                 head.Data = new IASimple2() { Board = board };
-
             }
             var figurs = board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
@@ -42,6 +43,7 @@ namespace Chess
             {
                 var movies = figure.GetCorrectPossibleMoves();
 
+                if (movies.Count > 0)
                 foreach (var move in movies)
                 {
 
@@ -50,6 +52,8 @@ namespace Chess
                     {
                         Data = new IASimple2()
                         {
+                            Figure = figure,
+                            Cell = move,
                             Board = board,
                             Score = move.Figure != null ? (move.Figure.Color == FigureColors.Black ? -1 : 1) * move.Figure.Weight : 0
                         } 
@@ -57,12 +61,29 @@ namespace Chess
 
                     head.Add(node);
 
-                    if (newBoard.Index < 3)
+                    if (newBoard.Index < 4)
                         CreateTreePossibleMovies(newBoard, ref node);
                 }
-
             }
+        }
 
+        public static float FindMax(TreeNode head, int depth, float sum = 0, int currentDepth = 0)
+        {
+            currentDepth++;
+            if (head.ChildNodes == null || currentDepth > depth)
+                return 0;
+            
+            sum += head.ChildNodes.Max(node => FindMax(node, depth, sum, currentDepth));
+            sum += head.Data.Score;
+            //float max = head.ChildNodes.Max(i => i.Data.Score);
+            return sum;
+        }
+
+        public static IASimple2 GetResult(TreeNode head, int depth)
+        {
+            var dictionary = head.ChildNodes.ToDictionary(node => node, node => FindMax(node, depth));
+            float max = dictionary.Max(d => d.Value);
+            return dictionary.First(d => d.Value == max).Key.Data;
         }
 
     }
@@ -87,7 +108,6 @@ namespace Chess
                     var item = new IASimple { Figure = figure, Cell = move};
 
                     currentState.Add(item);
-                    
                 }
 
 
