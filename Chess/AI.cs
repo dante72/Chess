@@ -28,14 +28,10 @@ namespace Chess
 
     public  static class AI2
     {
-        public static TreeNode Head = new TreeNode();
+        public static TreeNode Head;
 
-         public static void CreateTreePossibleMovies(TreeNode head, Board board = null)
+         public static void CreateTreePossibleMovies(TreeNode head, int maxDepth, int currentDepth = 0)
         {
-            if (head.Data == null)
-            {
-                head.Data = new IASimple2 { Board = board };
-            }
             var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
             foreach (var figure in figurs)
@@ -58,19 +54,30 @@ namespace Chess
                     };
 
                     head.Add(node);
-                   //MessageBox.Show(newBoard.ToString());
-                    ///currentState.Add(new IASimple2() { Figure = figure, Cell = move });
+                    if (currentDepth < maxDepth)
+                        CreateTreePossibleMovies(node, maxDepth, currentDepth + 1);
                 }
-
-
             }
-            if (head.Data.Board.Index < 5)
-                    foreach (var node in head.ChildNodes)
-                    {
-
-                        CreateTreePossibleMovies(node, board);
-                    }
         }
+
+        public static void CorrectTreePossibleMovies(TreeNode head, int maxDepth, int currentDepth = 0)
+        {
+            if (currentDepth >= maxDepth)
+                return;
+
+            if (head.ChildNodes == null)
+            {
+                CreateTreePossibleMovies(head, maxDepth, currentDepth + 1);
+            }
+            else
+            {
+                foreach (var node in head.ChildNodes)
+                    CorrectTreePossibleMovies(node, maxDepth, currentDepth + 1);
+            }
+                    
+        }
+
+
 
         public static float FindMax(TreeNode head, int depth, float sum = 0, int currentDepth = 0)
         {
