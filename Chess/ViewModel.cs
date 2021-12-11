@@ -49,10 +49,14 @@ namespace Chess
 
                 if (selectedItem.IsMarked)
                 {
+                    
                     SelectedFigure.MoveTo(selectedItem.Value);
                     AI2.CreateTreePossibleMovies(СhessBoard.board, ref AI2.Head);
-                    var newHead = AI2.Head.ChildNodes.First(i => i.Data.Board == СhessBoard.board);
                     var move = AI2.GetResult(AI2.Head, 4);
+                    move.Figure.MoveTo(move.Cell);
+                    AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == СhessBoard.board);
+                    //var nodes = .SelectMany(i => i.ChildNodes);
+                   
                     //var som = Task.Run(() => AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource()));
                     // var some = AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource());
                     // var some = som.Result;
@@ -63,7 +67,7 @@ namespace Chess
                     //    MessageBox.Show("false");
                     // var some = СhessBoard.board.Cells.First(i => i == AI.GetCell(СhessBoard.board).Cell);
 
-                    move.Figure.MoveTo(move.Cell);
+                    
                     //AI.Restart(СhessBoard.board);
                     selectedItem.IsSelected = false;
                 }
@@ -92,6 +96,7 @@ namespace Chess
         {
             СhessBoard = new BoardVM();
             //AI.CalculateStart2(СhessBoard.board);
+            
         }
     }
 

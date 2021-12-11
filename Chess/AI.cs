@@ -43,7 +43,7 @@ namespace Chess
             {
                 var movies = figure.GetCorrectPossibleMoves();
 
-                if (movies.Count > 0)
+                //if (movies.Count > 0)
                 foreach (var move in movies)
                 {
 
@@ -61,7 +61,7 @@ namespace Chess
 
                     head.Add(node);
 
-                    if (newBoard.Index < 4)
+                    if (newBoard.Index < 5)
                         CreateTreePossibleMovies(newBoard, ref node);
                 }
             }
