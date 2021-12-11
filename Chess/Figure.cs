@@ -22,7 +22,7 @@ namespace Chess
         /// <summary>
         /// Позиция фигуры
         /// </summary>
-        public Cell Position { get; set; }
+        public Cell Position { set; get; }
 
         private Board Board { get => Position?.Board; }
         public int IsFirstMove { get; set; }
@@ -41,9 +41,7 @@ namespace Chess
         {
             Position.Figure = null;
             to.Figure = this;
-            IsFirstMove++;
-
-            Board.Count++;
+            Board.Index++;
         }
 
         /// <summary>
@@ -110,7 +108,7 @@ namespace Chess
         }
         public bool IsMove()
         {
-            return Color == FigureColors.Black && Board.Count % 2 == 0 || Color == FigureColors.White && Board.Count % 2 != 0;
+            return Color == FigureColors.Black && Board.Index % 2 != 0 || Color == FigureColors.White && Board.Index % 2 == 0;
         }
 
         /// <summary>

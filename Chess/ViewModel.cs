@@ -49,17 +49,19 @@ namespace Chess
 
                 if (selectedItem.IsMarked)
                 {
-                    
                     SelectedFigure.MoveTo(selectedItem.Value);
                     //AI2.CreateTreePossibleMovies(СhessBoard.board, ref AI2.Head);
+                    //AI2.PrintNode(AI2.Head);
                     AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
-                    var move = AI2.GetResult(AI2.Head, 4);
-                    ChessBoard.board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.board[move.Cell.Row, move.Cell.Column]);
+                    //AI2.PrintNode(AI2.Head);
+                    //var move = AI2.GetResult(AI2.Head, 3);
+                    //ChessBoard.board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.board[move.Cell.Row, move.Cell.Column]);
+                    //AI2.Head = AI2.Head.ChildNodes.First();
 
-                    //move.Figure.MoveTo(move.Cell);
-                    AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
+                    //тут не меняет
+                    // AI2.Head = AI2.Head.ChildNodes.First(i => i.ChildNodes.Any(j => j.Data.Board == ChessBoard.board));
                     //var nodes = .SelectMany(i => i.ChildNodes);
-                   
+
                     //var som = Task.Run(() => AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource()));
                     // var some = AI.GetNextMove2(СhessBoard.board, new CancellationTokenSource());
                     // var some = som.Result;
@@ -70,7 +72,7 @@ namespace Chess
                     //    MessageBox.Show("false");
                     // var some = СhessBoard.board.Cells.First(i => i == AI.GetCell(СhessBoard.board).Cell);
 
-                    
+
                     //AI.Restart(СhessBoard.board);
                     selectedItem.IsSelected = false;
                 }
@@ -98,7 +100,7 @@ namespace Chess
         public ViewModel()
         {
             ChessBoard = new BoardVM();
-            AI2.CreateTreePossibleMovies(ChessBoard.board, ref AI2.Head);
+            AI2.CreateTreePossibleMovies(AI2.Head, new Board(ChessBoard.board));
 
         }
     }

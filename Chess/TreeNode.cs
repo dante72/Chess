@@ -8,6 +8,7 @@ namespace Chess
 {
     public class TreeNode
     {
+        public TreeNode Head { get; set; }
         public TreeNode Parent { get; set; }
 
 

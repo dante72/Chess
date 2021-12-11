@@ -49,20 +49,49 @@ namespace Chess
         /// <summary>
         /// Создать копию доски с перемещением одной фигуры (from, to равны = фигура убрана)
         /// </summary>
-        public Board(Board copy, Cell from, Cell to, int index = 1)
+        public Board(Board copy, Cell from, Cell to)
         {
-            Index = index;
+            Index = copy.Index;
             Cells = new List<Cell>();
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                 {
                     var cell = new Cell(i, j, this);
                     var figure = copy[i, j].Figure?.Clone();
-                    if (figure != null) cell.Figure = figure;
+                    if (figure != null) { cell.Figure = figure; }
                     Cells.Add(cell);
                 }
 
             this[from.Row, from.Column].Figure.MoveTo(this[to.Row, to.Column]);
+        }
+
+        public Board(Board copy)
+        {
+            Index = copy.Index;
+            Cells = new List<Cell>();
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                {
+                    var cell = new Cell(i, j, this);
+                    var figure = copy[i, j].Figure?.Clone();
+                    if (figure != null) { cell.Figure = figure; }
+                    Cells.Add(cell);
+                }
+
+        }
+
+        public override string ToString()
+        {
+            string str = "";
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    str += this[i, j].Figure == null ? " . " : $" {this[i, j].Figure.GetType().Name.Substring(0, 1)} ";
+                }
+                str += "\n";
+            }
+            return str;
         }
 
         /// <summary>
@@ -192,7 +221,7 @@ namespace Chess
             //this[5, 2].Figure = new Queen(FigureColors.Black);
             //this[0, 2].Figure = new Bishop(FigureColors.Black);
             //this[0, 3].Figure = new Queen(FigureColors.Black);
-            this[0, 7].Figure = new King(FigureColors.Black, 1);
+            this[0, 1].Figure = new King(FigureColors.Black, 1);
             //this[0, 5].Figure = new Bishop(FigureColors.Black);
             //this[1, 1].Figure = new Knight(FigureColors.Black);
             //this[0, 7].Figure = new Rook(FigureColors.Black);
@@ -201,7 +230,7 @@ namespace Chess
             //this[0, 1].Figure = new Knight(FigureColors.White);
             // this[7, 2].Figure = new Bishop(FigureColors.White);
             //this[5, 3].Figure = new Queen(FigureColors.White);
-            this[0, 0].Figure = new King(FigureColors.White, 1);
+            this[0, 7].Figure = new King(FigureColors.White, 1);
             //this[4, 3].Figure = new Pawn(FigureColors.White);
             //this[7, 5].Figure = new Bishop(FigureColors.White);
             // this[7, 6].Figure = new Knight(FigureColors.White);

@@ -28,26 +28,24 @@ namespace Chess
 
     public  static class AI2
     {
-        public static TreeNode Head;
+        public static TreeNode Head = new TreeNode();
 
-         public static void CreateTreePossibleMovies(Board board, ref TreeNode head)
+         public static void CreateTreePossibleMovies(TreeNode head, Board board = null)
         {
-            if (head == null)
+            if (head.Data == null)
             {
-                head = new TreeNode();
-                head.Data = new IASimple2() { Board = board };
+                head.Data = new IASimple2 { Board = board };
             }
-            var figurs = board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
+            var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
             foreach (var figure in figurs)
             {
                 var movies = figure.GetCorrectPossibleMoves();
 
-                //if (movies.Count > 0)
                 foreach (var move in movies)
                 {
 
-                    var newBoard = new Board(board, figure.Position, move, board.Index + 1);
+                    var newBoard = new Board(head.Data.Board, figure.Position, move);
                     var node = new TreeNode()
                     {
                         Data = new IASimple2()
@@ -60,11 +58,18 @@ namespace Chess
                     };
 
                     head.Add(node);
-
-                    if (newBoard.Index < 7)
-                        CreateTreePossibleMovies(newBoard, ref node);
+                   //MessageBox.Show(newBoard.ToString());
+                    ///currentState.Add(new IASimple2() { Figure = figure, Cell = move });
                 }
+
+
             }
+            if (head.Data.Board.Index < 5)
+                    foreach (var node in head.ChildNodes)
+                    {
+
+                        CreateTreePossibleMovies(node, board);
+                    }
         }
 
         public static float FindMax(TreeNode head, int depth, float sum = 0, int currentDepth = 0)
@@ -77,6 +82,17 @@ namespace Chess
             sum += head.Data.Score;
             //float max = head.ChildNodes.Max(i => i.Data.Score);
             return sum;
+        }
+
+        public static void PrintNode(TreeNode head)
+        {
+            string str = "";
+            str += head.Data.Board.ToString();
+            str += "\n\n";
+            foreach (var node in head.ChildNodes)
+                str += $"{node.Data.Board}\n\n";
+
+            MessageBox.Show(str);
         }
 
         public static IASimple2 GetResult(TreeNode head, int depth)
@@ -95,10 +111,9 @@ namespace Chess
         public static IASimple GetNextMove(Board board)
         {
             var tasks = new List<Task>();
-
+            var currentState = new List<IASimple>();
             var figurs = board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
-            var currentState = new List<IASimple>();
             foreach (var figure in figurs)
             {
                 var movies = figure.GetCorrectPossibleMoves();
@@ -116,7 +131,7 @@ namespace Chess
 
             foreach (var it in currentState)
             {
-                var newBoard = new Board(board, it.Figure.Position, it.Cell, board.Index + 1);
+                var newBoard = new Board(board, it.Figure.Position, it.Cell);
 
                 if (it.Cell.Figure != null)
                 {
@@ -168,7 +183,7 @@ namespace Chess
             {
                 if (board.Index < 3)
                 {
-                    var newBoard = new Board(board, it.Figure.Position, it.Cell, board.Index + 1);
+                    var newBoard = new Board(board, it.Figure.Position, it.Cell);
 
                     if (it.Cell.Figure != null)
                     {
@@ -233,7 +248,7 @@ namespace Chess
                 if (moves.Count > 0)
                 foreach (Cell move in moves)
                 {
-                        boards.Add(new Board(board, figure.Position, move, board.Index));
+                        boards.Add(new Board(board, figure.Position, move));
                 }
             }
 
