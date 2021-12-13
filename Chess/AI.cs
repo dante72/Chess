@@ -30,7 +30,7 @@ namespace Chess
     {
         public static TreeNode Head;
 
-         public static void CreateTreePossibleMovies(TreeNode head, int maxDepth, int currentDepth = 0)
+         public static void CreateTreePossibleMovies(TreeNode head, int maxDepth, int depthOfAllMoves = -1, int currentDepth = 0)
         {
             var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
@@ -40,22 +40,24 @@ namespace Chess
 
                 foreach (var move in movies)
                 {
-
-                    var newBoard = new Board(head.Data.Board, figure.Position, move);
-                    var node = new TreeNode()
+                    if (currentDepth < depthOfAllMoves || move.Figure != null)
                     {
-                        Data = new IASimple2()
+                        var newBoard = new Board(head.Data.Board, figure.Position, move);
+                        var node = new TreeNode()
                         {
-                            Figure = figure,
-                            Cell = move,
-                            Board = newBoard,
-                            Score = move.Figure != null ? (move.Figure.Color == FigureColors.Black ? -1 : 1) * move.Figure.Weight : 0
-                        } 
-                    };
+                            Data = new IASimple2()
+                            {
+                                Figure = figure,
+                                Cell = move,
+                                Board = newBoard,
+                                Score = move.Figure != null ? (move.Figure.Color == FigureColors.Black ? -2.0f : 1.0f) * move.Figure.Weight : 0.0f
+                            }
+                        };
 
-                    head.Add(node);
-                    if (currentDepth < maxDepth)
-                        CreateTreePossibleMovies(node, maxDepth, currentDepth + 1);
+                        head.Add(node);
+                        if (currentDepth < maxDepth)
+                            CreateTreePossibleMovies(node, maxDepth, depthOfAllMoves, currentDepth + 1);
+                    }
                 }
             }
         }
@@ -81,12 +83,14 @@ namespace Chess
 
         public static float FindMax(TreeNode head, int depth, float sum = 0, int currentDepth = 0)
         {
-            currentDepth++;
             if (head.ChildNodes == null || currentDepth > depth)
                 return 0;
-            
-            sum += head.ChildNodes.Max(node => FindMax(node, depth, sum, currentDepth));
-            sum += head.Data.Score;
+            if (currentDepth % 2 != 0)
+                 sum += head.ChildNodes.Max(node => FindMax(node, depth, sum, currentDepth + 1));
+            else
+                sum += head.ChildNodes.Min(node => FindMax(node, depth, sum, currentDepth + 1));
+
+            sum += head.Data.Score * currentDepth < 4 ? 1 : currentDepth * 0.8f;
             //float max = head.ChildNodes.Max(i => i.Data.Score);
             return sum;
         }
@@ -104,8 +108,14 @@ namespace Chess
 
         public static IASimple2 GetResult(TreeNode head, int depth)
         {
+            if (head.ChildNodes == null)
+                return head.Data;
             var dictionary = head.ChildNodes.ToDictionary(node => node, node => FindMax(node, depth));
             float max = dictionary.Max(d => d.Value);
+            string str = "";
+            foreach (var item in dictionary)
+                str += $"{item.Key.Data.Figure}\t{item.Value}\n";
+            MessageBox.Show(str);
             return dictionary.First(d => d.Value == max).Key.Data;
         }
 

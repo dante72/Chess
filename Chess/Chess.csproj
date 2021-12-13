@@ -63,6 +63,7 @@
     <Compile Include="CellVM.cs" />
     <Compile Include="CellColorConverter.cs" />
     <Compile Include="ChessFigureConvector.cs" />
+    <Compile Include="CreateMove.cs" />
     <Compile Include="Directions.cs" />
     <Compile Include="Figure.cs" />
     <Compile Include="FigureColors.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="PawnTransform.xaml.cs">
       <DependentUpon>PawnTransform.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="TreeNode.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">
