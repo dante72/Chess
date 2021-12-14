@@ -36,7 +36,7 @@ namespace Chess
                 for (int j = 0; j < 8; j++)
                     Cells.Add(new Cell(i, j, this));
 
-            SetupСhessBoard7();
+            SetupСhessBoard2();
         }
 
         /// <summary>
