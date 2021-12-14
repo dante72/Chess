@@ -40,7 +40,7 @@ namespace Chess
 
                 foreach (var move in movies)
                 {
-                    if (currentDepth < depthOfAllMoves || move.Figure != null)
+                    if (currentDepth <= depthOfAllMoves)
                     {
                         var newBoard = new Board(head.Data.Board, figure.Position, move);
                         var node = new TreeNode()
@@ -50,10 +50,10 @@ namespace Chess
                                 Figure = figure,
                                 Cell = move,
                                 Board = newBoard,
-                                Score = move.Figure != null ? (move.Figure.Color == FigureColors.Black ? -2.0f : 1.0f) * move.Figure.Weight : 0.0f
+                                Score = move.Figure != null ? move.Figure.Weight : 0.0f
                             }
                         };
-
+                        
                         head.Add(node);
                         if (currentDepth < maxDepth)
                             CreateTreePossibleMovies(node, maxDepth, depthOfAllMoves, currentDepth + 1);
@@ -81,18 +81,25 @@ namespace Chess
 
 
 
-        public static float FindMax(TreeNode head, int depth, float sum = 0, int currentDepth = 0)
+        public static float FindMax(TreeNode head, int depth, object max = null, float sum = 0, int currentDepth = 0)
         {
-            if (head.ChildNodes == null || currentDepth > depth)
-                return 0;
-            if (currentDepth % 2 != 0)
-                 sum += head.ChildNodes.Max(node => FindMax(node, depth, sum, currentDepth + 1));
-            else
-                sum += head.ChildNodes.Min(node => FindMax(node, depth, sum, currentDepth + 1));
+            if (max == null)
+                max = 0.0f;
 
-            sum += head.Data.Score * currentDepth < 4 ? 1 : currentDepth * 0.8f;
-            //float max = head.ChildNodes.Max(i => i.Data.Score);
-            return sum;
+
+
+            if (currentDepth % 2 == 0)
+                sum += head.Data.Score;
+            else
+                sum -= head.Data.Score;
+            
+            if (currentDepth >= depth)
+            {
+                if (sum > (float)max)
+                    max = sum;
+                return (float)max;
+            }
+            return FindMax(head, depth, max, sum, currentDepth + 1);
         }
 
         public static void PrintNode(TreeNode head)
@@ -141,9 +148,6 @@ namespace Chess
 
                     currentState.Add(item);
                 }
-
-
-
             }
 
             foreach (var it in currentState)

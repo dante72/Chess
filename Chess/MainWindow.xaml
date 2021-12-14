@@ -17,8 +17,8 @@
         </DockPanel.DataContext>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
-                <MenuItem Command="{Binding MakeMoveCommand}" Header="Make move"></MenuItem>
             </MenuItem>
+            <MenuItem Command="{Binding MakeMoveCommand}" Header="Make move"></MenuItem>
         </Menu>
         <Grid>
             <Grid.ColumnDefinitions>

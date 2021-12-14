@@ -221,7 +221,7 @@ namespace Chess
 
             // this[7, 0].Figure = new Rook(FigureColors.White);
             //this[0, 1].Figure = new Knight(FigureColors.White);
-            this[7, 2].Figure = new Bishop(FigureColors.White);
+            this[5, 5].Figure = new Bishop(FigureColors.White);
             //this[5, 3].Figure = new Queen(FigureColors.White);
             this[0, 7].Figure = new King(FigureColors.White, 1);
             //this[4, 3].Figure = new Pawn(FigureColors.White);
