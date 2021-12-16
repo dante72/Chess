@@ -54,5 +54,10 @@ namespace Chess
         {
             return !(b1 == b2);
         }
+
+        public override string ToString()
+        {
+            return $"{(char)('a' + Column)}{Row + 1}";
+        }
     }
 }

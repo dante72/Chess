@@ -40,9 +40,11 @@ namespace Chess
 
                 foreach (var move in movies)
                 {
-                    if (currentDepth <= depthOfAllMoves)
+                    if (currentDepth < depthOfAllMoves)
                     {
+                        //if (move.Figure != null && move.Figure.Weight <= figure.Weight) return;
                         var newBoard = new Board(head.Data.Board, figure.Position, move);
+
                         var node = new TreeNode()
                         {
                             Data = new IASimple2()
@@ -50,9 +52,12 @@ namespace Chess
                                 Figure = figure,
                                 Cell = move,
                                 Board = newBoard,
-                                Score = move.Figure != null ? move.Figure.Weight : 0.0f
+                                Score = move.Figure != null ? move.Figure.Weight  < figure.Weight ? move.Figure.Weight * 2 : move.Figure.Weight / 2 : EvaluationFunction(head.Data.Board, figure.Position, move)
                             }
                         };
+
+                        if (UnderAttack(head.Data.Board, figure.Position, move))
+                            node.Data.Score *= 0.9f;
                         
                         head.Add(node);
                         if (currentDepth < maxDepth)
@@ -80,26 +85,40 @@ namespace Chess
         }
 
 
+        public static bool UnderAttack(Board board, Cell from, Cell to)
+        {
+            var newBoard = new Board(board, from, to);
 
+            var figurs = newBoard.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
+
+            return figurs.SelectMany(i => i.GetCorrectPossibleMoves()).Any(i => i == to);
+        }
         public static float FindMax(TreeNode head, int depth, object max = null, float sum = 0, int currentDepth = 0)
         {
             if (max == null)
                 max = 0.0f;
-
-
-
-            if (currentDepth % 2 == 0)
-                sum += head.Data.Score;
-            else
-                sum -= head.Data.Score;
             
-            if (currentDepth >= depth)
+            if (currentDepth % 2 == 0)
+                sum += head.Data.Score / (currentDepth + 1);
+            else
+                sum -= head.Data.Score / (currentDepth + 1);
+
+
+
+
+            if (head.ChildNodes != null)
             {
-                if (sum > (float)max)
-                    max = sum;
-                return (float)max;
+                float m = head.ChildNodes.Max(node => node.Data.Score);
+
+                var n = head.ChildNodes.First(node => node.Data.Score == m);
+                sum += FindMax(n, depth, max, sum, currentDepth + 1);
+
             }
-            return FindMax(head, depth, max, sum, currentDepth + 1);
+            else
+            if (sum > (float)max)
+                max = sum;
+
+            return sum;
         }
 
         public static void PrintNode(TreeNode head)
@@ -115,15 +134,53 @@ namespace Chess
 
         public static IASimple2 GetResult(TreeNode head, int depth)
         {
-            if (head.ChildNodes == null)
-                return head.Data;
             var dictionary = head.ChildNodes.ToDictionary(node => node, node => FindMax(node, depth));
-            float max = dictionary.Max(d => d.Value);
+            float max = (float)dictionary.Max(d => d.Value);
             string str = "";
             foreach (var item in dictionary)
-                str += $"{item.Key.Data.Figure}\t{item.Value}\n";
+                str += $"{string.Format("{0, 15}", item.Key.Data.Figure)}\t{item.Value}\t{item.Key.Data.Cell}\n";
             MessageBox.Show(str);
-            return dictionary.First(d => d.Value == max).Key.Data;
+            return dictionary.First(d =>(float)d.Value == max).Key.Data;
+        }
+
+        public static float EvaluationFunction(Board board, Cell from, Cell to)
+        {
+           var newBoard = new Board(board, from, to);
+
+            var figurs = newBoard.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
+
+            float max = 0;
+            foreach (var figure in figurs)
+            {
+                var movies = figure.GetCorrectPossibleMoves();
+
+                foreach (var move in movies)
+                {
+                    if (move == to)
+                    {
+                        max = -from.Figure.Weight;
+                        break;
+                    }
+                }
+            }
+
+            newBoard.Index--;
+
+            figurs = newBoard.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
+
+            foreach (var figure in figurs)
+            {
+                var movies = figure.GetCorrectPossibleMoves();
+
+                foreach (var move in movies)
+                {
+                    if (move.Figure != null)
+                        if (max < move.Figure.Weight)
+                            max = move.Figure.Weight;
+                }
+            }
+
+            return max;
         }
 
     }

@@ -36,7 +36,7 @@ namespace Chess
                 for (int j = 0; j < 8; j++)
                     Cells.Add(new Cell(i, j, this));
 
-            SetupСhessBoard2();
+            SetupСhessBoard4();
         }
 
         /// <summary>
@@ -70,7 +70,6 @@ namespace Chess
                     if (figure != null) { cell.Figure = figure; }
                     Cells.Add(cell);
                 }
-
         }
 
         public override string ToString()
