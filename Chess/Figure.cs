@@ -216,7 +216,7 @@ namespace Chess
                         list.Add(Board[Position.Row, Position.Column + 2]);
                 }
 
-                return list/*.Where(i => !Сheckmate(this, i))*/.ToList();
+                return list.Where(i => !Сheckmate(this, i)).ToList();
             }
 
             public override List<Cell> GetPossibleMoves()

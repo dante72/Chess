@@ -53,7 +53,13 @@ namespace Chess
                             }
                         };
 
-
+                    if (newBoard.CheckMate())
+                    {
+                        if (newBoard.Index % 2 == 0)
+                            node.Data.Score += 9999;
+                        else
+                            node.Data.Score -= 9999;
+                    }
                         head.Add(node);
                     //if (head.Data.Score >= 900)
                        // MessageBox.Show($"{move} {currentDepth}");
@@ -73,16 +79,16 @@ namespace Chess
             
             if (head.Data.Board.Index % 2 != 0)
             {
-                res =  head.ChildNodes.Max(i => FindMove(i, depth, currentDepth + 1));
+                res =  head.ChildNodes.Where(i => i.Data.Score >= head.Data.Score).Max(i => FindMove(i, depth, currentDepth + 1));
             }
             else
             {
-                res = head.ChildNodes.Min(i => FindMove(i, depth, currentDepth + 1));
+                res = head.ChildNodes.Where(i => i.Data.Score <= head.Data.Score).Min(i => FindMove(i, depth, currentDepth + 1));
             }
             
             
 
-            return res;   
+            return res * 0.9f;   
         }
 
         public static IASimple2 GetResult(TreeNode head, int depth)
