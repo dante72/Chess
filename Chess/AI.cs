@@ -26,6 +26,77 @@ namespace Chess
         public float Score = 0;
     }
 
+    public static class AI3
+    {
+        public static TreeNode Head;
+
+        public static void CreateTreePossibleMovies(TreeNode head, int depth, int currentDepth = 0)
+        {
+            var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
+
+            foreach (var figure in figurs)
+            {
+                var movies = figure.GetCorrectPossibleMoves();
+
+                foreach (var move in movies)
+                {
+                        var newBoard = new Board(head.Data.Board, figure.Position, move);
+
+                        var node = new TreeNode()
+                        {
+                            Data = new IASimple2()
+                            {
+                                Figure = figure,
+                                Cell = move,
+                                Board = newBoard,
+                                Score = newBoard.Evaluation()
+                            }
+                        };
+
+
+                        head.Add(node);
+                    //if (head.Data.Score >= 900)
+                       // MessageBox.Show($"{move} {currentDepth}");
+                        if (currentDepth < depth)
+                            CreateTreePossibleMovies(node, depth, currentDepth + 1);
+                    }
+            }
+        }
+
+        public static float FindMove(TreeNode head, int depth, int currentDepth = 0)
+        {
+            float res;
+            TreeNode node = null;
+            if (head.ChildNodes == null)
+                return head.Data.Score;
+            
+            
+            if (head.Data.Board.Index % 2 != 0)
+            {
+                res =  head.ChildNodes.Max(i => FindMove(i, depth, currentDepth + 1));
+            }
+            else
+            {
+                res = head.ChildNodes.Min(i => FindMove(i, depth, currentDepth + 1));
+            }
+            
+            
+
+            return res;   
+        }
+
+        public static IASimple2 GetResult(TreeNode head, int depth)
+        {
+            var dictionary = head.ChildNodes.ToDictionary(node => node, node => FindMove(node, depth));
+            float minmax = head.Data.Board.Index % 2 != 0 ? (float)dictionary.Max(d => d.Value) : (float)dictionary.Min(d => d.Value);
+            string str = "";
+            foreach (var item in dictionary)
+                str += $"{string.Format("{0, 15}", item.Key.Data.Figure)}\t{item.Value}\t{item.Key.Data.Cell}\n";
+            MessageBox.Show(str);
+            return dictionary.First(d => (float)d.Value == minmax).Key.Data;
+        }
+    }
+
     public  static class AI2
     {
         public static TreeNode Head;
@@ -56,8 +127,8 @@ namespace Chess
                             }
                         };
 
-                        if (UnderAttack(head.Data.Board, figure.Position, move))
-                            node.Data.Score *= 0.9f;
+                        if (newBoard.CheckMate())
+                            node.Data.Score += 1000;
                         
                         head.Add(node);
                         if (currentDepth < maxDepth)
@@ -65,6 +136,8 @@ namespace Chess
                     }
                 }
             }
+            
+
         }
 
         public static void CorrectTreePossibleMovies(TreeNode head, int maxDepth, int currentDepth = 0)

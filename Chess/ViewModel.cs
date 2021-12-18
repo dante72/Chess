@@ -49,15 +49,20 @@ namespace Chess
 
                 if (selectedItem.IsMarked)
                 {
+                    //AI3.Head = new TreeNode();
+                    //AI3.Head.Data = new IASimple2 { Board = new Board(ChessBoard.board) };
+                    //AI3.CreateTreePossibleMovies(AI3.Head, 3);
                     SelectedFigure.MoveTo(selectedItem.Value);
+                    //if (ChessBoard.board.CheckMate())
+                        //MessageBox.Show("Mат!");
                     //AI2.CreateTreePossibleMovies(СhessBoard.board, ref AI2.Head);
                     //AI2.PrintNode(AI2.Head);
-                    AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
+                    //AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
                     //AI2.PrintNode(AI2.Head);
                     //var move = AI2.GetResult(AI2.Head, 5);
-                   // ChessBoard.board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.board[move.Cell.Row, move.Cell.Column]);
+                    // ChessBoard.board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.board[move.Cell.Row, move.Cell.Column]);
                     //AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
-                    AI2.CreateTreePossibleMovies(AI2.Head, 2, 5);
+                    //AI2.CreateTreePossibleMovies(AI2.Head, 2, 5);
 
                     //тут не меняет
                     // AI2.Head = AI2.Head.ChildNodes.First(i => i.ChildNodes.Any(j => j.Data.Board == ChessBoard.board));
@@ -113,10 +118,10 @@ namespace Chess
             {
                 return makeMoveCommand ??
                     (makeMoveCommand = new RelayCommand(obj =>
-                    {   AI2.Head = new TreeNode();
-                        AI2.Head.Data = new IASimple2 { Board = new Board(ChessBoard.board) };
-                        AI2.CreateTreePossibleMovies(AI2.Head, 6, 2);
-                        var move = AI2.GetResult(AI2.Head, 6);
+                    {   AI3.Head = new TreeNode();
+                        AI3.Head.Data = new IASimple2 { Board = new Board(ChessBoard.board) };
+                        AI3.CreateTreePossibleMovies(AI3.Head, 2);
+                        var move = AI3.GetResult(AI3.Head, 2);
                         ChessBoard.board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.board[move.Cell.Row, move.Cell.Column]);
                         
                         //AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);

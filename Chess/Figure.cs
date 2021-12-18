@@ -143,7 +143,7 @@ namespace Chess
         /// </summary>
         public class King : Figure
         {
-            public override int Weight { get; set; } = 100;
+            public override int Weight { get; set; } = 900;
             public King(FigureColors color, int firstMove = 0) : base(color, firstMove) { }
             public override Figure Clone() => new King(Color, IsFirstMove);
 
@@ -211,7 +211,7 @@ namespace Chess
                         list.Add(Board[Position.Row, Position.Column + 2]);
                 }
 
-                return list.Where(i => !Сheckmate(this, i)).ToList();
+                return list/*.Where(i => !Сheckmate(this, i))*/.ToList();
             }
 
             public override List<Cell> GetCorrectPossibleMoves()
@@ -237,7 +237,7 @@ namespace Chess
         /// </summary> 
         public class Queen : Figure
         {
-            public override int Weight { get; set; } = 8;
+            public override int Weight { get; set; } = 90;
             public Queen(FigureColors color) : base(color) { }
             public override Figure Clone() => new Queen(Color);
             public override List<Cell> GetAllPossibleMoves()
@@ -262,7 +262,7 @@ namespace Chess
         /// </summary>
         public class Rook : Figure
         {
-            public override int Weight { get; set; } = 6;
+            public override int Weight { get; set; } = 50;
             public Rook(FigureColors color, int firstMove = 0) : base(color, firstMove) { }
         public override Figure Clone() => new Rook(Color, IsFirstMove);
             public override List<Cell> GetAllPossibleMoves()
@@ -283,7 +283,7 @@ namespace Chess
         /// </summary>
         public class Knight : Figure
         {
-            public override int Weight { get; set; } = 3;
+            public override int Weight { get; set; } = 30;
             public Knight(FigureColors color) : base(color) { }
             public override Figure Clone() => new Knight(Color);
             public override List<Cell> GetAllPossibleMoves()
@@ -307,7 +307,7 @@ namespace Chess
         /// </summary>
         public class Bishop : Figure
         {
-            public override int Weight { get; set; } = 3;
+            public override int Weight { get; set; } = 30;
             public Bishop(FigureColors color) : base(color) { }
             public override Figure Clone() => new Bishop(Color);
             public override List<Cell> GetAllPossibleMoves()
@@ -328,7 +328,7 @@ namespace Chess
         /// </summary>
         public class Pawn : Figure
         {
-            public override int Weight { get; set; } = 1;
+            public override int Weight { get; set; } = 10;
 
             private int count = -2;
 

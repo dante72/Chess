@@ -36,7 +36,7 @@ namespace Chess
                 for (int j = 0; j < 8; j++)
                     Cells.Add(new Cell(i, j, this));
 
-            SetupСhessBoard4();
+            SetupСhessBoard5();
         }
 
         /// <summary>
@@ -101,6 +101,12 @@ namespace Chess
 
         }
 
+        public bool CheckMate()
+        {
+            var figurs = Cells.Where(i => i.Figure != null && i.Figure.Color == (Index % 2 != 0 ? FigureColors.White : FigureColors.Black)).Select(i => i.Figure);
+            return !figurs.SelectMany(i => i.GetCorrectPossibleMoves()).Any();
+        }
+
         public static bool operator ==(Board b1, Board b2)
         {
             for (int i = 0; i < 8; i++)
@@ -108,9 +114,23 @@ namespace Chess
                     if (!(b1[i, j].Figure?.ToString() == b2[i, j].Figure?.ToString()))
                         return false;
             return true;
-
         }
-        
+
+        public float Evaluation()
+        {
+            float sum = 0;
+
+            foreach (var cell in Cells)
+            {
+                if (cell.Figure != null)
+                {
+                    sum += cell.Figure.Color == FigureColors.White ? cell.Figure.Weight : -cell.Figure.Weight;
+                }
+            }
+
+            return sum;
+        }
+
         public static bool operator !=(Board b1, Board b2)
         {
             return !(b1 == b2);
@@ -150,7 +170,7 @@ namespace Chess
             this[0, 4].Figure = new King(FigureColors.Black, 1);
             //this[0, 5].Figure = new Bishop(FigureColors.Black);
             //this[0, 6].Figure = new Knight(FigureColors.Black);
-            //this[0, 7].Figure = new Rook(FigureColors.Black);
+            this[0, 7].Figure = new Rook(FigureColors.Black);
 
            // this[7, 0].Figure = new Rook(FigureColors.White);
             //this[7, 1].Figure = new Knight(FigureColors.White);
