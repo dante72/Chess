@@ -57,7 +57,7 @@ namespace Chess
 
         public override string ToString()
         {
-            return $"{(char)('a' + Column)}{Row + 1}";
+            return $"{(char)('a' + Column)}{8 - Row}";
         }
     }
 }
