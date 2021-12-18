@@ -130,6 +130,11 @@ namespace Chess
 
             return moves;
         }
+
+        public virtual List<Cell> GetPossibleMoves()
+        {
+            return GetCorrectPossibleMoves();
+        }
         public abstract Figure Clone();
 
         protected bool Сheckmate(Figure figure, Cell pos)
@@ -212,6 +217,11 @@ namespace Chess
                 }
 
                 return list/*.Where(i => !Сheckmate(this, i))*/.ToList();
+            }
+
+            public override List<Cell> GetPossibleMoves()
+            {
+                return GetCorrectPossibleMoves().Where(i => !Сheckmate(this, i)).ToList();
             }
 
             public override List<Cell> GetCorrectPossibleMoves()

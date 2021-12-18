@@ -22,7 +22,7 @@ namespace Chess
             {
                 selectedFigure = value;
 
-                selectedFigure?.GetCorrectPossibleMoves()
+                selectedFigure?.GetPossibleMoves()
                     .Select(i => ChessBoard[i.Row, i.Column])
                     .ToList()
                     .ForEach(a => a.IsMarked = true);
