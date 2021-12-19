@@ -118,13 +118,12 @@ namespace Chess
             {
                 return makeMoveCommand ??
                     (makeMoveCommand = new RelayCommand(obj =>
-                    {   AI3.Head = new TreeNode();
-                        AI3.Head.Data = new IASimple2 { Board = new Board(ChessBoard.board) };
-                        AI3.CreateTreePossibleMovies(AI3.Head, 2);
-                        var move = AI3.GetResult(AI3.Head, 2);
+                    {   
+                        AI.Head = new TreeNode();
+                        AI.Head.Data = new IASimple2 { Board = new Board(ChessBoard.board) };
+                        AI.CreateTreePossibleMovies(AI.Head, 2);
+                        var move = AI.GetResult(AI.Head, 2);
                         ChessBoard.board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.board[move.Cell.Row, move.Cell.Column]);
-                        
-                        //AI2.Head = AI2.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.board);
                     }));
             }
 

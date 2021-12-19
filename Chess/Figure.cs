@@ -11,8 +11,15 @@ namespace Chess
     /// </summary>
     public abstract class Figure : IFirstMove
     {
-        public float points;
-        public Cell winner;
+        private IList<Cell> possibleMoves = null;
+        public IList<Cell> PossibleMoves { 
+            get
+            {
+                if (possibleMoves == null)
+                    possibleMoves = GetPossibleMoves();
+                return possibleMoves;
+            }
+        }
         public virtual int Weight { get; set; } = 0;
         /// <summary>
         /// Цвет фигуры

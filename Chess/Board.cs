@@ -36,7 +36,7 @@ namespace Chess
                 for (int j = 0; j < 8; j++)
                     Cells.Add(new Cell(i, j, this));
 
-            SetupСhessBoard2();
+            SetupСhessBoard5();
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Chess
         public bool CheckMate()
         {
             var figurs = Cells.Where(i => i.Figure != null && i.Figure.Color == (Index % 2 != 0 ? FigureColors.White : FigureColors.Black)).Select(i => i.Figure);
-            return !figurs.SelectMany(i => i.GetCorrectPossibleMoves()).Any();
+            return !figurs.SelectMany(i => i.PossibleMoves).Any();
         }
 
         public static bool operator ==(Board b1, Board b2)
