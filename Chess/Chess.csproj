@@ -65,6 +65,7 @@
     <Compile Include="ChessFigureConvector.cs" />
     <Compile Include="CreateMove.cs" />
     <Compile Include="Directions.cs" />
+    <Compile Include="EvaluateBoard.cs" />
     <Compile Include="Figure.cs" />
     <Compile Include="FigureColors.cs" />
     <Compile Include="IFirstMove.cs" />

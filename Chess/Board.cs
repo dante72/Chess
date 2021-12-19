@@ -124,7 +124,7 @@ namespace Chess
             {
                 if (cell.Figure != null)
                 {
-                    sum += cell.Figure.Color == FigureColors.White ? cell.Figure.Weight : -cell.Figure.Weight;
+                    sum += cell.Figure.Weight;
                 }
             }
 

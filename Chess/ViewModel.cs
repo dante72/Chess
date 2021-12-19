@@ -106,6 +106,9 @@ namespace Chess
         public ViewModel()
         {
             ChessBoard = new BoardVM();
+            var f = EvaluateBoard.PawnEvalBlack;
+            var g = EvaluateBoard.PawnEvalWhite;
+            MessageBox.Show($"{EvaluateBoard.Print(f)}\n{EvaluateBoard.Print(g)}");
 
         }
 

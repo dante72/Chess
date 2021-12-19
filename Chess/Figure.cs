@@ -20,7 +20,16 @@ namespace Chess
                 return possibleMoves;
             }
         }
-        public virtual int Weight { get; set; } = 0;
+
+        public virtual float Weight
+        {
+           get { return Color == FigureColors.White ? 1.0f : -1.0f * Value; }
+        }
+
+        /// <summary>
+        /// Ценность фигуры
+        /// </summary>
+        protected virtual int Value { get; set; } = 0;
         /// <summary>
         /// Цвет фигуры
         /// </summary>
@@ -156,7 +165,15 @@ namespace Chess
         /// </summary>
         public class King : Figure
         {
-            public override int Weight { get; set; } = 900;
+            public override float Weight
+            {
+                get
+                {
+                    return Color == FigureColors.White ? Value + EvaluateBoard.KingEvalWhite[Position.Row, Position.Column] :
+                        -Value - EvaluateBoard.KingEvalBlack[Position.Row, Position.Column];
+                }
+            }
+            protected override int Value { get; set; } = 900;
             public King(FigureColors color, int firstMove = 0) : base(color, firstMove) { }
             public override Figure Clone() => new King(Color, IsFirstMove);
 
@@ -255,7 +272,15 @@ namespace Chess
         /// </summary> 
         public class Queen : Figure
         {
-            public override int Weight { get; set; } = 90;
+            public override float Weight
+            {
+                get
+                {
+                    return Color == FigureColors.White ? Value + EvaluateBoard.QueenEval[Position.Row, Position.Column] :
+                        -Value - EvaluateBoard.QueenEval[Position.Row, Position.Column];
+                }
+            }
+            protected override int Value { get; set; } = 90;
             public Queen(FigureColors color) : base(color) { }
             public override Figure Clone() => new Queen(Color);
             public override List<Cell> GetAllPossibleMoves()
@@ -280,7 +305,15 @@ namespace Chess
         /// </summary>
         public class Rook : Figure
         {
-            public override int Weight { get; set; } = 50;
+            public override float Weight
+            {
+                get
+                {
+                    return Color == FigureColors.White ? Value + EvaluateBoard.RookEvalWhite[Position.Row, Position.Column] :
+                        -Value - EvaluateBoard.RookEvalBlack[Position.Row, Position.Column];
+                }
+            }
+            protected override int Value { get; set; } = 50;
             public Rook(FigureColors color, int firstMove = 0) : base(color, firstMove) { }
         public override Figure Clone() => new Rook(Color, IsFirstMove);
             public override List<Cell> GetAllPossibleMoves()
@@ -301,7 +334,15 @@ namespace Chess
         /// </summary>
         public class Knight : Figure
         {
-            public override int Weight { get; set; } = 30;
+            public override float Weight
+            {
+                get
+                {
+                    return Color == FigureColors.White ? Value + EvaluateBoard.KnightEval[Position.Row, Position.Column] :
+                        -Value - EvaluateBoard.KnightEval[Position.Row, Position.Column];
+                }
+            }
+            protected override int Value { get; set; } = 30;
             public Knight(FigureColors color) : base(color) { }
             public override Figure Clone() => new Knight(Color);
             public override List<Cell> GetAllPossibleMoves()
@@ -325,7 +366,15 @@ namespace Chess
         /// </summary>
         public class Bishop : Figure
         {
-            public override int Weight { get; set; } = 30;
+            public override float Weight
+            {
+                get
+                {
+                    return Color == FigureColors.White ? Value + EvaluateBoard.BishopEvalWhite[Position.Row, Position.Column] :
+                        -Value - EvaluateBoard.BishopEvalBlack[Position.Row, Position.Column];
+                }
+            }
+            protected override int Value { get; set; } = 30;
             public Bishop(FigureColors color) : base(color) { }
             public override Figure Clone() => new Bishop(Color);
             public override List<Cell> GetAllPossibleMoves()
@@ -346,7 +395,15 @@ namespace Chess
         /// </summary>
         public class Pawn : Figure
         {
-            public override int Weight { get; set; } = 10;
+            public override float Weight
+            {
+                get
+                {
+                    return Color == FigureColors.White ? Value + EvaluateBoard.PawnEvalWhite[Position.Row, Position.Column] :
+                        -Value - EvaluateBoard.PawnEvalBlack[Position.Row, Position.Column];
+                }
+            }
+            protected override int Value { get; set; } = 10;
 
             private int count = -2;
 
