@@ -49,6 +49,7 @@ namespace Chess
             Position.Figure = null;
             to.Figure = this;
             Board.Index++;
+            IsFirstMove++;
         }
 
         /// <summary>
@@ -353,8 +354,8 @@ namespace Chess
             public Pawn(FigureColors color, int firstMove = 0) : base(color, firstMove) { }
             public override Figure Clone() => new Pawn(Color, IsFirstMove);
             public override void MoveTo(Cell to)
-            {   
-                
+            {
+                //count = Board.Index + 2;
                 if (pawn != null && to.Figure == null && to.Column - Position.Column != 0)
                 {
                     pawn.Position.Figure = null;

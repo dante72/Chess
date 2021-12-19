@@ -54,7 +54,7 @@ namespace Chess
                     };
                     
                     head.Add(node);
-                    if (newBoard.CheckMate())
+                    if (newBoard.IsCheckMate())
                     {
                         if (newBoard.Index % 2 == 0)
                             node.Data.Score += 9999;

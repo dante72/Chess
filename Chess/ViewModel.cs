@@ -107,8 +107,6 @@ namespace Chess
         {
             ChessBoard = new BoardVM();
 
-            //AI2.CreateTreePossibleMovies(AI2.Head, 6, 2);
-
         }
 
         private RelayCommand makeMoveCommand;
