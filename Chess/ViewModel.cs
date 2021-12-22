@@ -53,13 +53,14 @@ namespace Chess
                     SelectedFigure.MoveTo(selectedItem.Value);
                     selectedItem.IsSelected = false;
 
-                    //превращение пешки на краю доски
+                    //превращение пешки на к
                     if (SelectedFigure is Pawn p && (selectedItem.Value.Row == 0 || selectedItem.Value.Row == 7))
                     {
                         PawnTransform dialog = new PawnTransform(p.Color);
                         dialog.ShowDialog();
                         SelectedFigure.Position.Figure = (Figure)dialog.DataContext;
                     }
+                    
                 }
                 
                 ClearMarks();

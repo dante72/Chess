@@ -55,8 +55,11 @@ namespace Chess
 
         public virtual void MoveTo(Cell to)
         {
+
             Position.Figure = null;
             to.Figure = this;
+            if (this is Pawn && (to.Row == 0 || to.Row == 7))
+                to.Figure = new Queen(Color);
             Board.Index++;
             IsFirstMove++;
         }
