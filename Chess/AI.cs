@@ -108,6 +108,7 @@ namespace Chess
 
         public static IASimple2 GetResult(TreeNode head, int depth)
         {
+            List<Task> tasks = new List<Task>();
             var dictionary = head.ChildNodes.ToDictionary(node => node, node => FindMove(node, depth));
             float minmax = head.Data.Board.Index % 2 != 0 ? (float)dictionary.Max(d => d.Value) : (float)dictionary.Min(d => d.Value);
             string str = "";
