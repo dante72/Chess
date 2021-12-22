@@ -412,14 +412,13 @@ namespace Chess
             public override Figure Clone() => new Pawn(Color, IsFirstMove);
             public override void MoveTo(Cell to)
             {
-                //count = Board.Index + 2;
                 if (pawn != null && to.Figure == null && to.Column - Position.Column != 0)
                 {
                     pawn.Position.Figure = null;
                 }
                 base.MoveTo(to);
 
-                if (IsFirstMove == 1)
+                if (IsFirstMove == 1 && (Position.Row == 3 || Position.Row == 4))
                 {
                     if (Position[0, 1]?.Figure is Pawn p1 && p1.Color != Color)
                     {
