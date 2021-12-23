@@ -28,7 +28,7 @@ namespace Chess
         /// <summary>
         /// Создать доску с начальной расстановкой фигур
         /// </summary>
-        public Board()
+        /*public Board()
         {
             Index = 1;
             Cells = new List<Cell>();
@@ -37,6 +37,50 @@ namespace Chess
                     Cells.Add(new Cell(i, j, this));
 
             SetupСhessBoard7();
+        }*/
+
+        public Board(string info = @"a2WP b2WP c2WP d2WP e2WP f2WP g2WP h2WP
+                                     a1WR b1WN c1WB d1WQ e1WK f1WB g1WN h1WR
+                                     a7BP b7BP c7BP d7BP e7BP f7BP g7BP h7BP
+                                     a8BR b8BN c8BB d8BK e8BQ f8BB g8BN h8BR")
+        {
+            Index = 1;
+            Cells = new List<Cell>();
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                    Cells.Add(new Cell(i, j, this));
+
+
+            int k = 0;
+            while(k < info.Length)
+            {
+                while (info[k] == ' ' || info[k] == '\t' || info[k] == '\r' || info[k] == '\n')
+                    k++;
+                int column = info[k++] - 'a';
+                int row = 8 - (info[k++] - '0');
+                var color = info[k++] == 'W' ? FigureColors.White : FigureColors.Black;
+                var figure = GetFigure(info[k++], color);
+
+                this[row, column].Figure = figure;
+                if (figure is King && (row == 7 && column == 3 || row == 0 && column == 4))
+                    figure.IsFirstMove = 0;
+
+            }
+            //SetupСhessBoard7();
+        }
+
+        Figure GetFigure(char f, FigureColors color)
+        {
+            switch (f)
+            {
+                case 'K': return new King(color, 1);
+                case 'Q': return new Queen(color);
+                case 'B': return new Bishop(color);
+                case 'N': return new Knight(color);
+                case 'R': return new Rook(color);
+                case 'P': return new Pawn(color);
+                default: throw new Exception("Error figure");
+            }
         }
 
         /// <summary>
