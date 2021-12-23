@@ -63,6 +63,10 @@
     <Compile Include="CellVM.cs" />
     <Compile Include="CellColorConverter.cs" />
     <Compile Include="ChessFigureConvector.cs" />
+    <Compile Include="ChessTasks.xaml.cs">
+      <DependentUpon>ChessTasks.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ChessTasksViewModel.cs" />
     <Compile Include="CreateMove.cs" />
     <Compile Include="Directions.cs" />
     <Compile Include="EvaluateBoard.cs" />
@@ -77,6 +81,10 @@
     <Compile Include="RelayCommand.cs" />
     <Compile Include="TreeNode.cs" />
     <Compile Include="ViewModel.cs" />
+    <Page Include="ChessTasks.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

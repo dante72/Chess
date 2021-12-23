@@ -110,5 +110,21 @@ namespace Chess
 
 
         }
+
+        private RelayCommand chessTasksCommand;
+        public RelayCommand ChessTasksCommand
+        {
+            get
+            {
+                return chessTasksCommand ??
+                    (chessTasksCommand = new RelayCommand(obj =>
+                    {
+                        var dialog = new ChessTasks();
+                        dialog.ShowDialog();
+                    }));
+            }
+
+
+        }
     }
 }

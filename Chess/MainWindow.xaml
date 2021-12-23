@@ -17,13 +17,15 @@
         </DockPanel.DataContext>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
+                <MenuItem Header="Select a task..." Command="{Binding ChessTasksCommand}"></MenuItem>
             </MenuItem>
             <MenuItem Command="{Binding MakeMoveCommand}" Header="Make move"></MenuItem>
         </Menu>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="19*"/>
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition Width="76*"/>
+                <ColumnDefinition Width="677*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -31,7 +33,7 @@
             </Grid.RowDefinitions>
             <ListBox ItemsSource="{Binding Letters}"
                      Grid.Row="0" Grid.Column="1"
-                     IsEnabled="false">
+                     IsEnabled="false" Grid.ColumnSpan="2" Margin="0,0,-0.4,714.8" Grid.RowSpan="2">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="8"
@@ -52,7 +54,7 @@
             </ListBox>
             <ListBox ItemsSource="{Binding Digits}"
                      Grid.Row="1" Grid.Column="0"
-                     IsEnabled="false">
+                     IsEnabled="false" Margin="0,0.4,0,-0.2">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="1"
@@ -73,7 +75,7 @@
             </ListBox>
             <ListBox ItemsSource="{Binding ChessBoard}"
                      Grid.Row="1" Grid.Column="1"
-                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}" Grid.ColumnSpan="2" Margin="0,0.4,-0.4,-0.2">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="8"
@@ -108,12 +110,12 @@
                                             <Setter Property="Background" Value="SandyBrown"></Setter>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding IsMarked}" Value="True">
-                                                <Setter TargetName="fore" Property="Background" Value="Red"/>
-                                                <Setter TargetName="fore" Property="BorderThickness" Value="1"/>
-                                                <Setter TargetName="fore" Property="BorderBrush" Value="Red"/>
-                                                <Setter TargetName="fore" Property="Opacity" Value="0.7"/>
-                                                <Setter TargetName="back" Property="Opacity" Value="0.3"/>
-                                            </DataTrigger>
+                                            <Setter TargetName="fore" Property="Background" Value="Red"/>
+                                            <Setter TargetName="fore" Property="BorderThickness" Value="1"/>
+                                            <Setter TargetName="fore" Property="BorderBrush" Value="Red"/>
+                                            <Setter TargetName="fore" Property="Opacity" Value="0.7"/>
+                                            <Setter TargetName="back" Property="Opacity" Value="0.3"/>
+                                        </DataTrigger>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding IsMarked}" Value="True" />
@@ -126,7 +128,7 @@
                                             <Setter TargetName="back" Property="Opacity" Value="0.3"/>
                                         </MultiDataTrigger>
 
-                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                             <Setter Property="Background" Value="SkyBlue"/>
                                             <Setter Property="BorderThickness" Value="1"/>
                                             <Setter Property="BorderBrush" Value="DeepSkyBlue"/>
