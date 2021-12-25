@@ -13,7 +13,7 @@ namespace Chess
         public List<string> Letters { set; get; } = new List<string>() { "a", "b", "c", "d", "e", "f", "g", "h"};
         public List<string> Digits { set; get; } = new List<string>() { "8", "7", "6", "5", "4", "3", "2", "1" };
         public BoardVM ChessBoard { set; get; }
-        public ObservableCollection<CellVM> Cells { set; get; }
+        //public ObservableCollection<CellVM> Cells { set; get; }
 
         private Figure selectedFigure;
 
@@ -101,10 +101,10 @@ namespace Chess
                     (makeMoveCommand = new RelayCommand(obj =>
                     {   
                         AI.Head = new TreeNode();
-                        AI.Head.Data = new IASimple2 { Board = new Board(ChessBoard.board) };
+                        AI.Head.Data = new IASimple2 { Board = new Board(ChessBoard.Board) };
                         AI.CreateTreePossibleMovies(AI.Head, 2);
                         var move = AI.GetResult(AI.Head, 2);
-                        ChessBoard.board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.board[move.Cell.Row, move.Cell.Column]);
+                        ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
                     }));
             }
 
@@ -120,11 +120,14 @@ namespace Chess
                     (chessTasksCommand = new RelayCommand(obj =>
                     {
                         var dialog = new ChessTasks();
-                        dialog.ShowDialog();
+                        if (dialog.ShowDialog() == true)
+                        {
+                            var board = (Board)dialog.DataContext;
+                            ChessBoard.Update(board);
+
+                        }
                     }));
             }
-
-
         }
     }
 }

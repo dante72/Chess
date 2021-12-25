@@ -12,9 +12,9 @@ namespace Chess
     /// </summary>
     public class BoardVM : IEnumerable<CellVM>
     {
-        private readonly CellVM[,] cells;
+        private CellVM[,] cells;
 
-        public readonly Board board;
+        public Board Board { set; get; }
 
         public CellVM this[int row, int column]
         {
@@ -27,21 +27,31 @@ namespace Chess
 
         public BoardVM()
         {
-            board = new Board();
+            Board = new Board();
+            cells = new CellVM[8, 8];
+            for (int i = 0; i < cells.GetLength(0); i++)
+                for (int j = 0; j < cells.GetLength(1); j++)
+                    cells[i, j] = new CellVM(Board[i, j]);
+        }
+
+
+        public BoardVM(Board board)
+        {
+            this.Board = board;
             cells = new CellVM[8, 8];
             for (int i = 0; i < cells.GetLength(0); i++)
                 for (int j = 0; j < cells.GetLength(1); j++)
                     cells[i, j] = new CellVM(board[i, j]);
         }
 
-
-        public BoardVM(Board board)
+        public void Update(Board board)
         {
-            this.board = board;
-            cells = new CellVM[8, 8];
+            Board.Index = board.Index;
             for (int i = 0; i < cells.GetLength(0); i++)
                 for (int j = 0; j < cells.GetLength(1); j++)
-                    cells[i, j] = new CellVM(board[i, j]);
+                {
+                    cells[i, j].Value.Figure = board[i, j].Figure?.Clone();
+                }
         }
 
         public IEnumerator<CellVM> GetEnumerator()

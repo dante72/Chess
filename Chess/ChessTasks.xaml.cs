@@ -19,9 +19,25 @@ namespace Chess
     /// </summary>
     public partial class ChessTasks : Window
     {
+
         public ChessTasks()
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (listBox.SelectedItem != null)
+            {
+                DataContext = (listBox.SelectedItem as BoardVM).Board;
+                DialogResult = true;
+            }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+        }
+        
     }
 }
