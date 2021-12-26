@@ -10,10 +10,10 @@ namespace Chess
 {
     public class ViewModel : NotifyPropertyChanged
     {
+        private Board currentBoard;
         public List<string> Letters { set; get; } = new List<string>() { "a", "b", "c", "d", "e", "f", "g", "h"};
         public List<string> Digits { set; get; } = new List<string>() { "8", "7", "6", "5", "4", "3", "2", "1" };
         public BoardVM ChessBoard { set; get; }
-        //public ObservableCollection<CellVM> Cells { set; get; }
 
         private Figure selectedFigure;
 
@@ -51,9 +51,15 @@ namespace Chess
                 if (selectedItem.IsMarked)
                 {
                     SelectedFigure.MoveTo(selectedItem.Value);
+                    if (ChessBoard.Board.IsCheckMate)
+                    {
+                        MessageBox.Show("MATE!");
+                        //ChessBoard.Update(currentBoard);
+
+                    }
                     selectedItem.IsSelected = false;
 
-                    //превращение пешки на к
+                    //превращение пешки
                     if (SelectedFigure is Pawn p && (selectedItem.Value.Row == 0 || selectedItem.Value.Row == 7))
                     {
                         PawnTransform dialog = new PawnTransform(p.Color);
@@ -68,7 +74,6 @@ namespace Chess
                    
 
                 selectedItem.IsSelected = true;
-                
             }
             get
             {
@@ -86,9 +91,10 @@ namespace Chess
         public ViewModel()
         {
             ChessBoard = new BoardVM();
-            var f = EvaluateBoard.PawnEvalBlack;
-            var g = EvaluateBoard.PawnEvalWhite;
-            MessageBox.Show($"{EvaluateBoard.Print(f)}\n{EvaluateBoard.Print(g)}");
+            currentBoard = new Board(ChessBoard.Board);
+            //var f = EvaluateBoard.PawnEvalBlack;
+            //var g = EvaluateBoard.PawnEvalWhite;
+            //MessageBox.Show($"{EvaluateBoard.Print(f)}\n{EvaluateBoard.Print(g)}");
 
         }
 
@@ -105,6 +111,12 @@ namespace Chess
                         AI.CreateTreePossibleMovies(AI.Head, 2);
                         var move = AI.GetResult(AI.Head, 2);
                         ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
+
+                        if (ChessBoard.Board.IsCheckMate)
+                        {
+                            MessageBox.Show("MATE!");
+                            ChessBoard.Update(currentBoard);
+                        }
                     }));
             }
 
@@ -124,6 +136,7 @@ namespace Chess
                         {
                             var board = (Board)dialog.DataContext;
                             ChessBoard.Update(board);
+                            currentBoard = new Board(board);
                         }
                     }));
             }

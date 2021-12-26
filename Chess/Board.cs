@@ -10,6 +10,7 @@ namespace Chess
 {
     public class Board
     {
+        public bool IsCheckMate { get => isCheckMate(); }
         public int Index { set; get; }
         public List<Cell> Cells { get; private set; }
         public Cell this[int row, int column]
@@ -144,9 +145,9 @@ namespace Chess
 
         }
 
-        public bool IsCheckMate()
+        public bool isCheckMate()
         {
-            var figurs = Cells.Where(i => i.Figure != null && i.Figure.Color == (Index % 2 != 0 ? FigureColors.White : FigureColors.Black)).Select(i => i.Figure);
+            var figurs = Cells.Where(i => i.Figure != null && i.Figure.Color == (Index % 2 != 0 ? FigureColors.White : FigureColors.Black)).Select(i => i.Figure).ToList();
             return !figurs.SelectMany(i => i.PossibleMoves).Any();
         }
 

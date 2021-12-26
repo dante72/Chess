@@ -11,14 +11,8 @@ namespace Chess
     /// </summary>
     public abstract class Figure : IFirstMove
     {
-        private IList<Cell> possibleMoves = null;
         public IList<Cell> PossibleMoves { 
-            get
-            {
-                if (possibleMoves == null)
-                    possibleMoves = GetPossibleMoves();
-                return possibleMoves;
-            }
+            get => GetPossibleMoves();
         }
 
         public virtual float Weight
