@@ -18,6 +18,7 @@ namespace Chess
             _Boards.Add(new Board(@"b3WB b5WN b6WK d5WN e5BP e6BK d7BP f7BP h7WQ"));
             _Boards.Add(new Board("a3WP a4BP c5BK c6BP d8WB d2WR e2WQ e4WK f4WP"));
             _Boards.Add(new Board("a7WB d2WR g7WN g2BQ g1WN h1BB h2BK h4BP g7WR h8WK"));
+            _Boards.Add(new Board());
         }
 
         public Board SelectedBoard { set; get; }

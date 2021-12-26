@@ -124,7 +124,6 @@ namespace Chess
                         {
                             var board = (Board)dialog.DataContext;
                             ChessBoard.Update(board);
-
                         }
                     }));
             }

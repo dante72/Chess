@@ -145,15 +145,13 @@ namespace Chess
             if (IsMove()) return new List<Cell>();
 
             var moves = GetAllPossibleMoves().Where(i => i.Figure?.Color != Color).ToList();
-            if (Сheckmate(this, Position))
-                moves = moves.Where(i => !Сheckmate(this, i)).ToList();
 
             return moves;
         }
 
         public virtual List<Cell> GetPossibleMoves()
         {
-            return GetCorrectPossibleMoves();
+            return GetCorrectPossibleMoves().Where(i => !Сheckmate(this, i)).ToList();
         }
         public abstract Figure Clone();
 
