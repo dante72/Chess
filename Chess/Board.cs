@@ -17,7 +17,6 @@ namespace Chess
             get
             {
                 return Cells[row * 8 + column];
-
             }
             private set
             {
