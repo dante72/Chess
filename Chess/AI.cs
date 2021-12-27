@@ -103,7 +103,7 @@ namespace Chess
             
             
 
-            return res;   
+            return res * 0.8f;   
         }
 
         public static IASimple2 GetResult(TreeNode head, int depth)
