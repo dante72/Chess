@@ -54,9 +54,15 @@ namespace Chess
                     if (ChessBoard.Board.IsCheckMate)
                     {
                         MessageBox.Show("MATE!");
-                        //ChessBoard.Update(currentBoard);
+                        ChessBoard.Update(currentBoard);
 
                     }
+                    else if (ChessBoard.Board.isCheckPate())
+                    {
+                        MessageBox.Show("PATE!");
+                        ChessBoard.Update(currentBoard);
+                    }
+
                     if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
                     {
                         MessageBox.Show("Moves are over");

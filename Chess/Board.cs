@@ -157,6 +157,13 @@ namespace Chess
             return !figurs.SelectMany(i => i.PossibleMoves).Any() && KingСheck(color);
         }
 
+        public bool isCheckPate()
+        {
+            var color = Index % 2 != 0 ? FigureColors.White : FigureColors.Black;
+            var figurs = Cells.Where(i => i.Figure != null && i.Figure.Color == color).Select(i => i.Figure).ToList();
+            return !figurs.SelectMany(i => i.PossibleMoves).Any();
+        }
+
         public static bool operator ==(Board b1, Board b2)
         {
             for (int i = 0; i < 8; i++)
