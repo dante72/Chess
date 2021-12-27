@@ -12,6 +12,8 @@ namespace Chess
     {
         public bool IsCheckMate { get => isCheckMate(); }
         public int Index { set; get; }
+
+        public int Moves { set; get; }
         public List<Cell> Cells { get; private set; }
         public Cell this[int row, int column]
         {
@@ -42,8 +44,9 @@ namespace Chess
         public Board(string info = @"a2WP b2WP c2WP d2WP e2WP f2WP g2WP h2WP
                                      a1WR b1WN c1WB d1WQ e1WK f1WB g1WN h1WR
                                      a7BP b7BP c7BP d7BP e7BP f7BP g7BP h7BP
-                                     a8BR b8BN c8BB d8BK e8BQ f8BB g8BN h8BR")
+                                     a8BR b8BN c8BB d8BK e8BQ f8BB g8BN h8BR", int moves = -1)
         {
+            Moves = moves * 2 - 1;
             Index = 1;
             Cells = new List<Cell>();
             for (int i = 0; i < 8; i++)
@@ -73,7 +76,7 @@ namespace Chess
         {
             switch (f)
             {
-                case 'K': return new King(color, 1);
+                case 'K': return new King(color);
                 case 'Q': return new Queen(color);
                 case 'B': return new Bishop(color);
                 case 'N': return new Knight(color);
@@ -88,6 +91,7 @@ namespace Chess
         /// </summary>
         public Board(Board copy, Cell from, Cell to)
         {
+            Moves = copy.Moves;
             Index = copy.Index;
             Cells = new List<Cell>();
             for (int i = 0; i < 8; i++)
@@ -104,6 +108,7 @@ namespace Chess
 
         public Board(Board copy)
         {
+            Moves = copy.Moves;
             Index = copy.Index;
             Cells = new List<Cell>();
             for (int i = 0; i < 8; i++)

@@ -57,6 +57,11 @@ namespace Chess
                         //ChessBoard.Update(currentBoard);
 
                     }
+                    if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
+                    {
+                        MessageBox.Show("Moves are over");
+                        ChessBoard.Update(currentBoard);
+                    }
                     selectedItem.IsSelected = false;
 
                     //превращение пешки
@@ -115,6 +120,12 @@ namespace Chess
                         if (ChessBoard.Board.IsCheckMate)
                         {
                             MessageBox.Show("MATE!");
+                            ChessBoard.Update(currentBoard);
+                        }
+
+                        if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
+                        {
+                            MessageBox.Show("Moves are over");
                             ChessBoard.Update(currentBoard);
                         }
                     }));

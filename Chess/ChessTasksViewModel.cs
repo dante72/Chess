@@ -32,7 +32,7 @@ namespace Chess
                 };*/
                 //context.Exercises.Add(ex);
                 //context.SaveChanges();
-                _Boards = context.Exercises.ToList().Select(i => new Board(i.Value)).ToList();
+                _Boards = context.Exercises.ToList().Select(i => new Board(i.Value, i.Moves)).ToList();
             }
         }
 

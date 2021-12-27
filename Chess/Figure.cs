@@ -59,7 +59,7 @@ namespace Chess
         }
 
         /// <summary>
-        /// Получить ячейки в данном направлении (рефакторинг) 
+        /// Получить ячейки в данном направлении (рефакторинг)
         /// </summary>
         protected List<Cell> GetCellsInDirection(Cell current, Directions direction, int range = 8)
         {
@@ -174,7 +174,7 @@ namespace Chess
 
             public override void MoveTo(Cell to)
             {
-                if (IsFirstMove == 0)
+                if (IsFirstMove == 0 && (Position.Column == 3 || Position.Column == 4))
                     Сastling(to);
 
                 base.MoveTo(to);
