@@ -431,7 +431,7 @@ namespace Chess
             {
                 if (IsMove()) return new List<Cell>();
 
-                int range = IsFirstMove == 0 ? 2 : 1;
+                int range = IsFirstMove == 0 && (Position.Row == 1 || Position.Row == 6)? 2 : 1;
                 var direction = Color == FigureColors.White ? Directions.Up : Directions.Down;
                 var fields = GetAllPossibleMoves()
                     .Where(i => i.Figure != null && i.Figure?.Color != Color || count == Board.Index && (Board[i.Row + 1, i.Column].Figure is Pawn p1  && p1 == pawn || Board[i.Row - 1, i.Column].Figure is Pawn p2 && p2 == pawn))

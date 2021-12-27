@@ -152,8 +152,9 @@ namespace Chess
 
         public bool isCheckMate()
         {
-            var figurs = Cells.Where(i => i.Figure != null && i.Figure.Color == (Index % 2 != 0 ? FigureColors.White : FigureColors.Black)).Select(i => i.Figure).ToList();
-            return !figurs.SelectMany(i => i.PossibleMoves).Any();
+            var color = Index % 2 != 0 ? FigureColors.White : FigureColors.Black;
+            var figurs = Cells.Where(i => i.Figure != null && i.Figure.Color == color).Select(i => i.Figure).ToList();
+            return !figurs.SelectMany(i => i.PossibleMoves).Any() && KingСheck(color);
         }
 
         public static bool operator ==(Board b1, Board b2)
