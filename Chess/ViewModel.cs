@@ -55,7 +55,6 @@ namespace Chess
                     {
                         MessageBox.Show("MATE!");
                         ChessBoard.Update(currentBoard);
-
                     }
                     else if (ChessBoard.Board.isCheckPate())
                     {
@@ -126,6 +125,11 @@ namespace Chess
                         if (ChessBoard.Board.IsCheckMate)
                         {
                             MessageBox.Show("MATE!");
+                            ChessBoard.Update(currentBoard);
+                        }
+                        else if (ChessBoard.Board.isCheckPate())
+                        {
+                            MessageBox.Show("PATE!");
                             ChessBoard.Update(currentBoard);
                         }
 
