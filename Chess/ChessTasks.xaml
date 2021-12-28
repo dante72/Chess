@@ -1,0 +1,76 @@
+﻿<Window x:Class="Chess.ChessTasks"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Chess"
+        mc:Ignorable="d"
+        Title="ChessTasks" Height="450" Width="800">
+    <Window.Resources>
+        <local:ChessTasksViewModel x:Key="viewModel"/>
+        <local:CellColorConverter x:Key="cellColorConverter" />
+        <local:ChessFigureConvector x:Key="chessFigureConvector" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+        <Grid.DataContext>
+            <Binding Source="{StaticResource viewModel}"/>
+        </Grid.DataContext>
+        <UniformGrid Rows="1"
+            Grid.Row="1">
+            <Button Margin="10" Click="Button_Click">OK</Button>
+            <Button Margin="10" Click="Button_Click_1">Cancel</Button>
+        </UniformGrid>
+        <ListBox Name ="listBox" ItemsSource="{Binding Boards}" SelectedItem="{Binding SelectedItem}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel></WrapPanel>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                <ListBox ItemsSource="{Binding}" 
+                         Width="300" 
+                         Height="300"
+                         IsEnabled="false">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="8"
+                                     Rows="8"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Background" Value="Bisque"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                        <Canvas>
+                                                <Border x:Name="back" Background="{TemplateBinding Background}" 
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}">
+                                                    <Viewbox Height="{TemplateBinding ActualHeight}" Width="{TemplateBinding ActualWidth}">
+                                                        <Image Source="{Binding Value.Figure, Converter={StaticResource chessFigureConvector}}"/>
+                                                    </Viewbox>
+                                                </Border>
+                                            </Canvas>
+                                        <ControlTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Index, Converter={StaticResource cellColorConverter}}" Value="True">
+                                                    <Setter Property="Background" Value="SandyBrown"></Setter>
+                                                </DataTrigger>
+                                            </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</Window>

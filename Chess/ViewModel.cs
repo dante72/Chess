@@ -1,83 +1,166 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using static Chess.Figure;
 
 namespace Chess
 {
     public class ViewModel : NotifyPropertyChanged
     {
-        public Board СhessBoard { set; get; } = new Board();
-        public ObservableCollection<Cell> Cells { set; get; }
+        private Board currentBoard;
+        public List<string> Letters { set; get; } = new List<string>() { "a", "b", "c", "d", "e", "f", "g", "h"};
+        public List<string> Digits { set; get; } = new List<string>() { "8", "7", "6", "5", "4", "3", "2", "1" };
+        public BoardVM ChessBoard { set; get; }
 
-        private Cell selectedItem;
+        private Figure selectedFigure;
+
+        public Figure SelectedFigure
+        {
+            set
+            {
+                selectedFigure = value;
+
+                selectedFigure?.GetPossibleMoves()
+                    .Select(i => ChessBoard[i.Row, i.Column])
+                    .ToList()
+                    .ForEach(a => a.IsMarked = true);
+            }
+            get 
+            {
+                return selectedFigure;
+            }
+        }
+
+        private CellVM selectedItem;
         
         /// <summary>
         /// Выбранная клетка на доске (вся локика доски)
         /// </summary>
-        public Cell SelectedItem
+        public CellVM SelectedItem
         {
             set
             {
                 if (selectedItem != null)
                     selectedItem.IsSelected = false;
-                
-                if (value.IsMarked == false)
-                    selectedItem?.Figure?.GetPossibleMoves()
-                        .ForEach(a => a.IsMarked = false);
 
-                if (value?.IsMarked == true)
-                { 
-                    selectedItem?.Figure?.GetPossibleMoves()
-                        .ForEach(a => a.IsMarked = false);
-                    value.Figure = selectedItem.Figure;
-                    selectedItem.Figure = null;
+                selectedItem = value;
 
-                }
-                else
+                if (selectedItem.IsMarked)
                 {
-                    selectedItem = value;
-                    selectedItem?.Figure?.GetPossibleMoves()
-                    .ForEach(a => a.IsMarked = true);
+                    SelectedFigure.MoveTo(selectedItem.Value);
+                    if (ChessBoard.Board.IsCheckMate)
+                    {
+                        MessageBox.Show("MATE!");
+                        ChessBoard.Update(currentBoard);
+                    }
+                    else if (ChessBoard.Board.isCheckPate())
+                    {
+                        MessageBox.Show("PATE!");
+                        ChessBoard.Update(currentBoard);
+                    }
 
-                    selectedItem.IsSelected = true;
+                    if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
+                    {
+                        MessageBox.Show("Moves are over");
+                        ChessBoard.Update(currentBoard);
+                    }
+                    selectedItem.IsSelected = false;
+
+                    //превращение пешки
+                    if (SelectedFigure is Pawn p && (selectedItem.Value.Row == 0 || selectedItem.Value.Row == 7))
+                    {
+                        PawnTransform dialog = new PawnTransform(p.Color);
+                        dialog.ShowDialog();
+                        SelectedFigure.Position.Figure = (Figure)dialog.DataContext;
+                    }
+                    
                 }
+                
+                ClearMarks();
+                SelectedFigure = selectedItem?.Figure;
+                   
+
+                selectedItem.IsSelected = true;
             }
-            get => selectedItem;
+            get
+            {
+                return selectedItem;
+            }
         
         }
 
+        private void ClearMarks()
+        {
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                    ChessBoard[i, j].IsMarked = false;
+        }
         public ViewModel()
         {
-            SetupСhessBoard();
+            ChessBoard = new BoardVM();
+            currentBoard = new Board(ChessBoard.Board);
+            //var f = EvaluateBoard.PawnEvalBlack;
+            //var g = EvaluateBoard.PawnEvalWhite;
+            //MessageBox.Show($"{EvaluateBoard.Print(f)}\n{EvaluateBoard.Print(g)}");
+
         }
 
-        private void SetupСhessBoard()
+        private RelayCommand makeMoveCommand;
+        public RelayCommand MakeMoveCommand
         {
-            СhessBoard[0, 0] = new Rook(FigureColors.Black);
-            СhessBoard[0, 1] = new Knight(FigureColors.Black);
-            СhessBoard[0, 2] = new Bishop(FigureColors.Black);
-            СhessBoard[0, 3] = new Queen(FigureColors.Black);
-            СhessBoard[0, 4] = new King(FigureColors.Black);
-            СhessBoard[0, 5] = new Bishop(FigureColors.Black);
-            СhessBoard[0, 6] = new Knight(FigureColors.Black);
-            СhessBoard[0, 7] = new Rook(FigureColors.Black);
-            for (int i = 0; i < 8; i++)
+            get
             {
-                СhessBoard[1, i] = new Pawn(FigureColors.Black);
-                СhessBoard[6, i] = new Pawn(FigureColors.White);
+                return makeMoveCommand ??
+                    (makeMoveCommand = new RelayCommand(obj =>
+                    {   
+                        AI.Head = new TreeNode();
+                        AI.Head.Data = new IASimple2 { Board = new Board(ChessBoard.Board) };
+                        AI.CreateTreePossibleMovies(AI.Head, 2);
+                        var move = AI.GetResult(AI.Head, 2);
+                        ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
+
+                        if (ChessBoard.Board.IsCheckMate)
+                        {
+                            MessageBox.Show("MATE!");
+                            ChessBoard.Update(currentBoard);
+                        }
+                        else if (ChessBoard.Board.isCheckPate())
+                        {
+                            MessageBox.Show("PATE!");
+                            ChessBoard.Update(currentBoard);
+                        }
+
+                        if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
+                        {
+                            MessageBox.Show("Moves are over");
+                            ChessBoard.Update(currentBoard);
+                        }
+                    }));
             }
-            СhessBoard[7, 0] = new Rook(FigureColors.White);
-            СhessBoard[7, 1] = new Knight(FigureColors.White);
-            СhessBoard[7, 2] = new Bishop(FigureColors.White);
-            СhessBoard[7, 3] = new Queen(FigureColors.White);
-            СhessBoard[7, 4] = new King(FigureColors.White);
-            СhessBoard[7, 5] = new Bishop(FigureColors.White);
-            СhessBoard[7, 6] = new Knight(FigureColors.White);
-            СhessBoard[7, 7] = new Rook(FigureColors.White);
+
+
+        }
+
+        private RelayCommand chessTasksCommand;
+        public RelayCommand ChessTasksCommand
+        {
+            get
+            {
+                return chessTasksCommand ??
+                    (chessTasksCommand = new RelayCommand(obj =>
+                    {
+                        var dialog = new ChessTasks();
+                        if (dialog.ShowDialog() == true)
+                        {
+                            var board = (Board)dialog.DataContext;
+                            ChessBoard.Update(board);
+                            currentBoard = new Board(board);
+                        }
+                    }));
+            }
         }
     }
 }

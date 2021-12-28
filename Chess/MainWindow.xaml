@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="800">
+        Title="MainWindow" Height="800" Width="800" ResizeMode="NoResize">
     <Window.Resources>
         <local:ViewModel x:Key="viewModel"/>
         <local:CellColorConverter x:Key="cellColorConverter" />
@@ -15,18 +15,67 @@
         <DockPanel.DataContext>
             <Binding Source="{StaticResource viewModel}"/>
         </DockPanel.DataContext>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Select a task..." Command="{Binding ChessTasksCommand}"></MenuItem>
+            </MenuItem>
+            <MenuItem Command="{Binding MakeMoveCommand}" Header="Make move"></MenuItem>
+        </Menu>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="9*"/>
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition Width="76*"/>
+                <ColumnDefinition Width="677*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition/>
-                <RowDefinition Height ="9*"/>
+                <RowDefinition Height ="19*"/>
             </Grid.RowDefinitions>
-            <ListBox ItemsSource="{Binding СhessBoard}"
+            <ListBox ItemsSource="{Binding Letters}"
+                     Grid.Row="0" Grid.Column="1"
+                     IsEnabled="false" Grid.ColumnSpan="2" Margin="0,0,-0.4,714.8" Grid.RowSpan="2">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="8"
+                                     Rows="1"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   HorizontalAlignment="Stretch"
+                                   TextAlignment="Center"
+                                   Width="70"
+                                   FontSize="20"
+                                   >
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ListBox ItemsSource="{Binding Digits}"
+                     Grid.Row="1" Grid.Column="0"
+                     IsEnabled="false" Margin="0,0.4,0,-0.2">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="1"
+                                     Rows="8"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   HorizontalAlignment="Stretch"
+                                   TextAlignment="Center"
+                                   Height="70"
+                                   FontSize="20"
+                                   >
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ListBox ItemsSource="{Binding ChessBoard}"
                      Grid.Row="1" Grid.Column="1"
-                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}" Grid.ColumnSpan="2" Margin="0,0.4,-0.4,-0.2">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="8"
@@ -45,7 +94,7 @@
                                           BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}">
                                             <Viewbox Height="{TemplateBinding ActualHeight}" Width="{TemplateBinding ActualWidth}">
-                                                <Image Source="{Binding Figure, Converter={StaticResource chessFigureConvector}}"/>
+                                                <Image Source="{Binding Value.Figure, Converter={StaticResource chessFigureConvector}}"/>
                                             </Viewbox>
                                         </Border>
                                         <Border x:Name="fore"
@@ -61,16 +110,16 @@
                                             <Setter Property="Background" Value="SandyBrown"></Setter>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding IsMarked}" Value="True">
-                                                <Setter TargetName="fore" Property="Background" Value="Red"/>
-                                                <Setter TargetName="fore" Property="BorderThickness" Value="1"/>
-                                                <Setter TargetName="fore" Property="BorderBrush" Value="Red"/>
-                                                <Setter TargetName="fore" Property="Opacity" Value="0.7"/>
-                                                <Setter TargetName="back" Property="Opacity" Value="0.3"/>
-                                            </DataTrigger>
+                                            <Setter TargetName="fore" Property="Background" Value="Red"/>
+                                            <Setter TargetName="fore" Property="BorderThickness" Value="1"/>
+                                            <Setter TargetName="fore" Property="BorderBrush" Value="Red"/>
+                                            <Setter TargetName="fore" Property="Opacity" Value="0.7"/>
+                                            <Setter TargetName="back" Property="Opacity" Value="0.3"/>
+                                        </DataTrigger>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding IsMarked}" Value="True" />
-                                                <Condition Binding="{Binding Figure}" Value="{x:Null}" />
+                                                <Condition Binding="{Binding Value.Figure}" Value="{x:Null}" />
                                             </MultiDataTrigger.Conditions>
                                             <Setter TargetName="fore" Property="Background" Value="#FF36E400"/>
                                             <Setter TargetName="fore" Property="BorderThickness" Value="1"/>
@@ -79,7 +128,7 @@
                                             <Setter TargetName="back" Property="Opacity" Value="0.3"/>
                                         </MultiDataTrigger>
 
-                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                             <Setter Property="Background" Value="SkyBlue"/>
                                             <Setter Property="BorderThickness" Value="1"/>
                                             <Setter Property="BorderBrush" Value="DeepSkyBlue"/>
