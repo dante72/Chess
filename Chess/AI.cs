@@ -18,12 +18,17 @@ namespace Chess
         public float Score = 0;
     }
 
-    public class IASimple2
+    public class IASimple2 : IComparable
     {
         public Figure Figure { get; set; }
         public Cell Cell { get; set; }
         public Board Board { get; set; }
         public float Score = 0;
+
+        public int CompareTo(object obj)
+        {
+            return (int)(Score - (obj as IASimple2).Score);
+        }
     }
 
     public static class AI
@@ -54,9 +59,21 @@ namespace Chess
                     };
                     
                     head.Add(node);
-                    if (newBoard.IsCheckMate)
+                }
+            }
+            if (head.ChildNodes == null)
+                return;
+            
+            if (head.Data.Board.Index % 2 == 0)
+                head.ChildNodes.OrderBy(i => i.Data.Score);
+            else
+                head.ChildNodes.OrderByDescending(i => i.Data.Score);
+
+            foreach (var node in head.ChildNodes)
+            {                    
+                if (node.Data.Board.IsCheckMate)
                     {
-                        if (newBoard.Index % 2 == 0)
+                        if (node.Data.Board.Index % 2 == 0)
                             node.Data.Score += 9999;
                         else
                             node.Data.Score -= 9999;
@@ -64,7 +81,6 @@ namespace Chess
                     else
                         if (currentDepth < depth)
                             CreateTreePossibleMovies(node, depth, currentDepth + 1);
-                }
             }
         }
 
