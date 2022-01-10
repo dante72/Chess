@@ -18,24 +18,36 @@ namespace Chess
         public float Score = 0;
     }
 
-    public class IASimple2 : IComparable
+    public class IASimple2
     {
         public Figure Figure { get; set; }
         public Cell Cell { get; set; }
         public Board Board { get; set; }
         public float Score = 0;
-
-        public int CompareTo(object obj)
-        {
-            return (int)(Score - (obj as IASimple2).Score);
-        }
     }
 
     public static class AI
     {
+        static Random rnd = new Random();
         public static TreeNode Head;
 
-        public static void CreateTreePossibleMovies(TreeNode head, int depth, int currentDepth = 0)
+        public static void GrowTreePossibleMovies(TreeNode head)
+        {
+            foreach (var node in head.ChildNodes)
+            {
+                if (node.ChildNodes == null)
+                {
+                    CreateTreePossibleMoves(node, 0);
+                }
+                else
+                {
+                    GrowTreePossibleMovies(node);
+                }
+            }
+
+        }
+
+        public static void CreateTreePossibleMoves(TreeNode head, int depth, int currentDepth = 0)
         {
             var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
@@ -63,14 +75,21 @@ namespace Chess
             }
             if (head.ChildNodes == null)
                 return;
-            
+
             if (head.Data.Board.Index % 2 == 0)
-                head.ChildNodes.OrderBy(i => i.Data.Score);
-            else
+            {
                 head.ChildNodes.OrderByDescending(i => i.Data.Score);
 
+            }
+            else
+            {
+                head.ChildNodes.OrderBy(i => i.Data.Score);
+            }
+
+
+
             foreach (var node in head.ChildNodes)
-            {                    
+            {
                 if (node.Data.Board.IsCheckMate)
                     {
                         if (node.Data.Board.Index % 2 == 0)
@@ -80,30 +99,13 @@ namespace Chess
                     }
                     else
                         if (currentDepth < depth)
-                            CreateTreePossibleMovies(node, depth, currentDepth + 1);
+                            CreateTreePossibleMoves(node, depth, currentDepth + 1);
             }
-        }
-
-        public static async Task CreateTreePossibleMovies2(TreeNode head, int depth, int currentDepth = 0)
-        {
-            var tasks = new List<Task>();
-            var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
-
-            foreach (var figure in figurs)
-            {
-                var moves = figure.PossibleMoves;
-                foreach (var move in moves)
-                {
-                    tasks.Add(Task.Run(() => CreateTreePossibleMovies(head, depth, currentDepth + 1)));
-                }
-            }
-            await Task.WhenAll(tasks.ToArray());
         }
         
         public static float FindMove(TreeNode head, int depth, int currentDepth = 0)
         {
             float res;
-            TreeNode node = null;
             if (head.ChildNodes == null)
                 return head.Data.Score;
             
