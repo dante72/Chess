@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,25 +32,27 @@ namespace Chess
         static Random rnd = new Random();
         public static TreeNode Head;
 
-        public static void GrowTreePossibleMovies(TreeNode head)
+        public static void GrowTreePossibleMovies(TreeNode head, int depth, int currentDepth = 0)
         {
             foreach (var node in head.ChildNodes)
             {
-                if (node.ChildNodes == null)
+                if (node.ChildNodes == null && depth > 0)
                 {
-                    CreateTreePossibleMoves(node, 0);
+                    CreateTreePossibleMoves(node, depth - currentDepth - 1);
                 }
                 else
                 {
-                    GrowTreePossibleMovies(node);
+                    GrowTreePossibleMovies(node, depth, currentDepth + 1);
                 }
             }
 
         }
 
-        /*static public async Task Grow()
+        /*static public async Task Grow(TreeNode head)
         {
-            Head.ChildNodes
+            var nodes = new ConcurrentBag<TreeNode>(head.ChildNodes);
+
+
         }*/
 
         public static void CreateTreePossibleMoves(TreeNode head, int depth)
