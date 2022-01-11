@@ -47,7 +47,12 @@ namespace Chess
 
         }
 
-        public static void CreateTreePossibleMoves(TreeNode head, int depth, int currentDepth = 0)
+        /*static public async Task Grow()
+        {
+            Head.ChildNodes
+        }*/
+
+        public static void CreateTreePossibleMoves(TreeNode head, int depth)
         {
             var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
@@ -98,29 +103,27 @@ namespace Chess
                             node.Data.Score -= 9999;
                     }
                     else
-                        if (currentDepth < depth)
-                            CreateTreePossibleMoves(node, depth, currentDepth + 1);
+                        if (depth > 0)
+                            CreateTreePossibleMoves(node, depth - 1);
             }
         }
         
-        public static float FindMove(TreeNode head, int depth, int currentDepth = 0)
+        public static float FindMove(TreeNode head, int depth)
         {
             float res;
-            if (head.ChildNodes == null)
+            if (head.ChildNodes == null || depth == 0)
                 return head.Data.Score;
             
             
             if (head.Data.Board.Index % 2 != 0)
             {
-                res =  head.ChildNodes.Max(i => FindMove(i, depth, currentDepth + 1));
+                res =  head.ChildNodes.Max(i => FindMove(i, depth - 1));
             }
             else
             {
-                res = head.ChildNodes.Min(i => FindMove(i, depth, currentDepth + 1));
+                res = head.ChildNodes.Min(i => FindMove(i, depth - 1));
             }
             
-            
-
             return res * 0.9f;   
         }
 
