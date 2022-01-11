@@ -32,31 +32,47 @@ namespace Chess
         static Random rnd = new Random();
         public static TreeNode Head;
 
-        public static void GrowTreePossibleMovies(TreeNode head, int depth, int currentDepth = 0)
+        public static void GrowTreePossibleMovies(TreeNode head, int depth, TreeNode mainNode = null, int currentDepth = 0)
         {
-            foreach (var node in head.ChildNodes)
+            if (mainNode == null)
+                mainNode = head;
+            if (head.ChildNodes != null && depth > 0)
+                foreach (var node in head.ChildNodes)
             {
                 if (node.ChildNodes == null && depth > 0)
                 {
-                    CreateTreePossibleMoves(node, depth - currentDepth - 1);
+                    CreateTreePossibleMoves(node, depth - currentDepth - 1, mainNode);
                 }
                 else
                 {
-                    GrowTreePossibleMovies(node, depth, currentDepth + 1);
+                    GrowTreePossibleMovies(node, depth, mainNode,currentDepth + 1);
                 }
             }
 
         }
 
-        /*static public async Task Grow(TreeNode head)
+        static public async Task Grow(TreeNode head, int depth)
         {
             var nodes = new ConcurrentBag<TreeNode>(head.ChildNodes);
+            for (int i = 0; i < 4; i++)
+                await Task.Run(() => Grow(nodes, depth));
+        }
 
-
-        }*/
-
-        public static void CreateTreePossibleMoves(TreeNode head, int depth)
+        static public void Grow(ConcurrentBag<TreeNode> bag, int depth)
         {
+            while (bag.Count > 0)
+            {
+                TreeNode node;
+                if (bag.TryTake(out node))
+                    GrowTreePossibleMovies(node, depth);
+            }
+        }
+
+
+    public static void CreateTreePossibleMoves(TreeNode head, int depth, TreeNode mainNode = null)
+        {
+            if (mainNode == null)
+                mainNode = head;
             var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
             foreach (var figure in figurs)
@@ -104,10 +120,23 @@ namespace Chess
                             node.Data.Score += 9999;
                         else
                             node.Data.Score -= 9999;
+
+                    if (mainNode.Data.Board.Index % 2 == 0 && mainNode.Data.Score > node.Data.Score)
+                        mainNode.Data.Score = node.Data.Score;
+
+                    if (mainNode.Data.Board.Index % 2 != 0 && mainNode.Data.Score < node.Data.Score)
+                        mainNode.Data.Score = node.Data.Score;
+                    break;
                     }
-                    else
-                        if (depth > 0)
-                            CreateTreePossibleMoves(node, depth - 1);
+
+                if (mainNode.Data.Board.Index % 2 == 0 && mainNode.Data.Score > node.Data.Score)
+                    mainNode.Data.Score = node.Data.Score;
+
+                if (mainNode.Data.Board.Index % 2 != 0 && mainNode.Data.Score < node.Data.Score)
+                    mainNode.Data.Score = node.Data.Score;
+
+                if (depth > 0)
+                    CreateTreePossibleMoves(node, depth - 1, mainNode);
             }
         }
         
@@ -130,10 +159,22 @@ namespace Chess
             return res * 0.9f;   
         }
 
-        public static IASimple2 GetResult(TreeNode head, int depth)
+        public static IASimple2 GetResult1(TreeNode head, int depth)
         {
             List<Task> tasks = new List<Task>();
             var dictionary = head.ChildNodes.ToDictionary(node => node, node => FindMove(node, depth));
+            float minmax = head.Data.Board.Index % 2 != 0 ? (float)dictionary.Max(d => d.Value) : (float)dictionary.Min(d => d.Value);
+            string str = "";
+            foreach (var item in dictionary)
+                str += $"{string.Format("{0, 15}", item.Key.Data.Figure)}\t{item.Value}\t{item.Key.Data.Cell}\n";
+            MessageBox.Show(str);
+            return dictionary.First(d => (float)d.Value == minmax).Key.Data;
+        }
+
+        public static IASimple2 GetResult(TreeNode head, int depth)
+        {
+            List<Task> tasks = new List<Task>();
+            var dictionary = head.ChildNodes.ToDictionary(node => node, node => node.Data.Score);
             float minmax = head.Data.Board.Index % 2 != 0 ? (float)dictionary.Max(d => d.Value) : (float)dictionary.Min(d => d.Value);
             string str = "";
             foreach (var item in dictionary)

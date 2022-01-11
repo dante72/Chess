@@ -121,13 +121,16 @@ namespace Chess
                             AI.Head = new TreeNode();
                             AI.Head.Data = new IASimple2 { Board = new Board(ChessBoard.Board) };
                             AI.CreateTreePossibleMoves(AI.Head, 2);
+                            //AI.Grow(AI.Head, 4);
                         }
                         else
                         {
                             AI.Head = AI.Head.ChildNodes.First(i => i.Data.Board == ChessBoard.Board);
-                            AI.GrowTreePossibleMovies(AI.Head, 2);
+                            //AI.GrowTreePossibleMovies(AI.Head, 2);
+                            //AI.Grow(AI.Head, 4);
                         }
-                        var move = AI.GetResult(AI.Head, 2);
+                        AI.Grow(AI.Head, 4);
+                        var move = AI.GetResult(AI.Head, 4);
                         ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
 
                         if (ChessBoard.Board.IsCheckMate)
@@ -151,7 +154,10 @@ namespace Chess
 
 
         }
-
+        async void  f()
+        {
+            await AI.Grow(AI.Head, 4);
+        }
         private RelayCommand chessTasksCommand;
         public RelayCommand ChessTasksCommand
         {
