@@ -83,42 +83,32 @@ namespace Chess
                             CreateTreePossibleMovies(node, depth, currentDepth + 1);
             }
         }
-
-        public static async Task CreateTreePossibleMovies2(TreeNode head, int depth, int currentDepth = 0)
+        public static float FindMove(TreeNode head, int depth, int currentDepth = 0, IASimple2 mate = null)
         {
-            var tasks = new List<Task>();
-            var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
-
-            foreach (var figure in figurs)
+            if (mate == null)
+                mate = new IASimple2();
+            if (Math.Abs(head.Data.Score) > 5000)
             {
-                var moves = figure.PossibleMoves;
-                foreach (var move in moves)
-                {
-                    tasks.Add(Task.Run(() => CreateTreePossibleMovies(head, depth, currentDepth + 1)));
-                }
+                mate.Score = head.Data.Score * (float)Math.Pow(0.9f, currentDepth + 1);
             }
-            await Task.WhenAll(tasks.ToArray());
-        }
-        
-        public static float FindMove(TreeNode head, int depth, int currentDepth = 0)
-        {
             float res;
-            TreeNode node = null;
+
             if (head.ChildNodes == null)
                 return head.Data.Score;
             
             
             if (head.Data.Board.Index % 2 != 0)
             {
-                res =  head.ChildNodes.Max(i => FindMove(i, depth, currentDepth + 1));
+                res =  head.ChildNodes.Max(i => FindMove(i, depth, currentDepth + 1, mate));
             }
             else
             {
-                res = head.ChildNodes.Min(i => FindMove(i, depth, currentDepth + 1));
+                res = head.ChildNodes.Min(i => FindMove(i, depth, currentDepth + 1, mate));
             }
-            
-            
 
+
+            if (currentDepth == 0 && Math.Abs(mate.Score) > Math.Abs(res))
+                return mate.Score;
             return res * 0.9f;   
         }
 
