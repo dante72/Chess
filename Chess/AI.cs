@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,41 @@ namespace Chess
     {
         public static TreeNode Head;
 
-        public static void CreateTreePossibleMovies(TreeNode head, int depth, int currentDepth = 0)
+        public static void GrowTreePossibleMovies(TreeNode head, int depth, int currentDepth = 0)
+        {
+            if (head.ChildNodes != null && currentDepth < depth)
+                foreach (var node in head.ChildNodes)
+                {
+                    if (node.ChildNodes == null && currentDepth < depth)
+                    {
+                        CreateTreePossibleMoves(node, depth, currentDepth + 1);
+                    }
+                    else
+                    {
+                        GrowTreePossibleMovies(node, depth, currentDepth + 1);
+                    }
+                }
+        }
+
+        static public async Task Grow(TreeNode head, int depth)
+        {
+            var nodes = new ConcurrentBag<TreeNode>(head.ChildNodes);
+            for (int i = 0; i < 4; i++)
+                await Task.Run(() => Grow(nodes, depth));
+        }
+
+        static public void Grow(ConcurrentBag<TreeNode> bag, int depth)
+        {
+            while (bag.Count > 0)
+            {
+                TreeNode node;
+                if (bag.TryTake(out node))
+                    lock(node)
+                        GrowTreePossibleMovies(node, depth);
+            }
+        }
+
+        public static void CreateTreePossibleMoves(TreeNode head, int depth, int currentDepth = 0)
         {
             var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
@@ -80,7 +115,7 @@ namespace Chess
                     }
                     else
                         if (currentDepth < depth)
-                            CreateTreePossibleMovies(node, depth, currentDepth + 1);
+                            CreateTreePossibleMoves(node, depth, currentDepth + 1);
             }
         }
         public static float FindMove(TreeNode head, int depth, int currentDepth = 0, IASimple2 mate = null)
