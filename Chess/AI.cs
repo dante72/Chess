@@ -35,7 +35,7 @@ namespace Chess
     {
         public static TreeNode Head;
 
-        public static void CreateTreePossibleMovies(TreeNode head, int depth, int currentDepth = 0)
+        public static void CreateTreePossibleMovies(TreeNode head, int depth, int Index,int currentDepth = 0)
         {
             var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
@@ -65,22 +65,14 @@ namespace Chess
                 return;
             
             if (head.Data.Board.Index % 2 == 0)
-                head.ChildNodes.OrderBy(i => i.Data.Score);
-            else
                 head.ChildNodes.OrderByDescending(i => i.Data.Score);
+            else
+                head.ChildNodes.OrderBy(i => i.Data.Score);
 
             foreach (var node in head.ChildNodes)
             {                    
-                if (node.Data.Board.IsCheckMate)
-                    {
-                        if (node.Data.Board.Index % 2 == 0)
-                            node.Data.Score += 9999;
-                        else
-                            node.Data.Score -= 9999;
-                    }
-                    else
-                        if (currentDepth < depth)
-                            CreateTreePossibleMovies(node, depth, currentDepth + 1);
+                if (currentDepth < depth && !head.Data.Board.IsCheckMate)
+                    CreateTreePossibleMovies(node, depth, Index,currentDepth + 1);
             }
         }
 
@@ -116,8 +108,8 @@ namespace Chess
             {
                 res = head.ChildNodes.Min(i => FindMove(i, depth, currentDepth + 1));
             }
-            
-            
+
+            //FindMove(i, depth, currentDepth + 1);
 
             return res * 0.9f;   
         }

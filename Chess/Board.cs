@@ -175,6 +175,7 @@ namespace Chess
 
         public float Evaluation()
         {
+
             float sum = 0;
 
             foreach (var cell in Cells)
@@ -184,6 +185,15 @@ namespace Chess
                     sum += cell.Figure.Weight;
                 }
             }
+            
+            if (IsCheckMate)
+            {
+                if (Index % 2 == 0)
+                    sum += 9999f;
+                else
+                    sum -= 9999f;
+            }
+            
 
             return sum;
         }

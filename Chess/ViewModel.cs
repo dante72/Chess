@@ -118,7 +118,7 @@ namespace Chess
                     {   
                         AI.Head = new TreeNode();
                         AI.Head.Data = new IASimple2 { Board = new Board(ChessBoard.Board) };
-                        AI.CreateTreePossibleMovies(AI.Head, 2);
+                        AI.CreateTreePossibleMovies(AI.Head, 2, AI.Head.Data.Board.Index);
                         var move = AI.GetResult(AI.Head, 2);
                         ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
 
