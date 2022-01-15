@@ -175,6 +175,14 @@ namespace Chess
 
         public float Evaluation()
         {
+            if (IsCheckMate)
+            {
+                if (Index % 2 == 0)
+                    return 9999f;
+                else
+                    return -9999f;
+            }
+
             float sum = 0;
 
             foreach (var cell in Cells)

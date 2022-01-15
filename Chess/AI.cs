@@ -19,24 +19,20 @@ namespace Chess
         public float Score = 0;
     }
 
-    public class IASimple2 : IComparable
+    public class IASimple2
     {
+        public bool IsCheckMate { get; set; } = false;
         public Figure Figure { get; set; }
         public Cell Cell { get; set; }
         public Board Board { get; set; }
         public float Score = 0;
-
-        public int CompareTo(object obj)
-        {
-            return (int)(Score - (obj as IASimple2).Score);
-        }
     }
 
     public static class AI
     {
         public static TreeNode Head;
 
-        public static void GrowTreePossibleMovies(TreeNode head, int depth, int currentDepth = 0)
+        /*public static void GrowTreePossibleMovies(TreeNode head, int depth, int currentDepth = 0)
         {
             if (head.ChildNodes != null && currentDepth < depth)
                 foreach (var node in head.ChildNodes)
@@ -50,16 +46,16 @@ namespace Chess
                         GrowTreePossibleMovies(node, depth, currentDepth + 1);
                     }
                 }
-        }
+        }*/
 
-        static public async Task Grow(TreeNode head, int depth)
+        /*static public async Task Grow(TreeNode head, int depth)
         {
             var nodes = new ConcurrentBag<TreeNode>(head.ChildNodes);
             for (int i = 0; i < 4; i++)
                 await Task.Run(() => Grow(nodes, depth));
-        }
+        }*/
 
-        static public void Grow(ConcurrentBag<TreeNode> bag, int depth)
+        /*static public void Grow(ConcurrentBag<TreeNode> bag, int depth)
         {
             while (bag.Count > 0)
             {
@@ -68,9 +64,20 @@ namespace Chess
                     lock(node)
                         GrowTreePossibleMovies(node, depth);
             }
-        }
+        }*/
 
-        public static void CreateTreePossibleMoves(TreeNode head, int depth, int currentDepth = 0)
+        public static void CreateTreePossibleMoves(TreeNode head, int depth)
+        {
+            if (depth > 0 && !head.Data.IsCheckMate)
+            {
+                if (head.ChildNodes == null)
+                    CreateTreePossibleMoves(head);
+                else
+                    foreach (var node in head.ChildNodes)
+                        CreateTreePossibleMoves(node, depth - 1);
+            }
+        }
+        public static void CreateTreePossibleMoves(TreeNode head)
         {
             var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
@@ -81,7 +88,7 @@ namespace Chess
                 foreach (var move in moves)
                 {
                     var newBoard = new Board(head.Data.Board, figure.Position, move);
-                    
+
                     var node = new TreeNode()
                     {
                         Data = new IASimple2()
@@ -89,62 +96,47 @@ namespace Chess
                             Figure = figure,
                             Cell = move,
                             Board = newBoard,
-                            Score = newBoard.Evaluation()
+                            Score = newBoard.Evaluation(),
+                            IsCheckMate = newBoard.IsCheckMate
                         }
                     };
-                    
+
                     head.Add(node);
+                    if (node.Data.IsCheckMate)
+                    {
+                        MarkBranchWithMate(node);
+                    }
                 }
             }
-            if (head.ChildNodes == null)
-                return;
-            
-            if (head.Data.Board.Index % 2 == 0)
-                head.ChildNodes.OrderBy(i => i.Data.Score);
-            else
-                head.ChildNodes.OrderByDescending(i => i.Data.Score);
+        }
 
-            foreach (var node in head.ChildNodes)
-            {                    
-                if (node.Data.Board.IsCheckMate)
-                    {
-                        if (node.Data.Board.Index % 2 == 0)
-                            node.Data.Score += 9999;
-                        else
-                            node.Data.Score -= 9999;
-                    }
-                    else
-                        if (currentDepth < depth)
-                            CreateTreePossibleMoves(node, depth, currentDepth + 1);
+        static private void MarkBranchWithMate(TreeNode node)
+        {
+            if (node.Parent != null)
+            {
+                node.Parent.Data.Score = node.Data.Score * 0.9f;
+                node.Parent.Data.IsCheckMate = true;
+                MarkBranchWithMate(node.Parent);
             }
         }
-        public static float FindMove(TreeNode head, int depth, int currentDepth = 0, IASimple2 mate = null)
+
+        public static float FindMove(TreeNode head, int depth)
         {
-            if (mate == null)
-                mate = new IASimple2();
-            if (Math.Abs(head.Data.Score) > 5000)
-            {
-                mate.Score = head.Data.Score * (float)Math.Pow(0.9f, currentDepth + 1);
-            }
-            float res;
-
-            if (head.ChildNodes == null)
+            if (head.Data.IsCheckMate)
                 return head.Data.Score;
-            
-            
-            if (head.Data.Board.Index % 2 != 0)
+
+            if (depth > 0 && head.ChildNodes != null && !head.Data.IsCheckMate)
             {
-                res =  head.ChildNodes.Max(i => FindMove(i, depth, currentDepth + 1, mate));
-            }
-            else
-            {
-                res = head.ChildNodes.Min(i => FindMove(i, depth, currentDepth + 1, mate));
+                float minmax;
+                if (head.Data.Board.Index % 2 == 0)
+                    minmax = head.ChildNodes.Max(i => i.Data.Score);
+                else
+                    minmax = head.ChildNodes.Max(i => i.Data.Score);
+
+                return FindMove(head.ChildNodes.First(i => i.Data.Score == minmax), depth - 1);
             }
 
-
-            if (currentDepth == 0 && Math.Abs(mate.Score) > Math.Abs(res))
-                return mate.Score;
-            return res * 0.9f;   
+            return head.Data.Score;
         }
 
         public static IASimple2 GetResult(TreeNode head, int depth)
