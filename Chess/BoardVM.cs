@@ -46,6 +46,8 @@ namespace Chess
 
         public void Update(Board board)
         {
+            AI.Head = null;
+
             Board.Moves = board.Moves;
             Board.Index = board.Index;
             for (int i = 0; i < cells.GetLength(0); i++)

@@ -23,6 +23,10 @@ namespace Chess
             childNodes.Add(item);
         }
 
-        public IASimple2 Data { get; set; } 
+        public void Clear()
+        {
+            childNodes = null;
+        }
+        public IASimple Data { get; set; } 
     }
 }

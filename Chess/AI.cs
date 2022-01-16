@@ -14,28 +14,36 @@ namespace Chess
     {
         public Figure Figure { get; set; }
         public Cell Cell { get; set; }
-
-        public float Score = 0;
-    }
-
-    public class IASimple2 : IComparable
-    {
-        public Figure Figure { get; set; }
-        public Cell Cell { get; set; }
         public Board Board { get; set; }
         public float Score = 0;
-
-        public int CompareTo(object obj)
-        {
-            return (int)(Score - (obj as IASimple2).Score);
-        }
     }
 
     public static class AI
     {
         public static TreeNode Head;
 
-        public static void CreateTreePossibleMovies(TreeNode head, int depth, int currentDepth = 0)
+        public static void SearchTreeEndAndAdd(TreeNode head, int depth)
+        {
+            if (depth > 0 && head != null)
+            {
+                if (head.ChildNodes != null)
+                    Parallel.ForEach(head.ChildNodes, node => SearchTreeEndAndAdd(node, depth - 1));
+                else
+                    Parallel.ForEach(head.ChildNodes, node => CreateTreePossibleMoves(node, depth - 1));
+            }
+        }
+
+        public static void GrowTreePossibleMoves(TreeNode head, int depth, int currentDepth = 0)
+        {
+            if (currentDepth < depth)
+            {
+                if (head.ChildNodes == null)
+                    CreateTreePossibleMoves(head, depth, currentDepth + 1);
+                else
+                    Parallel.ForEach(head.ChildNodes, node => GrowTreePossibleMoves(node, depth, currentDepth + 1));
+            }
+        }
+        public static void CreateTreePossibleMoves(TreeNode head, int depth, int currentDepth = 0)
         {
             var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
 
@@ -49,7 +57,7 @@ namespace Chess
                     
                     var node = new TreeNode()
                     {
-                        Data = new IASimple2()
+                        Data = new IASimple()
                         {
                             Figure = figure,
                             Cell = move,
@@ -61,49 +69,15 @@ namespace Chess
                     head.Add(node);
                 }
             }
-            if (head.ChildNodes == null)
-                return;
             
-            if (head.Data.Board.Index % 2 == 0)
-                head.ChildNodes.OrderBy(i => i.Data.Score);
-            else
-                head.ChildNodes.OrderByDescending(i => i.Data.Score);
-
-            foreach (var node in head.ChildNodes)
-            {                    
-                if (node.Data.Board.IsCheckMate)
-                    {
-                        if (node.Data.Board.Index % 2 == 0)
-                            node.Data.Score += 9999;
-                        else
-                            node.Data.Score -= 9999;
-                    }
-                    else
-                        if (currentDepth < depth)
-                            CreateTreePossibleMovies(node, depth, currentDepth + 1);
-            }
-        }
-
-        public static async Task CreateTreePossibleMovies2(TreeNode head, int depth, int currentDepth = 0)
-        {
-            var tasks = new List<Task>();
-            var figurs = head.Data.Board.Cells.Where(i => i.Figure != null).Select(i => i.Figure);
-
-            foreach (var figure in figurs)
-            {
-                var moves = figure.PossibleMoves;
-                foreach (var move in moves)
-                {
-                    tasks.Add(Task.Run(() => CreateTreePossibleMovies(head, depth, currentDepth + 1)));
-                }
-            }
-            await Task.WhenAll(tasks.ToArray());
+            if (currentDepth < depth && head.ChildNodes != null && !head.Data.Board.IsCheckMate)
+                Parallel.ForEach(head.ChildNodes, node => CreateTreePossibleMoves(node, depth, currentDepth + 1));
         }
         
         public static float FindMove(TreeNode head, int depth, int currentDepth = 0)
         {
             float res;
-            TreeNode node = null;
+
             if (head.ChildNodes == null)
                 return head.Data.Score;
             
@@ -116,13 +90,11 @@ namespace Chess
             {
                 res = head.ChildNodes.Min(i => FindMove(i, depth, currentDepth + 1));
             }
-            
-            
 
             return res * 0.9f;   
         }
 
-        public static IASimple2 GetResult(TreeNode head, int depth)
+        public static IASimple GetResult(TreeNode head, int depth)
         {
             List<Task> tasks = new List<Task>();
             var dictionary = head.ChildNodes.ToDictionary(node => node, node => FindMove(node, depth));
