@@ -27,6 +27,6 @@ namespace Chess
         {
             childNodes = null;
         }
-        public IASimple2 Data { get; set; } 
+        public IASimple Data { get; set; } 
     }
 }

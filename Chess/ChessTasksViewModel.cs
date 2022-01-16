@@ -33,6 +33,7 @@ namespace Chess
                 //context.Exercises.Add(ex);
                 //context.SaveChanges();
                 _Boards = context.Exercises.ToList().Select(i => new Board(i.Value, i.Moves)).ToList();
+                _Boards.Add(new Board("a8BR a7BP b7BP c7BP c8BB d8BK d6BP f7BP g7BP h7BP h8BR g8BN a5BB b5WQ f5BQ d4BP a3WB a2WP a1WR b1WN c3WP d1WK e1WR e2WB f2WP g2WP h2WP"));
             }
         }
 
