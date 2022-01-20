@@ -168,5 +168,18 @@ namespace Chess
                     }));
             }
         }
+
+        private RelayCommand moveBackCommand;
+        public RelayCommand MoveBackCommand
+        {
+            get
+            {
+                return moveBackCommand ??
+                    (moveBackCommand = new RelayCommand(obj =>
+                    {
+                        ChessBoard.Board.MoveBack();
+                    }));
+            }
+        }
     }
 }

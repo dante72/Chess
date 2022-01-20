@@ -16,7 +16,6 @@ namespace Chess
         public Cell Cell { get; set; }
         public Board Board { get; set; }
         public float Score = 0;
-        public float Score2 = 0;
 
         public int CompareTo(object obj)
         {
@@ -80,11 +79,11 @@ namespace Chess
                 if (head.Data.Board.Index % 2 == 0)
                 {
                     //head.childNodes?.OrderByDescending(i => i.Data.Score);
-                    head.childNodes = head.childNodes?.Where(node => node.Data.Score2 <= head.Data.Score2).ToList();
+                    head.childNodes = head.childNodes?.Where(node => node.Data.Score <= head.Data.Score).ToList();
                 }
                 else
                 {
-                    head.childNodes = head.childNodes?.Where(node => node.Data.Score2 >= head.Data.Score2).ToList();
+                    head.childNodes = head.childNodes?.Where(node => node.Data.Score >= head.Data.Score).ToList();
                 }
             }
             

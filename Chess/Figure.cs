@@ -11,6 +11,8 @@ namespace Chess
     /// </summary>
     public abstract class Figure : IFirstMove
     {
+        public int boardIndex;
+        public Stack<Cell> Moves { set; get; } = new Stack<Cell>();
         public IList<Cell> PossibleMoves { 
             get => GetPossibleMoves();
         }
@@ -49,19 +51,36 @@ namespace Chess
 
         public virtual void MoveTo(Cell to)
         {
-
+            if (to.Figure != null)
+                SaveMove(to.Figure);
+            SaveMove();
             Position.Figure = null;
             to.Figure = this;
             if (this is Pawn && (to.Row == 0 || to.Row == 7))
                 to.Figure = new Queen(Color);
             Board.Index++;
+        }
+
+        private void SaveMove(Figure fig)
+        {
+            fig.boardIndex = Board.Index;
+            fig.Board.MovingFigures.Push(fig);
+            fig.Moves.Push(fig.Position);
+            fig.IsFirstMove++;
+        }
+        private void SaveMove()
+        {
+            boardIndex = Board.Index;
+            Board.MovingFigures.Push(this);
+            Moves.Push(Position);
             IsFirstMove++;
         }
 
-        /// <summary>
-        /// Получить ячейки в данном направлении (рефакторинг)
-        /// </summary>
-        protected List<Cell> GetCellsInDirection(Cell current, Directions direction, int range = 8)
+
+            /// <summary>
+            /// Получить ячейки в данном направлении (рефакторинг)
+            /// </summary>
+            protected List<Cell> GetCellsInDirection(Cell current, Directions direction, int range = 8)
         {
             switch(direction)
             {
@@ -190,6 +209,7 @@ namespace Chess
                     var cells = GetCellsInDirection(Position, Directions.Right);
                     var rook =  cells.First(i => i.Figure is Rook).Figure;
 
+                    SaveMove(rook);
                     rook.Position.Figure = null;
                     Board[Position.Row, Position.Column + 1].Figure = rook;
                     
@@ -201,6 +221,7 @@ namespace Chess
                     var cells = GetCellsInDirection(Position, Directions.Left);
                     var rook = cells.First(i => i.Figure is Rook).Figure;
 
+                    SaveMove(rook);
                     rook.Position.Figure = null;
                     Board[Position.Row, Position.Column - 1].Figure = rook;
                 }
@@ -408,10 +429,12 @@ namespace Chess
             public override void MoveTo(Cell to)
             {
                 if (pawn != null && to.Figure == null && to.Column - Position.Column != 0)
-                {
+                {   
+                    SaveMove(pawn);
                     pawn.Position.Figure = null;
                 }
                 base.MoveTo(to);
+
 
                 if (IsFirstMove == 1 && (Position.Row == 3 || Position.Row == 4))
                 {

@@ -20,6 +20,7 @@
                 <MenuItem Header="Select a task..." Command="{Binding ChessTasksCommand}"></MenuItem>
             </MenuItem>
             <MenuItem Command="{Binding MakeMoveCommand}" Header="Make move"></MenuItem>
+            <MenuItem Command="{Binding MoveBackCommand}" Header="Moveback"></MenuItem>
         </Menu>
         <Grid>
             <Grid.ColumnDefinitions>

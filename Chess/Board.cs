@@ -10,6 +10,7 @@ namespace Chess
 {
     public class Board
     {
+        public Stack<Figure> MovingFigures { set; get; } = new Stack<Figure>();
         public bool IsCheckMate { get => isCheckMate(); }
         public int Index { set; get; }
 
@@ -26,7 +27,28 @@ namespace Chess
                 Cells[row * 8 + column] = value;
             }
         }
+        public void MoveBack()
+        {
+            var figure = MovingFigures.Pop();
+            Back(figure);
+            if (MovingFigures.Count > 0)
+            {
+                var figure2 = MovingFigures.Peek();
+                if (figure.boardIndex == figure2.boardIndex)
+                {
+                    Back(MovingFigures.Pop());
+                }
+            }
+            Index--;
+        }
 
+        private void Back(Figure figure)
+        {
+            figure.Position.Figure = null;
+            var cell = figure.Moves.Pop();
+            cell.Figure = figure;
+            figure.IsFirstMove--;
+        }
         /// <summary>
         /// Создать доску с начальной расстановкой фигур
         /// </summary>
