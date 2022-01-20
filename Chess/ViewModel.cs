@@ -111,22 +111,22 @@ namespace Chess
                 return makeMoveCommand ??
                     (makeMoveCommand = new RelayCommand(obj =>
                     {
-                        if (AI.Head == null)
-                        {
+                        //if (AI.Head == null)
+                       // {
                             AI.Head = new TreeNode();
                             AI.Head.Data = new IASimple { Board = new Board(ChessBoard.Board) };
                             AI.CreateTreePossibleMoves(AI.Head, 2);
-                        }
-                        else
-                        {
-                            AI.GrowTreePossibleMoves(AI.Head, 2);
-                        }
+                        //}
+                       // else
+                       // {
+                        //    AI.GrowTreePossibleMoves(AI.Head, 2);
+                      //  }
 
                         var move = AI.GetResult(AI.Head, 2);
                         ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
                         
-                        AI.Head = AI.Head.ChildNodes.First(b => b.Data.Board == ChessBoard.Board);
-                        AI.Head.Parent = null;
+                        //AI.Head = AI.Head.ChildNodes.First(b => b.Data.Board == ChessBoard.Board);
+                        //AI.Head.Parent = null;
 
                         if (ChessBoard.Board.IsCheckMate)
                         {

@@ -10,12 +10,18 @@ using static Chess.Figure;
 
 namespace Chess
 {
-    public class IASimple
+    public class IASimple : IComparable
     {
         public Figure Figure { get; set; }
         public Cell Cell { get; set; }
         public Board Board { get; set; }
         public float Score = 0;
+        public float Score2 = 0;
+
+        public int CompareTo(object obj)
+        {
+            return (int)((obj as IASimple).Score - Score);
+        }
     }
 
     public static class AI
@@ -69,6 +75,18 @@ namespace Chess
                     head.Add(node);
                 }
             }
+            if (currentDepth > 0)
+            {
+                if (head.Data.Board.Index % 2 == 0)
+                {
+                    //head.childNodes?.OrderByDescending(i => i.Data.Score);
+                    head.childNodes = head.childNodes?.Where(node => node.Data.Score2 <= head.Data.Score2).ToList();
+                }
+                else
+                {
+                    head.childNodes = head.childNodes?.Where(node => node.Data.Score2 >= head.Data.Score2).ToList();
+                }
+            }
             
             if (currentDepth < depth && head.ChildNodes != null && !head.Data.Board.IsCheckMate)
                 Parallel.ForEach(head.ChildNodes, node => CreateTreePossibleMoves(node, depth, currentDepth + 1));
@@ -92,6 +110,22 @@ namespace Chess
             }
 
             return res * 0.9f;   
+        }
+
+        public static float FindMove2(TreeNode head, int depth, int currentDepth = 0, int Index = -1)
+        {
+            if (Index == -1)
+                Index = head.Data.Board.Index;
+            float res;
+
+            if (head.ChildNodes == null)
+                return head.Data.Score;
+            if (Index % 2 != 0)
+                res = head.ChildNodes.Max(i => FindMove2(i, depth, currentDepth + 1, Index));
+            else
+                res = head.ChildNodes.Min(i => FindMove2(i, depth, currentDepth + 1, Index));
+
+            return res * 0.9f;
         }
 
         public static IASimple GetResult(TreeNode head, int depth)
