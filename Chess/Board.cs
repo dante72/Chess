@@ -29,6 +29,8 @@ namespace Chess
         }
         public void MoveBack()
         {
+            if (MovingFigures.Count == 0)
+                return;
             var figure = MovingFigures.Pop();
             Back(figure);
             if (MovingFigures.Count > 0)
@@ -52,16 +54,6 @@ namespace Chess
         /// <summary>
         /// Создать доску с начальной расстановкой фигур
         /// </summary>
-        /*public Board()
-        {
-            Index = 1;
-            Cells = new List<Cell>();
-            for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                    Cells.Add(new Cell(i, j, this));
-
-            SetupСhessBoard7();
-        }*/
 
         public Board(string info = @"a2WP b2WP c2WP d2WP e2WP f2WP g2WP h2WP
                                      a1WR b1WN c1WB d1WQ e1WK f1WB g1WN h1WR

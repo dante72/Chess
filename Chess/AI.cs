@@ -10,17 +10,12 @@ using static Chess.Figure;
 
 namespace Chess
 {
-    public class IASimple : IComparable
+    public class IASimple
     {
         public Figure Figure { get; set; }
         public Cell Cell { get; set; }
         public Board Board { get; set; }
         public float Score = 0;
-
-        public int CompareTo(object obj)
-        {
-            return (int)((obj as IASimple).Score - Score);
-        }
     }
 
     public static class AI
@@ -95,7 +90,7 @@ namespace Chess
         {
             float res;
 
-            if (head.ChildNodes == null)
+            if (head.ChildNodes == null || head.ChildNodes?.Count() == 0)
                 return head.Data.Score;
             
             

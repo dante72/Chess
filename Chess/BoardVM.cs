@@ -46,7 +46,8 @@ namespace Chess
 
         public void Update(Board board)
         {
-            AI.Head = null;
+            //AI.Head = null;
+            Board.MovingFigures = new Stack<Figure>();
 
             Board.Moves = board.Moves;
             Board.Index = board.Index;
