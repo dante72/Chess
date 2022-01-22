@@ -11,6 +11,7 @@ namespace Chess
     public class ViewModel : NotifyPropertyChanged
     {
         private Board currentBoard;
+        public bool SingleMode { get; set; } = false;
         public List<string> Letters { set; get; } = new List<string>() { "a", "b", "c", "d", "e", "f", "g", "h"};
         public List<string> Digits { set; get; } = new List<string>() { "8", "7", "6", "5", "4", "3", "2", "1" };
         public BoardVM ChessBoard { set; get; }
@@ -51,32 +52,11 @@ namespace Chess
                 if (selectedItem.IsMarked)
                 {
                     SelectedFigure.MoveTo(selectedItem.Value);
-                    if (ChessBoard.Board.IsCheckMate)
-                    {
-                        MessageBox.Show("MATE!");
-                        ChessBoard.Update(currentBoard);
-                    }
-                    else if (ChessBoard.Board.isCheckPate())
-                    {
-                        MessageBox.Show("PATE!");
-                        ChessBoard.Update(currentBoard);
-                    }
+                    CheckBoard();
 
-                    if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
-                    {
-                        MessageBox.Show("Moves are over");
-                        ChessBoard.Update(currentBoard);
-                    }
                     selectedItem.IsSelected = false;
 
-                    //превращение пешки
-                    if (SelectedFigure is Pawn p && (selectedItem.Value.Row == 0 || selectedItem.Value.Row == 7))
-                    {
-                        PawnTransform dialog = new PawnTransform(p.Color);
-                        dialog.ShowDialog();
-                        SelectedFigure.Position.Figure = (Figure)dialog.DataContext;
-                    }
-                    
+                    PawnTransform();
                 }
                 
                 ClearMarks();
@@ -92,6 +72,35 @@ namespace Chess
         
         }
 
+        private void PawnTransform()
+        {
+            //превращение пешки
+            if (SelectedFigure is Pawn p && (selectedItem.Value.Row == 0 || selectedItem.Value.Row == 7))
+            {
+                PawnTransform dialog = new PawnTransform(p.Color);
+                dialog.ShowDialog();
+                SelectedFigure.Position.Figure = (Figure)dialog.DataContext;
+            }
+        }
+        private void CheckBoard()
+        {
+            if (ChessBoard.Board.IsCheckMate)
+            {
+                MessageBox.Show("MATE!");
+                ChessBoard.Update(currentBoard);
+            }
+            else if (ChessBoard.Board.isCheckPate())
+            {
+                MessageBox.Show("PATE!");
+                ChessBoard.Update(currentBoard);
+            }
+
+            if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
+            {
+                MessageBox.Show("Moves are over");
+                ChessBoard.Update(currentBoard);
+            }
+        }
         private void ClearMarks()
         {
             for (int i = 0; i < 8; i++)
@@ -111,43 +120,31 @@ namespace Chess
                 return makeMoveCommand ??
                     (makeMoveCommand = new RelayCommand(obj =>
                     {
-                        if (AI.Head == null)
-                        {
-                            AI.Head = new TreeNode();
-                            AI.Head.Data = new IASimple { Board = new Board(ChessBoard.Board) };
-                            AI.CreateTreePossibleMoves(AI.Head, 2);
-                        }
-                        else
-                        {
-                            AI.GrowTreePossibleMoves(AI.Head, 2);
-                        }
-
-                        var move = AI.GetResult(AI.Head, 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           );
-                        ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
-                        
-                        AI.Head = AI.Head.ChildNodes.First(b => b.Data.Board == ChessBoard.Board);
-                        AI.Head.Parent = null;
-
-                        if (ChessBoard.Board.IsCheckMate)
-                        {
-                            MessageBox.Show("MATE!");
-                            ChessBoard.Update(currentBoard);
-                        }
-                        else if (ChessBoard.Board.isCheckPate())
-                        {
-                            MessageBox.Show("PATE!");
-                            ChessBoard.Update(currentBoard);
-                        }
-
-                        if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
-                        {
-                            MessageBox.Show("Moves are over");
-                            ChessBoard.Update(currentBoard);
-                        }
+                        AIMove();
+                        CheckBoard();
                     }));
             }
 
+        }
 
+        private void AIMove()
+        {
+            if (AI.Head == null)
+            {
+                AI.Head = new TreeNode();
+                AI.Head.Data = new IASimple { Board = new Board(ChessBoard.Board) };
+                AI.CreateTreePossibleMoves(AI.Head, 2);
+            }
+            else
+            {
+                AI.GrowTreePossibleMoves(AI.Head, 2);
+            }
+
+            var move = AI.GetResult(AI.Head, 2);
+            ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
+
+            AI.Head = AI.Head.ChildNodes.First(b => b.Data.Board == ChessBoard.Board);
+            AI.Head.Parent = null;
         }
 
         private RelayCommand chessTasksCommand;

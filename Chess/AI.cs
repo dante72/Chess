@@ -23,17 +23,6 @@ namespace Chess
     {
         public static TreeNode Head;
 
-        public static void SearchTreeEndAndAdd(TreeNode head, int depth)
-        {
-            if (depth > 0 && head != null)
-            {
-                if (head.ChildNodes != null)
-                    Parallel.ForEach(head.ChildNodes, node => SearchTreeEndAndAdd(node, depth - 1));
-                else
-                    Parallel.ForEach(head.ChildNodes, node => CreateTreePossibleMoves(node, depth - 1));
-            }
-        }
-
         public static void GrowTreePossibleMoves(TreeNode head, int depth, int currentDepth = 0)
         {
             if (currentDepth < depth)
@@ -107,31 +96,15 @@ namespace Chess
             return res * 0.9f;   
         }
 
-        public static float FindMove2(TreeNode head, int depth, int currentDepth = 0, int Index = -1)
-        {
-            if (Index == -1)
-                Index = head.Data.Board.Index;
-            float res;
-
-            if (head.ChildNodes == null)
-                return head.Data.Score;
-            if (Index % 2 != 0)
-                res = head.ChildNodes.Max(i => FindMove2(i, depth, currentDepth + 1, Index));
-            else
-                res = head.ChildNodes.Min(i => FindMove2(i, depth, currentDepth + 1, Index));
-
-            return res * 0.9f;
-        }
-
         public static IASimple GetResult(TreeNode head, int depth)
         {
             List<Task> tasks = new List<Task>();
             var dictionary = head.ChildNodes.ToDictionary(node => node, node => FindMove(node, depth));
             float minmax = head.Data.Board.Index % 2 != 0 ? (float)dictionary.Max(d => d.Value) : (float)dictionary.Min(d => d.Value);
-            string str = "";
-            foreach (var item in dictionary)
-                str += $"{string.Format("{0, 15}", item.Key.Data.Figure)}\t{item.Value.ToString()}\t{item.Key.Data.Cell}\n";
-            MessageBox.Show(str);
+            //string str = "";
+            //foreach (var item in dictionary)
+            //    str += $"{string.Format("{0, 15}", item.Key.Data.Figure)}\t{item.Key.Data.Cell}\t{item.Value.ToString("0.00")}\n";
+            //MessageBox.Show(str);
             return dictionary.First(d => (float)d.Value == minmax).Key.Data;
         }
     }
