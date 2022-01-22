@@ -16,8 +16,10 @@
             <Binding Source="{StaticResource viewModel}"/>
         </DockPanel.DataContext>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
+            <MenuItem Header="New Game">
                 <MenuItem Header="Select a task..." Command="{Binding ChessTasksCommand}"></MenuItem>
+                <MenuItem Header="Singleplayer" Command="{Binding SinglePlayerCommand}"></MenuItem>
+                <MenuItem Header="Multiplayer" Command="{Binding MultiPlayerCommand}"></MenuItem>
             </MenuItem>
             <MenuItem Command="{Binding MakeMoveCommand}" Header="Make move"></MenuItem>
             <MenuItem Command="{Binding MoveBackCommand}" Header="Moveback"></MenuItem>

@@ -56,16 +56,17 @@ namespace Chess
                     UpdateMovementTree();
                     SelectedFigure.MoveTo(selectedItem.Value);
                     UpdateHead();
-                    CheckBoard();
+                    if(!CheckBoard())
+                        return;
 
                     selectedItem.IsSelected = false;
 
                     //если игрок сходил, ход ИИ
-                    if (ChessBoard.Board.Index % 2 == 0)
+                    if (SingleMode && ChessBoard.Board.Index % 2 == 0)
                     {
                         UpdateMovementTree();
                         var move = AI.GetResult(AI.Head, 2);
-                        ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure?.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
+                        ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
                         UpdateHead();
                         CheckBoard();
                     }
@@ -95,8 +96,9 @@ namespace Chess
                 SelectedFigure.Position.Figure = (Figure)dialog.DataContext;
             }
         }
-        private void CheckBoard()
+        private bool CheckBoard()
         {
+            bool flag = false;
             if (ChessBoard.Board.IsCheckMate)
             {
                 MessageBox.Show("MATE!");
@@ -107,12 +109,15 @@ namespace Chess
                 MessageBox.Show("PATE!");
                 ChessBoard.Update(currentBoard);
             }
-
-            if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
+            else if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
             {
                 MessageBox.Show("Moves are over");
                 ChessBoard.Update(currentBoard);
             }
+            else
+                flag = true;
+
+            return flag;
         }
         private void ClearMarks()
         {
@@ -137,8 +142,18 @@ namespace Chess
                         UpdateMovementTree();
                         var move = AI.GetResult(AI.Head, 2);
                         ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure?.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
-                        CheckBoard();
+                        if (!CheckBoard())
+                            return;
                         UpdateHead();
+
+                        if (SingleMode)
+                        {
+                            UpdateMovementTree();
+                            move = AI.GetResult(AI.Head, 2);
+                            ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure?.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
+                            CheckBoard();
+                            UpdateHead();
+                        }
                     }));
             }
 
@@ -177,6 +192,7 @@ namespace Chess
                             var board = (Board)dialog.DataContext;
                             ChessBoard.Update(board);
                             currentBoard = new Board(board);
+                            SingleMode = false;
                         }
                     }));
             }
@@ -192,6 +208,34 @@ namespace Chess
                     {
                         AI.Head = null;
                         ChessBoard.Board.MoveBack();
+                    }));
+            }
+        }
+
+        private RelayCommand singlePlayerCommand;
+        public RelayCommand SinglePlayerCommand
+        {
+            get
+            {
+                return singlePlayerCommand ??
+                    (singlePlayerCommand = new RelayCommand(obj =>
+                    {
+                        SingleMode = true;
+                        ChessBoard.Update(new Board());
+                    }));
+            }
+        }
+
+        private RelayCommand multiPlayerCommand;
+        public RelayCommand MultiPlayerCommand
+        {
+            get
+            {
+                return multiPlayerCommand ??
+                    (multiPlayerCommand = new RelayCommand(obj =>
+                    {
+                        SingleMode = false;
+                        ChessBoard.Update(new Board());
                     }));
             }
         }
