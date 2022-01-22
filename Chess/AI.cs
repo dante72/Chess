@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -69,18 +70,18 @@ namespace Chess
                     head.Add(node);
                 }
             }
-            if (currentDepth > 0)
+            /*if (currentDepth > 0)
             {
                 if (head.Data.Board.Index % 2 == 0)
                 {
                     //head.childNodes?.OrderByDescending(i => i.Data.Score);
-                    head.childNodes = head.childNodes?.Where(node => node.Data.Score <= head.Data.Score).ToList();
+                    head.childNodes = new ConcurrentBag<TreeNode>(head.childNodes?.Where(node => node.Data.Score <= head.Data.Score));
                 }
                 else
                 {
-                    head.childNodes = head.childNodes?.Where(node => node.Data.Score >= head.Data.Score).ToList();
+                    head.childNodes = new ConcurrentBag<TreeNode>(head.childNodes?.Where(node => node.Data.Score >= head.Data.Score));
                 }
-            }
+            }*/
             
             if (currentDepth < depth && head.ChildNodes != null && !head.Data.Board.IsCheckMate)
                 Parallel.ForEach(head.ChildNodes, node => CreateTreePossibleMoves(node, depth, currentDepth + 1));
@@ -129,7 +130,7 @@ namespace Chess
             float minmax = head.Data.Board.Index % 2 != 0 ? (float)dictionary.Max(d => d.Value) : (float)dictionary.Min(d => d.Value);
             string str = "";
             foreach (var item in dictionary)
-                str += $"{string.Format("{0, 15}", item.Key.Data.Figure)}\t{item.Value}\t{item.Key.Data.Cell}\n";
+                str += $"{string.Format("{0, 15}", item.Key.Data.Figure)}\t{item.Value.ToString()}\t{item.Key.Data.Cell}\n";
             MessageBox.Show(str);
             return dictionary.First(d => (float)d.Value == minmax).Key.Data;
         }
