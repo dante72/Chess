@@ -12,6 +12,7 @@ namespace Chess
     {
         private Board currentBoard;
         public bool SingleMode { get; set; } = false;
+
         public List<string> Letters { set; get; } = new List<string>() { "a", "b", "c", "d", "e", "f", "g", "h"};
         public List<string> Digits { set; get; } = new List<string>() { "8", "7", "6", "5", "4", "3", "2", "1" };
         public BoardVM ChessBoard { set; get; }
@@ -51,10 +52,23 @@ namespace Chess
 
                 if (selectedItem.IsMarked)
                 {
+                    //ход игрока
+                    UpdateMovementTree();
                     SelectedFigure.MoveTo(selectedItem.Value);
+                    UpdateHead();
                     CheckBoard();
 
                     selectedItem.IsSelected = false;
+
+                    //если игрок сходил, ход ИИ
+                    if (ChessBoard.Board.Index % 2 == 0)
+                    {
+                        UpdateMovementTree();
+                        var move = AI.GetResult(AI.Head, 2);
+                        ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure?.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
+                        UpdateHead();
+                        CheckBoard();
+                    }
 
                     PawnTransform();
                 }
@@ -69,7 +83,6 @@ namespace Chess
             {
                 return selectedItem;
             }
-        
         }
 
         private void PawnTransform()
@@ -110,6 +123,7 @@ namespace Chess
         public ViewModel()
         {
             ChessBoard = new BoardVM();
+            currentBoard = new Board();
         }
 
         private RelayCommand makeMoveCommand;
@@ -120,14 +134,17 @@ namespace Chess
                 return makeMoveCommand ??
                     (makeMoveCommand = new RelayCommand(obj =>
                     {
-                        AIMove();
+                        UpdateMovementTree();
+                        var move = AI.GetResult(AI.Head, 2);
+                        ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure?.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
                         CheckBoard();
+                        UpdateHead();
                     }));
             }
 
         }
 
-        private void AIMove()
+        private void UpdateMovementTree()
         {
             if (AI.Head == null)
             {
@@ -139,12 +156,11 @@ namespace Chess
             {
                 AI.GrowTreePossibleMoves(AI.Head, 2);
             }
+        }
 
-            var move = AI.GetResult(AI.Head, 2);
-            ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
-
+        private void UpdateHead()
+        {
             AI.Head = AI.Head.ChildNodes.First(b => b.Data.Board == ChessBoard.Board);
-            AI.Head.Parent = null;
         }
 
         private RelayCommand chessTasksCommand;
