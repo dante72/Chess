@@ -19,7 +19,7 @@ namespace Chess
     /// </summary>
     public partial class ChessTasks : Window
     {
-
+        public Board Value { get; private set; }
         public ChessTasks()
         {
             InitializeComponent();
@@ -29,7 +29,7 @@ namespace Chess
         {
             if (listBox.SelectedItem != null)
             {
-                DataContext = (listBox.SelectedItem as BoardVM).Board;
+                Value = (listBox.SelectedItem as ExerciseBoard).Value.Board;
                 DialogResult = true;
             }
         }

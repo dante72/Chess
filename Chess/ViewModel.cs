@@ -103,20 +103,22 @@ namespace Chess
             {
                 MessageBox.Show("MATE!");
                 ChessBoard.Update(currentBoard);
+                ClearMarks();
             }
             else if (ChessBoard.Board.isCheckPate())
             {
                 MessageBox.Show("PATE!");
                 ChessBoard.Update(currentBoard);
+                ClearMarks();
             }
             else if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
             {
                 MessageBox.Show("Moves are over");
                 ChessBoard.Update(currentBoard);
+                ClearMarks();
             }
             else
                 flag = true;
-
             return flag;
         }
         private void ClearMarks()
@@ -139,9 +141,10 @@ namespace Chess
                 return makeMoveCommand ??
                     (makeMoveCommand = new RelayCommand(obj =>
                     {
+                        ClearMarks();
                         UpdateMovementTree();
                         var move = AI.GetResult(AI.Head, 2);
-                        ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure?.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
+                        ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
                         if (!CheckBoard())
                             return;
                         UpdateHead();
@@ -150,7 +153,7 @@ namespace Chess
                         {
                             UpdateMovementTree();
                             move = AI.GetResult(AI.Head, 2);
-                            ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure?.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
+                            ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
                             CheckBoard();
                             UpdateHead();
                         }
@@ -186,13 +189,14 @@ namespace Chess
                 return chessTasksCommand ??
                     (chessTasksCommand = new RelayCommand(obj =>
                     {
+                        ClearMarks();
                         var dialog = new ChessTasks();
                         if (dialog.ShowDialog() == true)
                         {
-                            var board = (Board)dialog.DataContext;
+                            var board = dialog.Value;
                             ChessBoard.Update(board);
                             currentBoard = new Board(board);
-                            SingleMode = false;
+                            SingleMode = true;
                         }
                     }));
             }
@@ -220,6 +224,7 @@ namespace Chess
                 return singlePlayerCommand ??
                     (singlePlayerCommand = new RelayCommand(obj =>
                     {
+                        ClearMarks();
                         SingleMode = true;
                         ChessBoard.Update(new Board());
                     }));
@@ -234,6 +239,7 @@ namespace Chess
                 return multiPlayerCommand ??
                     (multiPlayerCommand = new RelayCommand(obj =>
                     {
+                        ClearMarks();
                         SingleMode = false;
                         ChessBoard.Update(new Board());
                     }));

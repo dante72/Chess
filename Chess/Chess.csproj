@@ -47,6 +47,9 @@
     <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.SqlServerCompact.6.4.4\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -88,6 +91,7 @@
     <Compile Include="DB\InfoContext.cs" />
     <Compile Include="Directions.cs" />
     <Compile Include="EvaluateBoard.cs" />
+    <Compile Include="ExerciseBoard.cs" />
     <Compile Include="Figure.cs" />
     <Compile Include="FigureColors.cs" />
     <Compile Include="IFirstMove.cs" />

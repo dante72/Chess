@@ -31,6 +31,8 @@ namespace Chess
         {
             if (MovingFigures.Count == 0)
                 return;
+            
+            Index--;
             var figure = MovingFigures.Pop();
             Back(figure);
             if (MovingFigures.Count > 0)
@@ -41,7 +43,6 @@ namespace Chess
                     Back(MovingFigures.Pop());
                 }
             }
-            Index--;
         }
 
         private void Back(Figure figure)

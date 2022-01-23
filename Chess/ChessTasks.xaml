@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d"
-        Title="ChessTasks" Height="450" Width="800">
+        Title="ChessTasks" Height="475" Width="800" FontSize="15">
     <Window.Resources>
         <local:ChessTasksViewModel x:Key="viewModel"/>
         <local:CellColorConverter x:Key="cellColorConverter" />
@@ -14,16 +14,24 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="90"/>
         </Grid.RowDefinitions>
         <Grid.DataContext>
             <Binding Source="{StaticResource viewModel}"/>
         </Grid.DataContext>
-        <UniformGrid Rows="1"
+        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
             Grid.Row="1">
-            <Button Margin="10" Click="Button_Click">OK</Button>
-            <Button Margin="10" Click="Button_Click_1">Cancel</Button>
-        </UniformGrid>
+            <Button Margin="10"
+                    Width="200"
+                    Height="55"
+                    Click="Button_Click">OK</Button>
+            <Button Margin="10"
+                    Width="200"
+                    Height="55"
+                    Click="Button_Click_1">Cancel</Button>
+        </StackPanel>
         <ListBox Name ="listBox" ItemsSource="{Binding Boards}" SelectedItem="{Binding SelectedItem}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -32,43 +40,61 @@
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                <ListBox ItemsSource="{Binding}" 
-                         Width="300" 
-                         Height="300"
-                         IsEnabled="false">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="8"
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="8*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{Binding Name}"></TextBlock>
+                        <TextBlock Grid.Column ="1"
+                                   TextAlignment="Right"
+                                   Text="{Binding Moves}"></TextBlock>
+                        <ListBox Grid.Row="1"
+                                 Grid.ColumnSpan="2"
+                                 ItemsSource="{Binding Value}" 
+                                 Width="300" 
+                                 Height="300"
+                                 IsEnabled="false">
+                            <ListBox.ItemsPanel>
+                                
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="8"
                                      Rows="8"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Background" Value="Bisque"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                        <Canvas>
-                                                <Border x:Name="back" Background="{TemplateBinding Background}" 
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Background" Value="Bisque"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                <Canvas>
+                                                    <Border x:Name="back" Background="{TemplateBinding Background}" 
                                           BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}">
-                                                    <Viewbox Height="{TemplateBinding ActualHeight}" Width="{TemplateBinding ActualWidth}">
-                                                        <Image Source="{Binding Value.Figure, Converter={StaticResource chessFigureConvector}}"/>
-                                                    </Viewbox>
-                                                </Border>
-                                            </Canvas>
-                                        <ControlTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding Index, Converter={StaticResource cellColorConverter}}" Value="True">
-                                                    <Setter Property="Background" Value="SandyBrown"></Setter>
-                                                </DataTrigger>
-                                            </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
+                                                        <Viewbox Height="{TemplateBinding ActualHeight}" Width="{TemplateBinding ActualWidth}">
+                                                            <Image Source="{Binding Value.Figure, Converter={StaticResource chessFigureConvector}}"/>
+                                                        </Viewbox>
+                                                    </Border>
+                                                </Canvas>
+                                                <ControlTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding Index, Converter={StaticResource cellColorConverter}}" Value="True">
+                                                        <Setter Property="Background" Value="SandyBrown"></Setter>
+                                                    </DataTrigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
