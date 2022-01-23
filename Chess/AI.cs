@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,17 +22,6 @@ namespace Chess
     public static class AI
     {
         public static TreeNode Head;
-
-        public static void SearchTreeEndAndAdd(TreeNode head, int depth)
-        {
-            if (depth > 0 && head != null)
-            {
-                if (head.ChildNodes != null)
-                    Parallel.ForEach(head.ChildNodes, node => SearchTreeEndAndAdd(node, depth - 1));
-                else
-                    Parallel.ForEach(head.ChildNodes, node => CreateTreePossibleMoves(node, depth - 1));
-            }
-        }
 
         public static void GrowTreePossibleMoves(TreeNode head, int depth, int currentDepth = 0)
         {
@@ -69,6 +59,18 @@ namespace Chess
                     head.Add(node);
                 }
             }
+            /*if (currentDepth > 0)
+            {
+                if (head.Data.Board.Index % 2 == 0)
+                {
+                    //head.childNodes?.OrderByDescending(i => i.Data.Score);
+                    head.childNodes = new ConcurrentBag<TreeNode>(head.childNodes?.Where(node => node.Data.Score <= head.Data.Score));
+                }
+                else
+                {
+                    head.childNodes = new ConcurrentBag<TreeNode>(head.childNodes?.Where(node => node.Data.Score >= head.Data.Score));
+                }
+            }*/
             
             if (currentDepth < depth && head.ChildNodes != null && !head.Data.Board.IsCheckMate)
                 Parallel.ForEach(head.ChildNodes, node => CreateTreePossibleMoves(node, depth, currentDepth + 1));
@@ -78,7 +80,7 @@ namespace Chess
         {
             float res;
 
-            if (head.ChildNodes == null)
+            if (head.ChildNodes == null || head.ChildNodes?.Count() == 0)
                 return head.Data.Score;
             
             
@@ -99,10 +101,10 @@ namespace Chess
             List<Task> tasks = new List<Task>();
             var dictionary = head.ChildNodes.ToDictionary(node => node, node => FindMove(node, depth));
             float minmax = head.Data.Board.Index % 2 != 0 ? (float)dictionary.Max(d => d.Value) : (float)dictionary.Min(d => d.Value);
-            string str = "";
-            foreach (var item in dictionary)
-                str += $"{string.Format("{0, 15}", item.Key.Data.Figure)}\t{item.Value}\t{item.Key.Data.Cell}\n";
-            MessageBox.Show(str);
+            //string str = "";
+            //foreach (var item in dictionary)
+            //    str += $"{string.Format("{0, 15}", item.Key.Data.Figure)}\t{item.Key.Data.Cell}\t{item.Value.ToString("0.00")}\n";
+            //MessageBox.Show(str);
             return dictionary.First(d => (float)d.Value == minmax).Key.Data;
         }
     }

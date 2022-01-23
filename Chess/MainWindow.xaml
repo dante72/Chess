@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="800" ResizeMode="NoResize">
+        Title="Chess" Height="800" Width="800" ResizeMode="NoResize">
     <Window.Resources>
         <local:ViewModel x:Key="viewModel"/>
         <local:CellColorConverter x:Key="cellColorConverter" />
@@ -16,10 +16,13 @@
             <Binding Source="{StaticResource viewModel}"/>
         </DockPanel.DataContext>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
+            <MenuItem Header="New Game">
                 <MenuItem Header="Select a task..." Command="{Binding ChessTasksCommand}"></MenuItem>
+                <MenuItem Header="Singleplayer" Command="{Binding SinglePlayerCommand}"></MenuItem>
+                <MenuItem Header="Multiplayer" Command="{Binding MultiPlayerCommand}"></MenuItem>
             </MenuItem>
             <MenuItem Command="{Binding MakeMoveCommand}" Header="Make move"></MenuItem>
+            <MenuItem Command="{Binding MoveBackCommand}" Header="Moveback"></MenuItem>
         </Menu>
         <Grid>
             <Grid.ColumnDefinitions>

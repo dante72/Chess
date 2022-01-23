@@ -11,6 +11,7 @@ namespace Chess.DB
     {
         public InfoContext() : base("DbConnectionString")
         {
+
         }
 
         public DbSet<Exercise> Exercises { get; set; }

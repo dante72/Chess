@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,13 +13,13 @@ namespace Chess
         public TreeNode Parent { get; set; }
 
 
-        public List<TreeNode> childNodes;
-        public IEnumerable<TreeNode> ChildNodes { get => childNodes; }
+        public ConcurrentBag<TreeNode> childNodes;
+        public ConcurrentBag<TreeNode> ChildNodes { get => childNodes; }
 
         public void Add(TreeNode item)
         {
             if (childNodes == null)
-                childNodes = new List<TreeNode>();
+                childNodes = new ConcurrentBag<TreeNode>();
             item.Parent = this;
             childNodes.Add(item);
         }

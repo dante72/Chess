@@ -37,7 +37,7 @@ namespace Chess
 
         public BoardVM(Board board)
         {
-            this.Board = board;
+            Board = new Board(board);
             cells = new CellVM[8, 8];
             for (int i = 0; i < cells.GetLength(0); i++)
                 for (int j = 0; j < cells.GetLength(1); j++)
@@ -47,6 +47,7 @@ namespace Chess
         public void Update(Board board)
         {
             AI.Head = null;
+            Board.MovingFigures = new Stack<Figure>();
 
             Board.Moves = board.Moves;
             Board.Index = board.Index;

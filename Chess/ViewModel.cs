@@ -11,6 +11,8 @@ namespace Chess
     public class ViewModel : NotifyPropertyChanged
     {
         private Board currentBoard;
+        public bool SingleMode { get; set; } = false;
+
         public List<string> Letters { set; get; } = new List<string>() { "a", "b", "c", "d", "e", "f", "g", "h"};
         public List<string> Digits { set; get; } = new List<string>() { "8", "7", "6", "5", "4", "3", "2", "1" };
         public BoardVM ChessBoard { set; get; }
@@ -50,33 +52,26 @@ namespace Chess
 
                 if (selectedItem.IsMarked)
                 {
+                    //ход игрока
+                    UpdateMovementTree();
                     SelectedFigure.MoveTo(selectedItem.Value);
-                    if (ChessBoard.Board.IsCheckMate)
-                    {
-                        MessageBox.Show("MATE!");
-                        ChessBoard.Update(currentBoard);
-                    }
-                    else if (ChessBoard.Board.isCheckPate())
-                    {
-                        MessageBox.Show("PATE!");
-                        ChessBoard.Update(currentBoard);
-                    }
+                    UpdateHead();
+                    if(!CheckBoard())
+                        return;
 
-                    if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
-                    {
-                        MessageBox.Show("Moves are over");
-                        ChessBoard.Update(currentBoard);
-                    }
                     selectedItem.IsSelected = false;
 
-                    //превращение пешки
-                    if (SelectedFigure is Pawn p && (selectedItem.Value.Row == 0 || selectedItem.Value.Row == 7))
+                    //если игрок сходил, ход ИИ
+                    if (SingleMode && ChessBoard.Board.Index % 2 == 0)
                     {
-                        PawnTransform dialog = new PawnTransform(p.Color);
-                        dialog.ShowDialog();
-                        SelectedFigure.Position.Figure = (Figure)dialog.DataContext;
+                        UpdateMovementTree();
+                        var move = AI.GetResult(AI.Head, 2);
+                        ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
+                        UpdateHead();
+                        CheckBoard();
                     }
-                    
+
+                    PawnTransform();
                 }
                 
                 ClearMarks();
@@ -89,9 +84,43 @@ namespace Chess
             {
                 return selectedItem;
             }
-        
         }
 
+        private void PawnTransform()
+        {
+            //превращение пешки
+            if (SelectedFigure is Pawn p && (selectedItem.Value.Row == 0 || selectedItem.Value.Row == 7))
+            {
+                PawnTransform dialog = new PawnTransform(p.Color);
+                dialog.ShowDialog();
+                SelectedFigure.Position.Figure = (Figure)dialog.DataContext;
+            }
+        }
+        private bool CheckBoard()
+        {
+            bool flag = false;
+            if (ChessBoard.Board.IsCheckMate)
+            {
+                MessageBox.Show("MATE!");
+                ChessBoard.Update(currentBoard);
+                ClearMarks();
+            }
+            else if (ChessBoard.Board.isCheckPate())
+            {
+                MessageBox.Show("PATE!");
+                ChessBoard.Update(currentBoard);
+                ClearMarks();
+            }
+            else if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
+            {
+                MessageBox.Show("Moves are over");
+                ChessBoard.Update(currentBoard);
+                ClearMarks();
+            }
+            else
+                flag = true;
+            return flag;
+        }
         private void ClearMarks()
         {
             for (int i = 0; i < 8; i++)
@@ -101,6 +130,7 @@ namespace Chess
         public ViewModel()
         {
             ChessBoard = new BoardVM();
+            currentBoard = new Board();
         }
 
         private RelayCommand makeMoveCommand;
@@ -111,43 +141,44 @@ namespace Chess
                 return makeMoveCommand ??
                     (makeMoveCommand = new RelayCommand(obj =>
                     {
-                        if (AI.Head == null)
-                        {
-                            AI.Head = new TreeNode();
-                            AI.Head.Data = new IASimple { Board = new Board(ChessBoard.Board) };
-                            AI.CreateTreePossibleMoves(AI.Head, 2);
-                        }
-                        else
-                        {
-                            AI.GrowTreePossibleMoves(AI.Head, 2);
-                        }
-
+                        ClearMarks();
+                        UpdateMovementTree();
                         var move = AI.GetResult(AI.Head, 2);
                         ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
-                        
-                        AI.Head = AI.Head.ChildNodes.First(b => b.Data.Board == ChessBoard.Board);
-                        AI.Head.Parent = null;
+                        if (!CheckBoard())
+                            return;
+                        UpdateHead();
 
-                        if (ChessBoard.Board.IsCheckMate)
+                        if (SingleMode)
                         {
-                            MessageBox.Show("MATE!");
-                            ChessBoard.Update(currentBoard);
-                        }
-                        else if (ChessBoard.Board.isCheckPate())
-                        {
-                            MessageBox.Show("PATE!");
-                            ChessBoard.Update(currentBoard);
-                        }
-
-                        if (ChessBoard.Board.Moves >= 0 && ChessBoard.Board.Moves <= ChessBoard.Board.Index - 1)
-                        {
-                            MessageBox.Show("Moves are over");
-                            ChessBoard.Update(currentBoard);
+                            UpdateMovementTree();
+                            move = AI.GetResult(AI.Head, 2);
+                            ChessBoard.Board[move.Figure.Position.Row, move.Figure.Position.Column].Figure.MoveTo(ChessBoard.Board[move.Cell.Row, move.Cell.Column]);
+                            CheckBoard();
+                            UpdateHead();
                         }
                     }));
             }
 
+        }
 
+        private void UpdateMovementTree()
+        {
+            if (AI.Head == null)
+            {
+                AI.Head = new TreeNode();
+                AI.Head.Data = new IASimple { Board = new Board(ChessBoard.Board) };
+                AI.CreateTreePossibleMoves(AI.Head, 2);
+            }
+            else
+            {
+                AI.GrowTreePossibleMoves(AI.Head, 2);
+            }
+        }
+
+        private void UpdateHead()
+        {
+            AI.Head = AI.Head.ChildNodes.First(b => b.Data.Board == ChessBoard.Board);
         }
 
         private RelayCommand chessTasksCommand;
@@ -158,13 +189,59 @@ namespace Chess
                 return chessTasksCommand ??
                     (chessTasksCommand = new RelayCommand(obj =>
                     {
+                        ClearMarks();
                         var dialog = new ChessTasks();
                         if (dialog.ShowDialog() == true)
                         {
-                            var board = (Board)dialog.DataContext;
+                            var board = dialog.Value;
                             ChessBoard.Update(board);
                             currentBoard = new Board(board);
+                            SingleMode = true;
                         }
+                    }));
+            }
+        }
+
+        private RelayCommand moveBackCommand;
+        public RelayCommand MoveBackCommand
+        {
+            get
+            {
+                return moveBackCommand ??
+                    (moveBackCommand = new RelayCommand(obj =>
+                    {
+                        AI.Head = null;
+                        ChessBoard.Board.MoveBack();
+                    }));
+            }
+        }
+
+        private RelayCommand singlePlayerCommand;
+        public RelayCommand SinglePlayerCommand
+        {
+            get
+            {
+                return singlePlayerCommand ??
+                    (singlePlayerCommand = new RelayCommand(obj =>
+                    {
+                        ClearMarks();
+                        SingleMode = true;
+                        ChessBoard.Update(new Board());
+                    }));
+            }
+        }
+
+        private RelayCommand multiPlayerCommand;
+        public RelayCommand MultiPlayerCommand
+        {
+            get
+            {
+                return multiPlayerCommand ??
+                    (multiPlayerCommand = new RelayCommand(obj =>
+                    {
+                        ClearMarks();
+                        SingleMode = false;
+                        ChessBoard.Update(new Board());
                     }));
             }
         }
