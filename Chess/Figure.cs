@@ -76,63 +76,6 @@ namespace Chess
             IsFirstMove++;
         }
         
-        /// <summary>
-        /// /// Получить ячейки в данном направлении
-        /// /// </summary>
-        protected List<Cell> GetCellsInDirection(Cell current, Directions direction, int range = 8)
-        {
-            int x, y;
-            switch(direction)
-            {
-                case Directions.Up:
-                    x = 0;
-                    y = -1;
-                    break;
-                case Directions.Down:
-                    x = 0;
-                    y = 1;
-                    break;
-                case Directions.Left:
-                    x = 1;
-                    y = 0;
-                    break;
-                case Directions.Right:
-                    x = -1;
-                    y = 0;
-                    break;
-                case Directions.LeftUp:
-                    x = 1;
-                    y = -1;
-                    break;
-                case Directions.RightDown:
-                    x = -1;
-                    y = 1;
-                    break;
-                case Directions.LeftDown:
-                    x = 1;
-                    y = 1;
-                    break;
-                case Directions.RightUp:
-                    x = -1;
-                    y = -1;
-                    break;
-
-                default:
-                    throw new NotImplementedException("Error Direction");
-                    
-
-
-            }
-            var list = new List<Cell>();
-                    for (int i = 1; i <= range; i++)
-                        if (current.Column + i * x >= 0 && current.Column + i * x < 8 && current.Row + i * y >= 0 && current.Row + i * y < 8)
-                        {
-                            list.Add(Board[current.Row + i * y, current.Column + i * x]);
-                            if (Board[current.Row + i * y, current.Column + i * x].Figure != null)
-                                break;
-                        }
-                    return list;
-        }
         public bool IsMove()
         {
             return Color == FigureColors.Black && Board.Index % 2 != 0 || Color == FigureColors.White && Board.Index % 2 == 0;
@@ -200,7 +143,7 @@ namespace Chess
             {
                 if (Position.Column - cell.Column == -2)
                 {
-                    var cells = GetCellsInDirection(Position, Directions.Right);
+                    var cells = Position.GetCellsInDirection(Directions.Right);
                     var rook =  cells.First(i => i.Figure is Rook).Figure;
 
                     SaveMove(rook);
@@ -212,7 +155,7 @@ namespace Chess
                 else
                 if (Position.Column - cell.Column == 2)
                 {
-                    var cells = GetCellsInDirection(Position, Directions.Left);
+                    var cells = Position.GetCellsInDirection(Directions.Left);
                     var rook = cells.First(i => i.Figure is Rook).Figure;
 
                     SaveMove(rook);
@@ -241,8 +184,8 @@ namespace Chess
 
                 if (IsFirstMove == 0 && !Board.KingСheck(Color))
                 {
-                    var left = GetCellsInDirection(Position, Directions.Left);
-                    var right = GetCellsInDirection(Position, Directions.Right);
+                    var left = Position.GetCellsInDirection(Directions.Left);
+                    var right = Position.GetCellsInDirection(Directions.Right);
                     if (left.Count != 0)
                     if (left.All(i => i.Figure == null || i.Figure.IsFirstMove == 0 && i.Figure is Rook) && left.Last().Figure != null)
                         list.Add(Board[Position.Row, Position.Column - 2]);
@@ -297,14 +240,14 @@ namespace Chess
             {
                 var list = new List<Cell>();
 
-                list.AddRange(GetCellsInDirection(Position, Directions.Down));
-                list.AddRange(GetCellsInDirection(Position, Directions.Up));
-                list.AddRange(GetCellsInDirection(Position, Directions.Left));
-                list.AddRange(GetCellsInDirection(Position, Directions.Right));
-                list.AddRange(GetCellsInDirection(Position, Directions.LeftUp));
-                list.AddRange(GetCellsInDirection(Position, Directions.RightDown));
-                list.AddRange(GetCellsInDirection(Position, Directions.LeftDown));
-                list.AddRange(GetCellsInDirection(Position, Directions.RightUp));
+                list.AddRange(Position.GetCellsInDirection(Directions.Down));
+                list.AddRange(Position.GetCellsInDirection(Directions.Up));
+                list.AddRange(Position.GetCellsInDirection(Directions.Left));
+                list.AddRange(Position.GetCellsInDirection(Directions.Right));
+                list.AddRange(Position.GetCellsInDirection(Directions.LeftUp));
+                list.AddRange(Position.GetCellsInDirection(Directions.RightDown));
+                list.AddRange(Position.GetCellsInDirection(Directions.LeftDown));
+                list.AddRange(Position.GetCellsInDirection(Directions.RightUp));
 
                 return list;
             }
@@ -330,10 +273,10 @@ namespace Chess
             {
                 var list = new List<Cell>();
 
-                list.AddRange(GetCellsInDirection(Position, Directions.Down));
-                list.AddRange(GetCellsInDirection(Position, Directions.Up));
-                list.AddRange(GetCellsInDirection(Position, Directions.Left));
-                list.AddRange(GetCellsInDirection(Position, Directions.Right));
+                list.AddRange(Position.GetCellsInDirection(Directions.Down));
+                list.AddRange(Position.GetCellsInDirection(Directions.Up));
+                list.AddRange(Position.GetCellsInDirection(Directions.Left));
+                list.AddRange(Position.GetCellsInDirection(Directions.Right));
 
                 return list;
             }
@@ -391,10 +334,10 @@ namespace Chess
             {
                 var list = new List<Cell>();
 
-                list.AddRange(GetCellsInDirection(Position, Directions.LeftUp));
-                list.AddRange(GetCellsInDirection(Position, Directions.RightDown));
-                list.AddRange(GetCellsInDirection(Position, Directions.LeftDown));
-                list.AddRange(GetCellsInDirection(Position, Directions.RightUp));
+                list.AddRange(Position.GetCellsInDirection(Directions.LeftUp));
+                list.AddRange(Position.GetCellsInDirection(Directions.RightDown));
+                list.AddRange(Position.GetCellsInDirection(Directions.LeftDown));
+                list.AddRange(Position.GetCellsInDirection(Directions.RightUp));
 
                 return list;
             }
@@ -453,7 +396,7 @@ namespace Chess
                 var fields = GetAllPossibleMoves()
                     .Where(i => i.Figure != null && i.Figure?.Color != Color || count == Board.Index && (Board[i.Row + 1, i.Column].Figure is Pawn p1  && p1 == pawn || Board[i.Row - 1, i.Column].Figure is Pawn p2 && p2 == pawn))
                     .ToList();
-                fields.AddRange(GetCellsInDirection(Position, direction, range).Where(i => i.Figure == null));
+                fields.AddRange(Position.GetCellsInDirection(direction, range).Where(i => i.Figure == null));
 
                 if (Сheckmate(this, Position))
                     fields = fields.Where(i => !Сheckmate(this, i)).ToList();
@@ -468,13 +411,13 @@ namespace Chess
 
                 if (direction == Directions.Up)
                 {
-                    attackFields.AddRange(GetCellsInDirection(Position, Directions.LeftUp, 1));
-                    attackFields.AddRange(GetCellsInDirection(Position, Directions.RightUp, 1));
+                    attackFields.AddRange(Position.GetCellsInDirection(Directions.LeftUp, 1));
+                    attackFields.AddRange(Position.GetCellsInDirection(Directions.RightUp, 1));
                 }
                 else
                 {
-                    attackFields.AddRange(GetCellsInDirection(Position, Directions.LeftDown, 1));
-                    attackFields.AddRange(GetCellsInDirection(Position, Directions.RightDown, 1));
+                    attackFields.AddRange(Position.GetCellsInDirection(Directions.LeftDown, 1));
+                    attackFields.AddRange(Position.GetCellsInDirection(Directions.RightDown, 1));
                 }
 
                 return attackFields;
