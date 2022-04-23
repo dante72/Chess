@@ -75,69 +75,63 @@ namespace Chess
             Moves.Push(Position);
             IsFirstMove++;
         }
-
-
-            /// <summary>
-            /// Получить ячейки в данном направлении (рефакторинг)
-            /// </summary>
-            protected List<Cell> GetCellsInDirection(Cell current, Directions direction, int range = 8)
+        
+        /// <summary>
+        /// /// Получить ячейки в данном направлении
+        /// /// </summary>
+        protected List<Cell> GetCellsInDirection(Cell current, Directions direction, int range = 8)
         {
+            int x, y;
             switch(direction)
             {
                 case Directions.Up:
+                    x = 0;
+                    y = -1;
+                    break;
                 case Directions.Down:
-                    int dir = direction == Directions.Up ? -1 : 1;
-                    var list = new List<Cell>();
-                    for (int i = 1; i <= range; i++)
-                        if (current.Row + i * dir >= 0 && current.Row + i * dir < 8)
-                        {
-                            list.Add(Board[current.Row + i * dir, current.Column]);
-                            if (Board[current.Row + i * dir, current.Column].Figure != null)
-                                break;
-                        }
-                    return list;
+                    x = 0;
+                    y = 1;
+                    break;
                 case Directions.Left:
+                    x = 1;
+                    y = 0;
+                    break;
                 case Directions.Right:
-                    dir = direction == Directions.Left ? -1 : 1;
-                    list = new List<Cell>();
-                    for (int i = 1; i <= range; i++)
-                        if (current.Column + i * dir >= 0 && current.Column + i * dir < 8)
-                        {
-                            list.Add(Board[current.Row, current.Column + i * dir]);
-                            if (Board[current.Row, current.Column + i * dir].Figure != null)
-                                break;
-                        }
-                    return list;
+                    x = -1;
+                    y = 0;
+                    break;
                 case Directions.LeftUp:
+                    x = 1;
+                    y = -1;
+                    break;
                 case Directions.RightDown:
-                    dir = direction == Directions.LeftUp ? -1 : 1;
-                    list = new List<Cell>();
-                    for (int i = 1; i <= range; i++)
-                        if (current.Column + i * dir >= 0 && current.Column + i * dir < 8 && current.Row + i * dir >= 0 && current.Row + i * dir < 8)
-                        {
-                            list.Add(Board[current.Row + i * dir, current.Column + i * dir]);
-                            if (Board[current.Row + i * dir, current.Column + i * dir].Figure != null)
-                                break;
-                        }
-                    return list;
-
+                    x = -1;
+                    y = 1;
+                    break;
                 case Directions.LeftDown:
+                    x = 1;
+                    y = 1;
+                    break;
                 case Directions.RightUp:
-                    dir = direction == Directions.LeftDown ? -1 : 1;
-                    list = new List<Cell>();
-                    for (int i = 1; i <= range; i++)
-                        if (current.Column + i * dir >= 0 && current.Column + i * dir < 8 && current.Row - i * dir >= 0 && current.Row - i * dir < 8)
-                        {
-                            list.Add(Board[current.Row - i * dir, current.Column + i * dir]);
-                            if (Board[current.Row - i * dir, current.Column + i * dir].Figure != null)
-                                break;
-                        }
-                    return list;
+                    x = -1;
+                    y = -1;
+                    break;
 
                 default:
                     throw new NotImplementedException("Error Direction");
+                    
+
 
             }
+            var list = new List<Cell>();
+                    for (int i = 1; i <= range; i++)
+                        if (current.Column + i * x >= 0 && current.Column + i * x < 8 && current.Row + i * y >= 0 && current.Row + i * y < 8)
+                        {
+                            list.Add(Board[current.Row + i * y, current.Column + i * x]);
+                            if (Board[current.Row + i * y, current.Column + i * x].Figure != null)
+                                break;
+                        }
+                    return list;
         }
         public bool IsMove()
         {
